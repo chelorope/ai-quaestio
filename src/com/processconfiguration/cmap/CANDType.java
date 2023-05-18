@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright © 2006-2011, www.processconfiguration.com
+ * Copyright ï¿½ 2006-2011, www.processconfiguration.com
  *   
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,12 +24,12 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * <p>
@@ -85,10 +85,10 @@ public class CANDType {
 	 * Gets the value of the value property.
 	 * 
 	 * <p>
-	 * This accessor method returns a reference to the live list, not a
-	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the value property.
+	 * This accessor method returns a reference to the live list, not a snapshot.
+	 * Therefore any modification you make to the returned list will be present
+	 * inside the JAXB object. This is why there is not a <CODE>set</CODE> method
+	 * for the value property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
@@ -124,8 +124,7 @@ public class CANDType {
 	/**
 	 * Sets the value of the id property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link BigInteger }
+	 * @param value allowed object is {@link BigInteger }
 	 * 
 	 */
 	public void setId(BigInteger value) {
@@ -137,8 +136,8 @@ public class CANDType {
 	 * Java class for anonymous complex type.
 	 * 
 	 * <p>
-	 * The following schema fragment specifies the expected content contained
-	 * within this class.
+	 * The following schema fragment specifies the expected content contained within
+	 * this class.
 	 * 
 	 * <pre>
 	 * &lt;complexType>
@@ -186,8 +185,7 @@ public class CANDType {
 		/**
 		 * Sets the value of the type property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link String }
+		 * @param value allowed object is {@link String }
 		 * 
 		 */
 		public void setType(String value) {
@@ -207,8 +205,7 @@ public class CANDType {
 		/**
 		 * Sets the value of the condition property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link String }
+		 * @param value allowed object is {@link String }
 		 * 
 		 */
 		public void setCondition(String value) {
@@ -228,8 +225,7 @@ public class CANDType {
 		/**
 		 * Sets the value of the goto property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link BigInteger }
+		 * @param value allowed object is {@link BigInteger }
 		 * 
 		 */
 		public void setGoto(BigInteger value) {

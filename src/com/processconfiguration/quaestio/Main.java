@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright © 2006-2011, www.processconfiguration.com
+ * Copyright ï¿½ 2006-2011, www.processconfiguration.com
  *   
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -77,10 +77,10 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 
 import com.processconfiguration.bddc.ExecBDDC;
 import com.processconfiguration.cmap.CEpcType;

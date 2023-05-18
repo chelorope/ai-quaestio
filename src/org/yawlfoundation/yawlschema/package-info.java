@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright © 2006-2011, www.processconfiguration.com
+ * Copyright ï¿½ 2006-2011, www.processconfiguration.com
  *   
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,6 @@
 // Generated on: 2008.11.03 at 05:04:23 PM CET 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.yawlfoundation.org/yawlschema", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.yawlfoundation.org/yawlschema", elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.yawlfoundation.yawlschema;
 

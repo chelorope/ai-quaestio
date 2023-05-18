@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright © 2006-2011, www.processconfiguration.com
+ * Copyright ï¿½ 2006-2011, www.processconfiguration.com
  *   
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -46,7 +46,7 @@ public class ExecBDDC extends JFrame {
 			else if (osName.startsWith("Solaris"))
 				osName = "./bddc/bddcS";
 			else if (osName.startsWith("Mac OS X"))
-				osName = "./bddc/bddcM";
+				osName = "./bddc/bddcL";
 			else {
 				System.err
 						.println("Operating System not supported or os.name protected. Assume Windows architecture.");
@@ -74,7 +74,7 @@ public class ExecBDDC extends JFrame {
 			else if (osName.startsWith("Solaris"))
 				osName = "./bddc/bddcS";
 			else if (osName.startsWith("Mac OS X"))
-				osName = "./bddc/bddcM";
+				osName = "./bddc/bddcL";
 			else {
 				System.err
 						.println("Operating System not supported or os.name protected. Assume Windows architecture.");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright © 2006-2011, www.processconfiguration.com
+ * Copyright ï¿½ 2006-2011, www.processconfiguration.com
  *   
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,7 @@
  *      Possakorn Pitayarojanakul - integration with Configurator and Individualizer
  ******************************************************************************/
 /**
- * Copyright © 2006-2009, Marcello La Rosa (marcello.larosa@gmail.com)
+ * Copyright ï¿½ 2006-2009, Marcello La Rosa (marcello.larosa@gmail.com)
  *   
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,5 +29,5 @@
 // Generated on: 2008.08.01 at 05:03:55 PM EST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.processconfiguration.com/QML")
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.processconfiguration.com/QML")
 package com.processconfiguration.qml;

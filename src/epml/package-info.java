@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright © 2006-2011, www.processconfiguration.com
+ * Copyright ï¿½ 2006-2011, www.processconfiguration.com
  *   
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,6 @@
 // Generated on: 2011.04.15 at 11:16:00 AM EST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.epml.de")
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.epml.de")
 package epml;
 
