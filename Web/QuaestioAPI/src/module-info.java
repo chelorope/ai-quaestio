@@ -6,4 +6,5 @@
  *
  */
 module QuaestioAPI {
+	requires java.desktop;
 }
