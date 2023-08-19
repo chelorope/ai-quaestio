@@ -14,6 +14,8 @@ import java.util.logging.Level;
 
 import javax.servlet.MultipartConfigElement;
 
+import com.processconfiguration.qml.QMLType;
+
 public class Main {
     public static void main(String[] args) {
     	File uploadDir = new File("upload");
@@ -33,6 +35,7 @@ public class Main {
             }
             logger.log(Level.INFO, "Uploading file", tempFile);
             Session session = new Session(tempFile.toFile());
+            QMLType hola;
         	return "";
         });
     }
