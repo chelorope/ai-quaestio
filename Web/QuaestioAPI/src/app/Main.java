@@ -32,7 +32,8 @@ public class Main {
                 Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
             }
             logger.log(Level.INFO, "Uploading file", tempFile);
-        	return QML.fromFile(tempFile.toFile()).toString();
+            Session session = new Session(tempFile.toFile());
+        	return "";
         });
     }
 

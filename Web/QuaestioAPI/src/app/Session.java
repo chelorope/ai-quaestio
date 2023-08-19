@@ -6,9 +6,14 @@ import com.processconfiguration.qml.QMLType;
 
 import jakarta.xml.bind.*;
 
-public class QML {
+public class Session {
+	QMLType qml;
 
-	public static QMLType fromFile(File fIn) {
+	public Session(File fIn) {
+		qml = fromFile(fIn);
+	}
+
+	private static QMLType fromFile(File fIn) {
 		try {
 			JAXBContext jc = JAXBContext
 					.newInstance("com.processconfiguration.qml");
