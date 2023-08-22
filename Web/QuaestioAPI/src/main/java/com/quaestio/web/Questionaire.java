@@ -6,11 +6,11 @@ import com.processconfiguration.qml.QMLType;
 
 import jakarta.xml.bind.*;
 
-public class Session {
+public class Questionaire {
 	QMLType qml;
 
-	public Session(File fIn) {
-		qml = fromFile(fIn);
+	public Questionaire(File file) {
+		qml = fromFile(file);
 	}
 
 	private static QMLType fromFile(File fIn) {
@@ -26,5 +26,11 @@ public class Session {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	
+
+	public String toString() {
+		return qml.toString();
 	}
 }
