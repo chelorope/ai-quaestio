@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.swing.JFrame;
 import javax.swing.JToggleButton;
@@ -16,6 +18,7 @@ import com.processconfiguration.quaestio.QuestionTypeListModel;
 
 public class Functions {
     Map<String, QuestionType> QuestionsMap;
+    private QuestionTypeListModel validQ = null; // @jve:decl-index=0:visual-constraint="1387,609"
 
     private void initialize() {
 		// initiates the ListModels
@@ -31,15 +34,6 @@ public class Functions {
 		showMan = true;
 		continueC = false;
 		showSkippableQuestions = true;
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/icons/Q4.gif")));
-		this.setLocation(new java.awt.Point(100, 100));
-		this.setMinimumSize(new java.awt.Dimension(800, 600));
-		this.setSize(826, 600);
-		this.setJMenuBar(getJJMenuBar());
-		this.setContentPane(getJContentPane());
-		this.setTitle("Synergia - Quaestio v. 0.9");
 	}
     
 
@@ -54,7 +48,21 @@ public class Functions {
 													// for constraints checking
 		bddc.init(init.toString());// initiates the bddc variables with empty
 									// arguments
-		// bddc.init("init");
+	}
+
+	private void createSets() {
+		QuestionsMap = new TreeMap<String, QuestionType>();
+		for (QuestionType q : qml.getQuestion()) {
+			q.setMapQFL(q.getMapQF());
+			q.setPreQL();
+			QuestionsMap.put(q.getId(), q);
+		}
+
+		FactsMap = new TreeMap<String, FactType>();
+		for (FactType f : qml.getFact()) {
+			f.setPreFL();
+			FactsMap.put(f.getId(), f);
+		}
 	}
 
 	private void readModel() {
@@ -126,6 +134,50 @@ public class Functions {
 		first = false;
 	}
 
+    	// this method retrieves all the mandatory facts
+	private void retrieveMandatoryF() {
+		for (FactType currentF : FactsMap.values()) {
+			if (currentF.isMandatory()) {
+				mandatoryF.add(currentF.getId());
+			}
+		}
+	}
+
+	private String returnFact(JToggleButton b) {
+		for (Entry iterable_e : buttonsList.entrySet()) {
+			if (iterable_e.getValue().equals(b))
+				return (String) iterable_e.getKey();
+		}
+		return null;
+	}
+
+	// this method appends in the input buffer all the questions the input fID
+	// appears in
+	private void retrieveQuestions(String fID, StringBuffer buffer) {
+		for (QuestionType currentQ : QuestionsMap.values()) {
+			for (String currentFID : currentQ.getMapQFL()) {
+				if (currentFID.equals(fID))
+					buffer.append(currentQ.getId() + ", ");
+			}
+		}
+		buffer.delete(buffer.length() - 2, buffer.length());
+	}
+
+	// this method retrieves the FactType object related to the input fID
+	private FactType retrieveFact(String fID) {
+		return FactsMap.get(fID);
+	}
+
+
+    // this method retrieves all the partial-XOR questions
+	private void retrieveXORQ() {
+		for (QuestionType currentQ : QuestionsMap.values()) {
+			if (bddc.isXOR(currentQ.getMapQFL())) {
+				XORquestions.add(currentQ.getId());
+			}
+		}
+	}
+
 
     private void updateValidQ() {// set the validQ for the current state
 		QuestionType precedingQ;
@@ -143,12 +195,7 @@ public class Functions {
 				// NOTE: same as answeredQ.contains(currentQ)
 				// PERFORMANCES: we can avoid checking among the valid
 				// questions: add "!validQ.contains(currentQ)" now
-				for (List<String> currentPreQ : currentQ.getPreQL()) {// at
-																		// least
-																		// one
-																		// PreQElement
-																		// must
-																		// exist
+				for (List<String> currentPreQ : currentQ.getPreQL()) {
 					if (currentPreQ.size() == 0) {// preQElement doesn't contain
 													// any QRef -> no
 													// preconditions -> currentQ
@@ -193,8 +240,6 @@ public class Functions {
 							// answered questions
 						currentQ.setSkippable(true);
 						skippedQuestions.add(currentQ.getId());
-						getJText_log().append(
-								currentQ.getId() + " is skippable\n");
 						if (validQ.contains(currentQ))// if the question was
 														// already shown in the
 														// Valid Questions list
@@ -211,26 +256,6 @@ public class Functions {
 															// questions are set
 															// not to be
 															// visible.
-						getJText_log().append(
-								"s" + states.size() + ".qs: "
-										+ currentS.qs.toString() + "\n");// updates
-																			// log
-																			// (done
-																			// before
-																			// updating
-																			// list
-																			// states,
-																			// so
-																			// as
-																			// to
-																			// get
-																			// the
-																			// correct
-																			// state
-																			// number
-																			// starting
-																			// from
-																			// 0=s_init)
 						states.add(new State(currentS));// creates a new state
 														// with the info of
 														// currentS and stores

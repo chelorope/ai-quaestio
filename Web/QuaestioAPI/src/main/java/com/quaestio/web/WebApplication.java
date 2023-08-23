@@ -46,7 +46,7 @@ public class WebApplication {
     }
     session.setMaxInactiveInterval(this.sessionMaxInactiveInterval);
     String sessionId = session.getId();
-    
+
     Questionaire questionaire = new Questionaire((File) tempFile.toFile());
     this.questionaires.put(sessionId, questionaire);
     return String.format("Hello %s : %s!", sessionId, questionaire.toString());
