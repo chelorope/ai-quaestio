@@ -42,6 +42,10 @@ public class QuestionaireBase {
 	public static final String FALSE = "false"; // @jve:decl-index=0:
 	public static final String UNSET = "unset"; // @jve:decl-index=0:
 
+	String name;
+	String author;
+	String reference;
+
 	public QuestionaireBase(File file) {
 		initialize();
 		qml = fromFile(file);
@@ -95,12 +99,11 @@ public class QuestionaireBase {
 			QuestionsMap.clear();// clear the questions
 			FactsMap.clear();// clear the facts
 		}
-		// jLabel_info.setText("Name: " + qml.getName());// to print the name of
-		// 												// the model
-		// jLabel_info2.setText("Author: " + qml.getAuthor());// to print the
-		// 													// author
-		// jLabel_info3.setText("Reference: " + qml.getReference());// to print the
-		// 															// reference
+
+		name = qml.getName();
+		author = qml.getAuthor();
+		reference = qml.getReference();
+													// reference
 
 		createSets();// initializes QuestionsMap and FactsMap
 		// creates a temp state used by the algorithm

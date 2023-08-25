@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,7 +34,7 @@ public class WebApplication {
 	}
 
   @PostMapping("/open-questionaire")
-  public String[] openQuestionaire(@RequestParam("uploaded_file") MultipartFile file, HttpSession session) {
+  public String openQuestionaire(@RequestParam("uploaded_file") MultipartFile file, HttpSession session) {
     Path tempFile;
     if (!uploadDir.exists()) {
       uploadDir.mkdir();
@@ -51,6 +52,7 @@ public class WebApplication {
 
     Questionaire questionaire = new Questionaire((File) tempFile.toFile());
     this.questionaires.put(sessionId, questionaire);
-    return questionaire.getCurrentState();
+    QuestionaireState state = questionaire.getCurrentState();
+    return (new JSONObject(state)).toString();
   }
 }
