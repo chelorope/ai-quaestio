@@ -9,7 +9,7 @@ export default function Home() {
   // }
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <form method='POST' enctype='multipart/form-data' action="http://localhost:8080/open-questionaire">
+      <form method='POST' enctype='multipart/form-data' action="http://localhost:5050/open-questionaire">
         <input type='file' name='uploaded_file' accept='.qml'/>
         <button type='submit'>Upload</button>
       </form>

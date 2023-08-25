@@ -7,13 +7,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -32,7 +33,7 @@ public class WebApplication {
 	}
 
   @PostMapping("/open-questionaire")
-  public String openQuestionaire(@RequestParam("uploaded_file") MultipartFile file, HttpSession session) {
+  public String[] openQuestionaire(@RequestParam("uploaded_file") MultipartFile file, HttpSession session) {
     Path tempFile;
     if (!uploadDir.exists()) {
       uploadDir.mkdir();
@@ -42,13 +43,14 @@ public class WebApplication {
       tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
       Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException error) {
-      return "Error: " + error;
+      throw new ResponseStatusException(
+           HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
     }
     session.setMaxInactiveInterval(this.sessionMaxInactiveInterval);
     String sessionId = session.getId();
 
     Questionaire questionaire = new Questionaire((File) tempFile.toFile());
     this.questionaires.put(sessionId, questionaire);
-    return String.format("Hello %s : %s!", sessionId, questionaire.toString());
+    return questionaire.getCurrentState();
   }
 }

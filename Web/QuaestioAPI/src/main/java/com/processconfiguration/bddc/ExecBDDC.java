@@ -20,9 +20,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.TreeMap;
 
-import javax.swing.JFrame;
-
-public class ExecBDDC extends JFrame {
+public class ExecBDDC {
 	private PrintWriter writer;
 	private BufferedReader reader;
 	private Process p;
