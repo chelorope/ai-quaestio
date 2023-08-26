@@ -42,7 +42,11 @@ public class Questionaire extends QuestionaireBase {
 		return questions;
 	}
 
-	public Boolean answerQuestion(String questionId, Map<String, Boolean> answeredFacts) {
+	public void setContinueConfiguration(Boolean continueC) {
+		this.continueC = continueC;
+	}
+
+	public void answerQuestion(String questionId, Map<String, Boolean> answeredFacts) {
 		answeredFacts.forEach((factId, value) -> {
 			currentS.vs.put(factId, value ? TRUE : FALSE);
 			currentS.t.add(factId);
@@ -56,6 +60,41 @@ public class Questionaire extends QuestionaireBase {
 		answeredQ.addElement(selectedQ);
 		updateValidQ();
 
-		return validQ.size() != 0 && checkMandatoryF();
+		allMandatoryFactsAnswered =  validQ.size() != 0 && !continueC && checkMandatoryF();
+	}
+
+	public void rollbackQuestion(String questionId) {
+		QuestionType selectedQ = QuestionsMap.get(questionId);
+		int pos, cState;
+		String valueNEW;
+
+		pos = states.get(states.size() - 1).qs.indexOf(selectedQ.getId());
+		for (int i = states.size() - 1; i > pos; i--) {
+			states.remove(i);
+			answeredQ.remove(i - 1);
+		}
+		cState = states.size() - 1;
+		currentS = new State(states.get(cState));// the last state after
+													// removing
+		// getJText_log().append(
+		// 		"Rolled back from " + selectedQ.getId()
+		// 				+ " onwards. Current state: s" + cState + ".qs: "
+		// 				+ currentS.qs.toString() + "\n");
+
+		for (String fID : currentS.vs.keySet()) {
+			valueNEW = currentS.vs.get(fID);
+			if (valueNEW.equals("unset"))
+				bddc.setFact(fID, "u" + fID);
+			else if (valueNEW.equals("true"))
+				bddc.setFact(fID, "1");
+			else
+				bddc.setFact(fID, "0");
+		}
+
+		if (!continueC)
+			checkMandatoryF();
+
+		validQ.clear();
+		updateValidQ();
 	}
 }

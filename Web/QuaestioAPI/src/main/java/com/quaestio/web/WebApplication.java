@@ -58,18 +58,30 @@ public class WebApplication {
     return (new JSONObject(state)).toString();
   }
 
-  @PostMapping("/answer-question")
-  public String answerQuestion(@RequestBody String answer, HttpSession session) {
+  private Questionaire getSessionQuestionaire(HttpSession session) {
     String sessionId = session.getId();
-    JSONObject answerObject = new JSONObject(answer);
     Questionaire questionaire = this.questionaires.get(sessionId);
 
     if (questionaire == null) {
       throw new ResponseStatusException(
            HttpStatus.NOT_FOUND, "Questionaire not found");
     }
-    
-    JSONArray answers = answerObject.getJSONArray("answeredFacts");
+
+    return questionaire;
+  }
+
+  @GetMapping("/continue")
+  public void continueConfiguration(@RequestParam Boolean continueC, HttpSession session) {
+    Questionaire questionaire = getSessionQuestionaire(session);
+    questionaire.setContinueConfiguration(continueC);
+  }
+
+  @PostMapping("/answer-question")
+  public String answerQuestion(@RequestBody String body, HttpSession session) {
+    Questionaire questionaire = getSessionQuestionaire(session);
+    JSONObject answer = new JSONObject(body);
+
+    JSONArray answers = answer.getJSONArray("answeredFacts");
     Map<String, Boolean> answersMap = new HashMap<String, Boolean>();
     for (int i = 0; i < answers.length(); i++) {
       JSONObject answeredFact = answers.getJSONObject(i);
@@ -78,7 +90,19 @@ public class WebApplication {
       answersMap.put(factId, factValue);
     }
 
-    questionaire.answerQuestion(answerObject.getString("questionId"), answersMap);
+    questionaire.answerQuestion(answer.getString("questionId"), answersMap);
+    QuestionaireState state = questionaire.getCurrentState();
+    return (new JSONObject(state)).toString();
+  }
+
+  @PostMapping("/rallback-question")
+  public String rollbackQuestion(@RequestBody String body, HttpSession session) {
+    Questionaire questionaire = getSessionQuestionaire(session);
+    JSONObject rollback = new JSONObject(body);
+    
+    String questionId = rollback.getString("questionId");
+
+    questionaire.rollbackQuestion(questionId);
     QuestionaireState state = questionaire.getCurrentState();
     return (new JSONObject(state)).toString();
   }

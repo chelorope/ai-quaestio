@@ -33,7 +33,9 @@ public class QuestionaireBase {
 	Map<String, QuestionType> QuestionsMap;
 
 	private boolean first;
+	protected boolean continueC;
 	private boolean showSkippableQuestions;
+	protected boolean allMandatoryFactsAnswered;
 
 	public static final String TRUE = "true"; // @jve:decl-index=0:
 	public static final String FALSE = "false"; // @jve:decl-index=0:
@@ -60,6 +62,8 @@ public class QuestionaireBase {
 		first = true;
 		// showDef = true;
 		// showMan = true;
+		continueC = false;
+		allMandatoryFactsAnswered = false;
 		showSkippableQuestions = true;
 	}
 
@@ -91,6 +95,8 @@ public class QuestionaireBase {
 			currentS.qs.clear();
 			// TODO: Disable export option on the frontned, a configuration cannot be exported if just opened
 			
+			continueC = false;
+			allMandatoryFactsAnswered = false;
 			QuestionsMap.clear();// clear the questions
 			FactsMap.clear();// clear the facts
 		}
