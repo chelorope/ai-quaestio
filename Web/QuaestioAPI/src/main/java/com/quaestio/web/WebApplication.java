@@ -7,7 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -52,6 +54,31 @@ public class WebApplication {
 
     Questionaire questionaire = new Questionaire((File) tempFile.toFile());
     this.questionaires.put(sessionId, questionaire);
+    QuestionaireState state = questionaire.getCurrentState();
+    return (new JSONObject(state)).toString();
+  }
+
+  @PostMapping("/answer-question")
+  public String answerQuestion(@RequestBody String answer, HttpSession session) {
+    String sessionId = session.getId();
+    JSONObject answerObject = new JSONObject(answer);
+    Questionaire questionaire = this.questionaires.get(sessionId);
+
+    if (questionaire == null) {
+      throw new ResponseStatusException(
+           HttpStatus.NOT_FOUND, "Questionaire not found");
+    }
+    
+    JSONArray answers = answerObject.getJSONArray("answeredFacts");
+    Map<String, Boolean> answersMap = new HashMap<String, Boolean>();
+    for (int i = 0; i < answers.length(); i++) {
+      JSONObject answeredFact = answers.getJSONObject(i);
+      String factId = answeredFact.getString("id");
+      Boolean factValue = answeredFact.getBoolean("value");
+      answersMap.put(factId, factValue);
+    }
+
+    questionaire.answerQuestion(answerObject.getString("questionId"), answersMap);
     QuestionaireState state = questionaire.getCurrentState();
     return (new JSONObject(state)).toString();
   }

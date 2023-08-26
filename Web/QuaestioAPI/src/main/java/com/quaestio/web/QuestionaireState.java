@@ -4,13 +4,16 @@ public class QuestionaireState {
     private String name;
     private String author;
     private String reference;
-    private QuestionaireQuestion[] questions;
+    private QuestionaireQuestion[] validQuestions;
+    private QuestionaireQuestion[] answeredQuestions;
 
-    public QuestionaireState(String name, String author, String reference, QuestionaireQuestion[] questions) {
+
+    public QuestionaireState(String name, String author, String reference, QuestionaireQuestion[] validQuestions, QuestionaireQuestion[] answeredQuestions) {
         this.name = name;
         this.author = author;
         this.reference = reference;
-        this.questions = questions;
+        this.validQuestions = validQuestions;
+        this.answeredQuestions = answeredQuestions;
     }
 
     public String getName() {
@@ -25,7 +28,11 @@ public class QuestionaireState {
         return reference;
     }
 
-    public QuestionaireQuestion[] getQuestions() {
-        return questions;
+    public QuestionaireQuestion[] getValidQuestions() {
+        return validQuestions;
+    }
+
+    public QuestionaireQuestion[] getAnsweredQuestions() {
+        return answeredQuestions;
     }
 }

@@ -2,14 +2,10 @@ package com.quaestio.web;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.swing.JFrame;
-import javax.swing.JToggleButton;
 
 import com.processconfiguration.bddc.ExecBDDC;
 import com.processconfiguration.qml.FactType;
@@ -21,13 +17,15 @@ import jakarta.xml.bind.*;
 
 public class QuestionaireBase {
 	QMLType qml;
-	private List<State> states = null;
+	protected List<State> states = null;
+	private State tempS = null;
 	protected QuestionTypeListModel validQ = null;
 	protected QuestionTypeListModel answeredQ = null;
+	private QuestionTypeListModel tempAQ = null;
 	private HashSet<String> mandatoryF = null;
 	private HashSet<String> XORquestions = null;
-	private State currentS = null;
-	private ExecBDDC bddc = null;
+	protected State currentS = null;
+	protected ExecBDDC bddc = null;
 	private HashSet<String> skippedQuestions = null;
 
 	// sets
@@ -35,7 +33,6 @@ public class QuestionaireBase {
 	Map<String, QuestionType> QuestionsMap;
 
 	private boolean first;
-	protected boolean continueC;
 	private boolean showSkippableQuestions;
 
 	public static final String TRUE = "true"; // @jve:decl-index=0:
@@ -63,7 +60,6 @@ public class QuestionaireBase {
 		first = true;
 		// showDef = true;
 		// showMan = true;
-		continueC = false;
 		showSkippableQuestions = true;
 	}
 
@@ -95,7 +91,6 @@ public class QuestionaireBase {
 			currentS.qs.clear();
 			// TODO: Disable export option on the frontned, a configuration cannot be exported if just opened
 			
-			continueC = false;
 			QuestionsMap.clear();// clear the questions
 			FactsMap.clear();// clear the facts
 		}
@@ -167,7 +162,7 @@ public class QuestionaireBase {
 		}
 	}
 
-	private void updateValidQ() {// set the validQ for the current state
+	protected void updateValidQ() {// set the validQ for the current state
 		QuestionType precedingQ;
 		// The file has been already open. Note that validQ has already been
 		// initialized as an empty DefaultListModel in initiate()
@@ -320,6 +315,92 @@ public class QuestionaireBase {
 
 	private FactType retrieveFact(String fID) {
 		return FactsMap.get(fID);
+	}
+
+	protected Boolean checkMandatoryF() {
+		boolean unset = false;
+		for (String mFID : mandatoryF) {
+			if (currentS.vs.get(mFID).equals(UNSET)) {
+				unset = true;// at least one mandatory fact is still unset
+				break;
+			}
+		}
+		return !unset && checkApplicabilityDef();// all the mandatory facts have
+												// been answered, now the
+												// algorithm looks for the
+												// applicability of the default
+												// values to the remaining facts
+	}
+
+	private boolean checkApplicabilityDef() {
+		tempS = new State(currentS);// copy in tempS the current state in order
+									// to keep track of the configuration
+									// process so far
+		tempAQ = new QuestionTypeListModel(answeredQ.delegate);// temporary
+																// Vector of
+																// answered
+																// questions
+		for (QuestionType currentQ : QuestionsMap.values()) {
+			if (!tempAQ.contains(currentQ)) {
+				if (!giveDefAnswer(currentQ, false)) {// found a not applicable
+														// default setting ->
+														// exits
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	protected boolean giveDefAnswer(QuestionType currentQ, boolean skipCheckConf) {
+
+		for (String fID : currentQ.getMapQFL()) {
+			if (retrieveFact(fID).isDefault()) {// if the other facts have not
+												// been set yet
+				if ((tempS.vs.get(fID)).equals(UNSET)) {// just for facts that
+														// appear in the
+														// question for the
+														// first time
+					tempS.vs.put(fID, TRUE);// update vs and t
+					tempS.t.add(fID);
+				}
+				// else if (tempS.vs.get(fID).equals(FALSE))
+				// return false;//it deviates, the default setting cannot be
+				// applied
+			} else {// is false by default
+				if ((tempS.vs.get(fID)).equals(UNSET)) {// just for facts that
+														// appear in the
+														// question for the
+														// first time
+					tempS.vs.put(fID, FALSE);// update vs and t
+					tempS.f.add(fID);
+				}
+				// else if (tempS.vs.get(fID).equals(TRUE))
+				// return false;//it deviates, the default setting cannot be
+				// applied
+			}
+		}
+		if (!skipCheckConf) {// not needed the second time, i.e. when users have
+								// chosen to stop the configuation process,
+								// because the checking has been done previously
+								// by checkApplicabilityDef
+			if (!bddc.isViolated(tempS.vs)) {// removed buttonsList.keySet() as
+												// paramenter
+				// getJText_log().append(
+				// 		currentQ.getId()
+				// 				+ " can be answered with default values.\n");
+				tempAQ.addElement(currentQ);
+				return true;
+			} else {// if all the facts have been set with a value which
+					// deviates from default, then the default answer can't be
+					// applied
+				// getJText_log().append(
+				// 		currentQ.getId()
+				// 				+ " cannot be answered with default values.\n");
+				return false;
+			}
+		} else
+			return true;
 	}
 	
 

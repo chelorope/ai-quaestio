@@ -1,14 +1,20 @@
 package com.quaestio.web;
 
 public class QuestionaireQuestion {
+    private String id;
     private String description;
     private String guidelines;
     private QuestionaireFact[] facts;
 
-    public QuestionaireQuestion(String description, String guidelines, QuestionaireFact[] facts) {
+    public QuestionaireQuestion(String id, String description, String guidelines, QuestionaireFact[] facts) {
+        this.id = id;
         this.description = description;
         this.guidelines = guidelines;
         this.facts = facts;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getDescription() {
