@@ -16,6 +16,7 @@ const initialState = {
   answeredQuestions: [],
   selectedQuestion: {},
   selectedFact: {},
+  answeredFacts: {},
 };
 
 export const openQuestionaire = createAsyncThunk(
@@ -47,12 +48,19 @@ export const questionaireSlice = createSlice({
   name: "questionaire",
   initialState,
   reducers: {
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
+    selectQuestion: (state, action) => {
+      state.selectedQuestion = action.payload;
+      state.answeredFacts = action.payload.facts.reduce((acc, fact) => {
+        acc[fact.id] = false;
+        return acc;
+      }, {});
+    },
+    selectFact: (state, action) => {
+      state.selectedFact = action.payload;
+    },
+    toggleAnsweredFact: (state, action) => {
+      state.answeredFacts[action.payload] =
+        !state.answeredFacts[action.payload];
     },
   },
   extraReducers: (builder) => {
@@ -67,6 +75,7 @@ export const questionaireSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { increment } = questionaireSlice.actions;
+export const { selectQuestion, selectFact, toggleAnsweredFact } =
+  questionaireSlice.actions;
 
 export default questionaireSlice.reducer;
