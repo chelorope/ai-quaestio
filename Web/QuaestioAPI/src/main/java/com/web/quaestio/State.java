@@ -22,7 +22,7 @@
  * Contributors:
  *      Marcello La Rosa - initial API and implementation
  */
-package com.quaestio.web;
+package com.web.quaestio;
 
 import java.util.ArrayList;
 import java.util.HashSet;

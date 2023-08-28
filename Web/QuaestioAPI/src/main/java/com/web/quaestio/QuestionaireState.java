@@ -1,4 +1,4 @@
-package com.quaestio.web;
+package com.web.quaestio;
 
 public class QuestionaireState {
     private String name;

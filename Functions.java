@@ -1,4 +1,4 @@
-package com.quaestio.web;
+package com.web.quaestio;
 
 import java.util.ArrayList;
 import java.util.HashMap;

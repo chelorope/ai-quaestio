@@ -1,4 +1,4 @@
-package com.quaestio.web;
+package com.web.quaestio;
 
 import java.io.File;
 import java.util.Enumeration;
@@ -21,7 +21,7 @@ public class Questionaire extends QuestionaireBase {
 
 		QuestionaireQuestion[] answeredQuestions = getSerializableQuestions(this.answeredQ);
 
-		QuestionaireState state = new QuestionaireState(this.name, this.author, this.reference, validQuestions, answeredQuestions);
+		QuestionaireState state = new QuestionaireState(this.name, this.author, this.reference, this.allMandatoryFactsAnswered, validQuestions, answeredQuestions);
 		return state;
 	}
 

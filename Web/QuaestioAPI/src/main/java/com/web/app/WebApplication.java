@@ -1,4 +1,8 @@
-package com.quaestio.web;
+package com.web.app;
+
+import com.web.quaestio.Questionaire;
+import com.web.quaestio.QuestionaireState;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +27,7 @@ import jakarta.servlet.http.HttpSession;
 
 
 @SpringBootApplication
+@CrossOrigin(origins = "http://localhost:3001", maxAge = 3600, allowCredentials = "true")
 @RestController
 public class WebApplication {
 	private HashMap<String, Questionaire> questionaires = new HashMap<String, Questionaire>();
@@ -34,6 +39,13 @@ public class WebApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WebApplication.class, args);
 	}
+
+  @GetMapping("/questionaire")
+  public String getQuestionaireState(HttpSession session) {
+    Questionaire questionaire = getSessionQuestionaire(session);
+    QuestionaireState state = questionaire.getCurrentState();
+    return (new JSONObject(state)).toString();
+  }
 
   @PostMapping("/open-questionaire")
   public String openQuestionaire(@RequestParam("uploaded_file") MultipartFile file, HttpSession session) {
