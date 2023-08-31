@@ -1,47 +1,47 @@
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-const request = axios.create({
-  baseURL: "http://localhost:5050",
-  timeout: 1000,
-  withCredentials: true,
-});
+import {
+  loadQuestionarie,
+  openQuestionaire,
+  answerQuestion,
+  rollbackQuestion,
+} from "./questionaireThunks";
 
 const initialState = {
   name: "",
   author: "",
   reference: "",
+  questions: {},
   validQuestions: [],
   answeredQuestions: [],
-  selectedQuestion: {},
-  selectedFact: {},
+  selectedQuestion: "",
+  facts: {},
+  selectedFact: "",
   answeredFacts: {},
+  mandatoryFactsAnswered: false,
 };
 
-export const openQuestionaire = createAsyncThunk(
-  "questionaire/openQuestionaire",
-  async (formData) => {
-    const response = await request.post("/open-questionaire", formData);
-    return response.data;
-  }
-);
-
-export const loadQuestionarie = createAsyncThunk(
-  "questionaire/loadQuestionarie",
-  async () => {
-    const response = await request.get("/questionaire");
-    return response.data;
-  }
-);
-
 const replaceStateData = (state, data) => {
-  const { name, author, reference, validQuestions, answeredQuestions } = data;
+  const { name, author, reference, mandatoryFactsAnswered, facts, questions } =
+    data;
   state.name = name;
   state.author = author;
   state.reference = reference;
-  state.validQuestions = validQuestions;
-  state.answeredQuestions = answeredQuestions;
+  state.mandatoryFactsAnswered = mandatoryFactsAnswered;
+  state.questions = questions;
+  state.facts = facts;
+
+  if (state.selectedQuestion) {
+    console.log("ANSWERED", state.selectedQuestion);
+    setAnsweredFacts(state, state.questions[state.selectedQuestion]);
+  }
+};
+
+const setAnsweredFacts = (state, question) => {
+  state.answeredFacts = question.facts.reduce((acc, fact) => {
+    acc[fact] = state.facts[fact].value;
+    return acc;
+  }, {});
 };
 
 export const questionaireSlice = createSlice({
@@ -49,11 +49,9 @@ export const questionaireSlice = createSlice({
   initialState,
   reducers: {
     selectQuestion: (state, action) => {
+      console.log("ANSWERED 2", action.payload, state.selectedQuestion);
       state.selectedQuestion = action.payload;
-      state.answeredFacts = action.payload.facts.reduce((acc, fact) => {
-        acc[fact.id] = false;
-        return acc;
-      }, {});
+      setAnsweredFacts(state, state.questions[action.payload]);
     },
     selectFact: (state, action) => {
       state.selectedFact = action.payload;
@@ -69,6 +67,14 @@ export const questionaireSlice = createSlice({
     });
 
     builder.addCase(loadQuestionarie.fulfilled, (state, action) => {
+      replaceStateData(state, action.payload);
+    });
+
+    builder.addCase(answerQuestion.fulfilled, (state, action) => {
+      replaceStateData(state, action.payload);
+    });
+
+    builder.addCase(rollbackQuestion.fulfilled, (state, action) => {
       replaceStateData(state, action.payload);
     });
   },

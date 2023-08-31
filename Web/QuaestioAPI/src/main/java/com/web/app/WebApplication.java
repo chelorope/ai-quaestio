@@ -107,7 +107,7 @@ public class WebApplication {
     return (new JSONObject(state)).toString();
   }
 
-  @PostMapping("/rallback-question")
+  @PostMapping("/rollback-question")
   public String rollbackQuestion(@RequestBody String body, HttpSession session) {
     Questionaire questionaire = getSessionQuestionaire(session);
     JSONObject rollback = new JSONObject(body);

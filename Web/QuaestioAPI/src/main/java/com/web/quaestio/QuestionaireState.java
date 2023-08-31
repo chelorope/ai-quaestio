@@ -4,18 +4,17 @@ public class QuestionaireState {
     private String name;
     private String author;
     private String reference;
-    private QuestionaireQuestion[] validQuestions;
-    private QuestionaireQuestion[] answeredQuestions;
     private Boolean mandatoryFactsAnswered;
+    private FactsMap facts;
+    private QuestionsMap questions;
 
-
-    public QuestionaireState(String name, String author, String reference, Boolean mandatoryFactsAnswered, QuestionaireQuestion[] validQuestions, QuestionaireQuestion[] answeredQuestions) {
+    public QuestionaireState(String name, String author, String reference, Boolean mandatoryFactsAnswered, FactsMap facts, QuestionsMap questions) {
         this.name = name;
         this.author = author;
         this.reference = reference;
         this.mandatoryFactsAnswered = mandatoryFactsAnswered;
-        this.validQuestions = validQuestions;
-        this.answeredQuestions = answeredQuestions;
+        this.facts = facts;
+        this.questions = questions;
     }
 
     public String getName() {
@@ -30,15 +29,15 @@ public class QuestionaireState {
         return reference;
     }
 
-    public QuestionaireQuestion[] getValidQuestions() {
-        return validQuestions;
-    }
-
-    public QuestionaireQuestion[] getAnsweredQuestions() {
-        return answeredQuestions;
-    }
-
     public Boolean getMandatoryFactsAnswered() {
         return mandatoryFactsAnswered;
+    }
+
+    public FactsMap getFacts() {
+        return facts;
+    }
+
+    public QuestionsMap getQuestions() {
+        return questions;
     }
 }

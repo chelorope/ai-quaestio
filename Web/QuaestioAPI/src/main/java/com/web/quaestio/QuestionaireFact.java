@@ -5,9 +5,9 @@ public class QuestionaireFact {
     private String description;
     private Boolean _default;
     private Boolean mandatory;
-    private String value;
+    private Boolean value;
 
-    public QuestionaireFact(String id, String description, Boolean _default, Boolean mandatory, String value) {
+    public QuestionaireFact(String id, String description, Boolean _default, Boolean mandatory, Boolean value) {
         this.id = id;
         this.description = description;
         this._default = _default;
@@ -31,7 +31,7 @@ public class QuestionaireFact {
         return mandatory;
     }
 
-    public String getValue() {
+    public Boolean getValue() {
         return value;
     }
 }

@@ -4,12 +4,14 @@ public class QuestionaireQuestion {
     private String id;
     private String description;
     private String guidelines;
-    private QuestionaireFact[] facts;
+    private Boolean answered;
+    private String[] facts;
 
-    public QuestionaireQuestion(String id, String description, String guidelines, QuestionaireFact[] facts) {
+    public QuestionaireQuestion(String id, String description, String guidelines, Boolean answered, String[] facts) {
         this.id = id;
         this.description = description;
         this.guidelines = guidelines;
+        this.answered = answered;
         this.facts = facts;
     }
 
@@ -25,7 +27,11 @@ public class QuestionaireQuestion {
         return guidelines;
     }
 
-    public QuestionaireFact[] getFacts() {
+    public Boolean getAnswered() {
+        return answered;
+    }
+
+    public String[] getFacts() {
         return facts;
     }
 }

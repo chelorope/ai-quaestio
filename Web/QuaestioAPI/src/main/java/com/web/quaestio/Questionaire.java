@@ -2,6 +2,7 @@ package com.web.quaestio;
 
 import java.io.File;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,29 +18,39 @@ public class Questionaire extends QuestionaireBase {
 	}
 
 	public QuestionaireState getCurrentState() {
-		QuestionaireQuestion[] validQuestions = getSerializableQuestions(this.validQ);
+		QuestionsMap questions = getSerializableQuestions(this.validQ, false);
+		questions.putAll(getSerializableQuestions(this.answeredQ, true));
+		FactsMap facts = getSerializableFacts(questions);
 
-		QuestionaireQuestion[] answeredQuestions = getSerializableQuestions(this.answeredQ);
-
-		QuestionaireState state = new QuestionaireState(this.name, this.author, this.reference, this.allMandatoryFactsAnswered, validQuestions, answeredQuestions);
+		QuestionaireState state = new QuestionaireState(this.name, this.author, this.reference, this.allMandatoryFactsAnswered, facts, questions);
 		return state;
 	}
 
-	private QuestionaireQuestion[] getSerializableQuestions(QuestionTypeListModel questionModel) {
-		QuestionaireQuestion[] questions = new QuestionaireQuestion[questionModel.size()];
+	// Only return visible questions
+	private QuestionsMap getSerializableQuestions(QuestionTypeListModel questionModel, Boolean answered) {
+		QuestionsMap questions = new QuestionsMap();
 		for (int i = 0; i < questionModel.size(); i++) {
 			QuestionType q = questionModel.get(i);
 			List<String> factsList = q.getMapQFL();
 			String[] facts = new String[factsList.size()];
         	facts = factsList.toArray(facts);
-			QuestionaireFact[] questionaireFacts = new QuestionaireFact[facts.length];
-			for (int j = 0; j < facts.length; j++) {
-				FactType fact = FactsMap.get(facts[j]);
-				questionaireFacts[j] = new QuestionaireFact(fact.getId(), fact.getDescription(), fact.isDefault(), fact.isMandatory(), currentS.vs.get(fact.getId()));
-			}
-			questions[i] = new QuestionaireQuestion(q.getId(), q.getDescription(), q.getGuidelines(), questionaireFacts);
+			questions.put(q.getId(), new QuestionaireQuestion(q.getId(), q.getDescription(), q.getGuidelines(), answered, facts));
 		}
 		return questions;
+	}
+	
+	// Only return visible facts
+	private FactsMap getSerializableFacts(QuestionsMap questions) {
+		FactsMap facts = new FactsMap();
+		questions.forEach((questionId, question) -> {
+			String[] questionFacts = question.getFacts();
+			for (int i = 0; i < questionFacts.length; i++) {
+				String factId = questionFacts[i];
+				FactType fact = FactsMap.get(factId);
+				facts.put(factId, new QuestionaireFact(fact.getId(), fact.getDescription(), fact.isDefault(), fact.isMandatory(), currentS.vs.get(fact.getId()) == TRUE));
+			}
+		});
+		return facts;
 	}
 
 	public void setContinueConfiguration(Boolean continueC) {

@@ -5,8 +5,9 @@ import { Inter } from "next/font/google";
 import { store } from "@/src/redux/store";
 import { Provider, useDispatch } from "react-redux";
 import { useEffect } from "react";
+import CssBaseline from "@mui/material/CssBaseline";
 
-import { loadQuestionarie } from "@/src/redux/questionaireSlice";
+import { loadQuestionarie } from "@/src/redux/questionaireThunks";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <Provider store={store}>
         <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
           <body className={inter.className}>{children}</body>
         </ThemeProvider>
       </Provider>
