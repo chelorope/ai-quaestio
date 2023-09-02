@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { closeModal } from "@/src/redux/modalSlice";
 import { openQuestionaire } from "@/src/redux/questionaireThunks";
 
-export default function Modla() {
+export default function FileModal() {
   const dispatch = useDispatch();
   const handleClose = () => dispatch(closeModal());
   const [file, setFile] = useState(null);

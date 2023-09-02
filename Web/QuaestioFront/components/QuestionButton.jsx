@@ -8,7 +8,7 @@ import {
   rollbackQuestion,
 } from "@/src/redux/questionaireThunks";
 
-export default function FactList() {
+export default function QuestionButton() {
   const dispatch = useDispatch();
   const questions = useSelector((state) => state.questionaire.questions);
   const facts = useSelector((state) => state.questionaire.facts);

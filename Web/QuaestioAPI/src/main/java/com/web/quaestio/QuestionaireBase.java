@@ -18,7 +18,7 @@ import jakarta.xml.bind.*;
 public class QuestionaireBase {
 	QMLType qml;
 	protected List<State> states = null;
-	private State tempS = null;
+	protected State tempS = null;
 	protected QuestionTypeListModel validQ = null;
 	protected QuestionTypeListModel answeredQ = null;
 	private QuestionTypeListModel tempAQ = null;

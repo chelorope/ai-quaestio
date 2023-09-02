@@ -12,8 +12,12 @@ export default function QuestionsList({ className }) {
   );
   return (
     questions[selectedQuestion]?.guidelines && (
-      <Card className={`${className} w-full p-4`}>
-        <CardHeader className="" title="Guidelines" />
+      <Card className={`${className} w-full`}>
+        <CardHeader
+          className=""
+          title="Guidelines"
+          titleTypographyProps={{ variant: "h6" }}
+        />
         <Divider />
         <CardContent>{questions[selectedQuestion]?.guidelines}</CardContent>
       </Card>

@@ -85,7 +85,15 @@ public class WebApplication {
   @GetMapping("/continue")
   public void continueConfiguration(HttpSession session) {
     Questionaire questionaire = getSessionQuestionaire(session);
-    questionaire.setContinueConfiguration(true);
+    questionaire.setContinueConfiguration();
+  }
+
+  @GetMapping("/complete")
+  public String completeQuestionaire(HttpSession session) {
+    Questionaire questionaire = getSessionQuestionaire(session);
+    questionaire.completeWithDefaults();
+    QuestionaireState state = questionaire.getCurrentState();
+    return (new JSONObject(state)).toString();
   }
 
   @PostMapping("/answer-question")

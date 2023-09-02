@@ -53,9 +53,28 @@ public class Questionaire extends QuestionaireBase {
 		return facts;
 	}
 
-	public void setContinueConfiguration(Boolean continueC) {
-		this.continueC = continueC;
+	public void setContinueConfiguration() {
+		this.continueC = true;
 		this.allMandatoryFactsAnswered = false;
+	}
+
+	public void completeWithDefaults() {
+		tempS = new State(currentS);
+		for (QuestionType currentQ : QuestionsMap.values()) {
+			if (!answeredQ.contains(currentQ)) {
+				giveDefAnswer(currentQ, true);
+				currentS = tempS;
+				currentS.qs.add(currentQ.getId());
+				// getJText_log().append(
+				// 		"s" + states.size() + ".qs: "
+				// 				+ currentS.qs.toString() + "\n");
+				states.add(new State(currentS));
+				answeredQ.addElement(currentQ);
+			}
+		}
+		validQ.removeAllElements();
+		// getJText_log()
+		// 		.append("Configuration process completed with default values.\n");
 	}
 
 	public void answerQuestion(String questionId, Map<String, Boolean> answeredFacts) {

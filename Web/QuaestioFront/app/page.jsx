@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <main className="h-screen">
       <NavBar />
-      <Container fluid className="my-auto">
+      <Container className="my-auto">
         <QuestionaireDetails />
         <Box className="flex flex-col md:flex-wrap lg:flex-nowrap w-full justify-between md:h-[600px] lg:flex-row">
           <QuestionList type="valid" />

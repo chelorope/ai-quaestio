@@ -28,10 +28,16 @@ export const answerQuestion = createAsyncThunk(
   "questionaire/answerQuestion",
   async (body, { dispatch }) => {
     const response = await request.post("/answer-question", body);
-    if (response.data.mandatoryFactsAnswered) {
+    const data = response.data;
+    const areAllAnswered = Object.values(data.questions).every(
+      (q) => q.answered
+    );
+    if (areAllAnswered) {
       dispatch(openModal("export"));
+    } else if (data.mandatoryFactsAnswered) {
+      dispatch(openModal("complete"));
     }
-    return response.data;
+    return data;
   }
 );
 
@@ -47,6 +53,23 @@ export const continueQuestionaire = createAsyncThunk(
   "questionaire/continueQuestionaire",
   async () => {
     const response = await request.get("/continue");
+    return response.data;
+  }
+);
+
+export const completeQuestionaire = createAsyncThunk(
+  "questionaire/completeQuestionaire",
+  async () => {
+    const response = await request.get("/complete");
+    dispatch(openModal("export"));
+    return response.data;
+  }
+);
+
+export const exportQuestionaire = createAsyncThunk(
+  "questionaire/exportQuestionaire",
+  async () => {
+    const response = await request.get("/export");
     return response.data;
   }
 );

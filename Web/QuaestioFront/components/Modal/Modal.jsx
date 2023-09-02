@@ -1,7 +1,8 @@
-import Modal from "@mui/material/Modal";
+import MUIModal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
 import FileModal from "@/components/Modal/FileModal";
+import CompleteModal from "@/components/Modal/CompleteModal";
 import ExportModal from "@/components/Modal/ExportModal";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -11,12 +12,14 @@ const getModal = (type) => {
   switch (type) {
     case "file":
       return <FileModal />;
+    case "complete":
+      return <CompleteModal />;
     case "export":
       return <ExportModal />;
   }
 };
 
-export default function Modla() {
+export default function Modal() {
   const isOpen = useSelector((state) => state.modal.isOpen);
   const type = useSelector((state) => state.modal.type);
   const dispatch = useDispatch();
@@ -35,13 +38,13 @@ export default function Modla() {
   };
 
   return (
-    <Modal
+    <MUIModal
       open={isOpen}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>{getModal(type)}</Box>
-    </Modal>
+    </MUIModal>
   );
 }
