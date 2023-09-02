@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
@@ -36,18 +37,20 @@ export default function QuestionsList({ type }) {
   };
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-      <List component="nav" aria-label="main mailbox folders">
-        {displayedQuestions.map((question) => (
-          <ListItemButton
-            selected={selectedQuestion === question.id}
-            key={question.id}
-            onClick={(event) => handleListItemClick(event, question.id)}
-          >
-            <ListItemText primary={question.description} />
-          </ListItemButton>
-        ))}
-      </List>
+    <Box className="w-full max-w-sm min-h-[500px]" elevation={10}>
+      <Paper className="h-full" elevation={10}>
+        <List component="nav" aria-label="main mailbox folders">
+          {displayedQuestions.map((question) => (
+            <ListItemButton
+              selected={selectedQuestion === question.id}
+              key={question.id}
+              onClick={(event) => handleListItemClick(event, question.id)}
+            >
+              <ListItemText primary={question.description} />
+            </ListItemButton>
+          ))}
+        </List>
+      </Paper>
     </Box>
   );
 }

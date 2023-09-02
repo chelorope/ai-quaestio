@@ -1,5 +1,7 @@
 "use client";
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import QuestionaireDetails from "@/components/QuestionaireDetails";
 import NavBar from "@/components/NavBar";
 import Modal from "@/components/Modal/Modal";
 import QuestionList from "@/components/QuestionList";
@@ -9,18 +11,19 @@ import AnswerButton from "@/components/AnswerButton";
 import { useSelector } from "react-redux";
 
 export default function Home() {
-  const questionaireName = useSelector((state) => state.questionaire.name);
   return (
-    <main className="">
+    <main className="h-screen">
       <NavBar />
-      <Container className="flex">
-        {questionaireName}
-        <QuestionList type="valid" />
-        <Container>
-          <AnswerButton />
-          <FactList />
-        </Container>
-        <QuestionList type="answered" />
+      <Container fluid>
+        <QuestionaireDetails />
+        <Box fluid className="flex w-full justify-between">
+          <QuestionList type="valid" />
+          <Box className="flex flex-col w-full mx-20">
+            <AnswerButton />
+            <FactList />
+          </Box>
+          <QuestionList type="answered" />
+        </Box>
       </Container>
       <Modal />
     </main>
