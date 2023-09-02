@@ -1,4 +1,4 @@
-import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -35,42 +35,44 @@ export default function FactList() {
   };
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-      <List component="nav" aria-label="main mailbox folders">
-        {question?.facts?.map((factId) => (
-          <ListItemButton
-            selected={selectedFact === factId}
-            key={factId}
-            onClick={(event) => handleListItemClick(factId)}
-          >
-            <ListItemText primary={facts[factId].description} />
-            {facts[factId].mandatory && (
+    question && (
+      <Paper className="w-full my-3" elevation={6}>
+        <List component="nav" aria-label="main mailbox folders">
+          {question?.facts?.map((factId) => (
+            <ListItemButton
+              selected={selectedFact === factId}
+              key={factId}
+              onClick={() => handleListItemClick(factId)}
+            >
+              <ListItemText primary={facts[factId].description} />
+              {facts[factId].mandatory && (
+                <ListItemIcon>
+                  <Tooltip title="Mandatory Fact">
+                    <ErrorOutlineIcon />
+                  </Tooltip>
+                </ListItemIcon>
+              )}
+              {facts[factId].default && (
+                <ListItemIcon>
+                  <Tooltip title="True by default">
+                    <DoneIcon />
+                  </Tooltip>
+                </ListItemIcon>
+              )}
               <ListItemIcon>
-                <Tooltip title="Mandatory Fact">
-                  <ErrorOutlineIcon />
-                </Tooltip>
+                <Checkbox
+                  disabled={disabled}
+                  edge="start"
+                  checked={!!answeredFacts[factId]}
+                  tabIndex={-1}
+                  disableRipple
+                  onClick={handleToggle(factId)}
+                />
               </ListItemIcon>
-            )}
-            {facts[factId].default && (
-              <ListItemIcon>
-                <Tooltip title="True by default">
-                  <DoneIcon />
-                </Tooltip>
-              </ListItemIcon>
-            )}
-            <ListItemIcon>
-              <Checkbox
-                disabled={disabled}
-                edge="start"
-                checked={!!answeredFacts[factId]}
-                tabIndex={-1}
-                disableRipple
-                onClick={handleToggle(factId)}
-              />
-            </ListItemIcon>
-          </ListItemButton>
-        ))}
-      </List>
-    </Box>
+            </ListItemButton>
+          ))}
+        </List>
+      </Paper>
+    )
   );
 }

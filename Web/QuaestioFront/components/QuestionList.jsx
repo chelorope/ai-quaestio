@@ -13,7 +13,7 @@ const questionType = {
   VALID: "valid",
 };
 
-export default function QuestionsList({ type }) {
+export default function QuestionsList({ type, className }) {
   const dispatch = useDispatch();
   const questions = useSelector((state) => state.questionaire.questions);
   const displayedQuestions = useMemo(() =>
@@ -37,20 +37,21 @@ export default function QuestionsList({ type }) {
   };
 
   return (
-    <Box className="w-full max-w-sm min-h-[500px]" elevation={10}>
-      <Paper className="h-full" elevation={10}>
-        <List component="nav" aria-label="main mailbox folders">
-          {displayedQuestions.map((question) => (
-            <ListItemButton
-              selected={selectedQuestion === question.id}
-              key={question.id}
-              onClick={(event) => handleListItemClick(event, question.id)}
-            >
-              <ListItemText primary={question.description} />
-            </ListItemButton>
-          ))}
-        </List>
-      </Paper>
-    </Box>
+    <Paper
+      className={`${className} w-full min-w-[302px] md:w-[49%] md:h-[290px] lg:h-full lg:max-w-sm overflow-scroll`}
+      elevation={10}
+    >
+      <List component="nav" aria-label="main mailbox folders">
+        {displayedQuestions.map((question) => (
+          <ListItemButton
+            selected={selectedQuestion === question.id}
+            key={question.id}
+            onClick={(event) => handleListItemClick(event, question.id)}
+          >
+            <ListItemText primary={question.description} />
+          </ListItemButton>
+        ))}
+      </List>
+    </Paper>
   );
 }

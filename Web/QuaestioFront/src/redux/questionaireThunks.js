@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { openModal } from "./modalSlice";
 
 const request = axios.create({
   baseURL: "http://localhost:5050",
@@ -25,8 +26,11 @@ export const loadQuestionarie = createAsyncThunk(
 
 export const answerQuestion = createAsyncThunk(
   "questionaire/answerQuestion",
-  async (body) => {
+  async (body, { dispatch }) => {
     const response = await request.post("/answer-question", body);
+    if (response.data.mandatoryFactsAnswered) {
+      dispatch(openModal("export"));
+    }
     return response.data;
   }
 );

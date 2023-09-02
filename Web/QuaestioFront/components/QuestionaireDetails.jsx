@@ -12,7 +12,7 @@ export default function NavBar() {
 
   return (
     <Box fluid className="flex">
-      <Paper className="p-10 w-full flex justify-between my-5" elevation={3}>
+      <Paper className="p-5 w-full flex justify-between my-5" elevation={3}>
         <Box fluid className="flex">
           Name: {questionaireName}
         </Box>

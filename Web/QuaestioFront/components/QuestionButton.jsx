@@ -61,6 +61,7 @@ export default function FactList() {
   return (
     <Button
       variant="contained"
+      color={isQuestionAnswered ? "error" : "primary"}
       disabled={!selectedQuestion}
       onClick={isQuestionAnswered ? handleRollback : handleAnswer}
     >

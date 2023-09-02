@@ -1,8 +1,8 @@
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
 import FileModal from "@/components/Modal/FileModal";
+import ExportModal from "@/components/Modal/ExportModal";
 
 import { useSelector, useDispatch } from "react-redux";
 import { closeModal } from "@/src/redux/modalSlice";
@@ -12,7 +12,7 @@ const getModal = (type) => {
     case "file":
       return <FileModal />;
     case "export":
-      return <FileModal />;
+      return <ExportModal />;
   }
 };
 

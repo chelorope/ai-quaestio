@@ -32,7 +32,6 @@ const replaceStateData = (state, data) => {
   state.facts = facts;
 
   if (state.selectedQuestion) {
-    console.log("ANSWERED", state.selectedQuestion);
     setAnsweredFacts(state, state.questions[state.selectedQuestion]);
   }
 };
@@ -49,7 +48,6 @@ export const questionaireSlice = createSlice({
   initialState,
   reducers: {
     selectQuestion: (state, action) => {
-      console.log("ANSWERED 2", action.payload, state.selectedQuestion);
       state.selectedQuestion = action.payload;
       setAnsweredFacts(state, state.questions[action.payload]);
     },

@@ -19,9 +19,7 @@ export default function NavBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box
-          // sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
-          >
+          <Box>
             {pages.map((page, index) => (
               <Button
                 key={index}
