@@ -42,3 +42,11 @@ export const rollbackQuestion = createAsyncThunk(
     return response.data;
   }
 );
+
+export const continueQuestionaire = createAsyncThunk(
+  "questionaire/continueQuestionaire",
+  async () => {
+    const response = await request.get("/continue");
+    return response.data;
+  }
+);

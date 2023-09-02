@@ -5,6 +5,7 @@ import {
   openQuestionaire,
   answerQuestion,
   rollbackQuestion,
+  continueQuestionaire,
 } from "./questionaireThunks";
 
 const initialState = {
@@ -61,6 +62,7 @@ export const questionaireSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(openQuestionaire.fulfilled, (state, action) => {
+      state = { ...initialState };
       replaceStateData(state, action.payload);
     });
 
@@ -75,6 +77,8 @@ export const questionaireSlice = createSlice({
     builder.addCase(rollbackQuestion.fulfilled, (state, action) => {
       replaceStateData(state, action.payload);
     });
+
+    builder.addCase(continueQuestionaire.fulfilled, (state, action) => {});
   },
 });
 

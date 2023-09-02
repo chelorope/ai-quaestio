@@ -1,30 +1,30 @@
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
+import Box from "@mui/material/Box";
 
 import { useSelector, useDispatch } from "react-redux";
 import { closeModal } from "@/src/redux/modalSlice";
-import { openQuestionaire } from "@/src/redux/questionaireThunks";
+import { continueQuestionaire } from "@/src/redux/questionaireThunks";
 
 export default function Modla() {
   const dispatch = useDispatch();
   const handleClose = () => dispatch(closeModal());
-  const [file, setFile] = useState(null);
 
-  const handleFileSelect = (event) => {
-    setFile(event.target.files[0]);
+  const handleContinue = async (event) => {
+    event.preventDefault();
+    dispatch(continueQuestionaire());
+    handleClose();
   };
 
-  const handleSubmit = async (event) => {
+  const handleComplete = (event) => {
     event.preventDefault();
-    const data = new FormData(event.target);
-    await dispatch(openQuestionaire(data));
+
     handleClose();
   };
 
   return (
-    <form className="flex flex-col" onSubmit={handleSubmit}>
+    <Box className="flex flex-col">
       <Typography className="mb-5">
         All the mandatory facts have been answered and default values can be
         used for the remaining ones without violating the constraints.
@@ -33,12 +33,17 @@ export default function Modla() {
         Do you want to continue the configuration or let the configuration be
         automatically completed?
       </Typography>
-      <Button className="mb-5" variant="contained">
-        Complete
-      </Button>
-      <Button variant="contained" color="secondary">
+      <Button
+        className="mb-5"
+        variant="contained"
+        color="secondary"
+        onClick={handleContinue}
+      >
         Continue
       </Button>
-    </form>
+      <Button variant="contained" onClick={handleComplete}>
+        Complete
+      </Button>
+    </Box>
   );
 }

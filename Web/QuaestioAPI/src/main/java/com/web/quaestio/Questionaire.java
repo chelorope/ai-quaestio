@@ -55,23 +55,24 @@ public class Questionaire extends QuestionaireBase {
 
 	public void setContinueConfiguration(Boolean continueC) {
 		this.continueC = continueC;
+		this.allMandatoryFactsAnswered = false;
 	}
 
 	public void answerQuestion(String questionId, Map<String, Boolean> answeredFacts) {
 		answeredFacts.forEach((factId, value) -> {
-			currentS.vs.put(factId, value ? TRUE : FALSE);
-			currentS.t.add(factId);
+			this.currentS.vs.put(factId, value ? TRUE : FALSE);
+			this.currentS.t.add(factId);
 			this.bddc.setFact(factId, value ? "1" : "0");
 		});
 
 		QuestionType selectedQ = QuestionsMap.get(questionId);
-		validQ.removeElement(selectedQ);
-		currentS.qs.add(selectedQ.getId());
-		states.add(new State(currentS));
-		answeredQ.addElement(selectedQ);
+		this.validQ.removeElement(selectedQ);
+		this.currentS.qs.add(selectedQ.getId());
+		this.states.add(new State(this.currentS));
+		this.answeredQ.addElement(selectedQ);
 		updateValidQ();
 
-		allMandatoryFactsAnswered =  validQ.size() != 0 && !continueC && checkMandatoryF();
+		this.allMandatoryFactsAnswered =  this.validQ.size() != 0 && !this.continueC && checkMandatoryF();
 	}
 
 	public void rollbackQuestion(String questionId) {

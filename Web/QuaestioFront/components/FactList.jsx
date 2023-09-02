@@ -11,7 +11,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import { useDispatch, useSelector } from "react-redux";
 import { selectFact, toggleAnsweredFact } from "@/src/redux/questionaireSlice";
 
-export default function FactList() {
+export default function FactList({ className }) {
   const dispatch = useDispatch();
   const questions = useSelector((state) => state.questionaire.questions);
   const facts = useSelector((state) => state.questionaire.facts);
@@ -36,7 +36,7 @@ export default function FactList() {
 
   return (
     question && (
-      <Paper className="w-full my-3" elevation={6}>
+      <Paper className={`${className} w-full`} elevation={10}>
         <List component="nav" aria-label="main mailbox folders">
           {question?.facts?.map((factId) => (
             <ListItemButton

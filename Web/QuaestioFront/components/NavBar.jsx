@@ -1,17 +1,25 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import SaveIcon from "@mui/icons-material/Save";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
+import Image from "next/image";
 
 import { useDispatch } from "react-redux";
 import { openModal } from "@/src/redux/modalSlice";
 
 export default function NavBar() {
   const dispatch = useDispatch();
-  const pages = useMemo(
-    () => [{ title: "Open File", action: () => dispatch(openModal("file")) }],
+  const buttons = useMemo(
+    () => [
+      {
+        title: "Open File",
+        action: () => dispatch(openModal("file")),
+        icon: <SaveIcon className="mr-2" />,
+      },
+    ],
     []
   );
 
@@ -19,13 +27,11 @@ export default function NavBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <Image src="/quaestio-logo.png" width="40" height="30" />
           <Box>
-            {pages.map((page, index) => (
-              <Button
-                key={index}
-                sx={{ my: 2, color: "white", display: "block" }}
-                onClick={page.action}
-              >
+            {buttons.map((page, index) => (
+              <Button key={index} onClick={page.action}>
+                {page.icon}
                 {page.title}
               </Button>
             ))}

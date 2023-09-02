@@ -83,9 +83,9 @@ public class WebApplication {
   }
 
   @GetMapping("/continue")
-  public void continueConfiguration(@RequestParam Boolean continueC, HttpSession session) {
+  public void continueConfiguration(HttpSession session) {
     Questionaire questionaire = getSessionQuestionaire(session);
-    questionaire.setContinueConfiguration(continueC);
+    questionaire.setContinueConfiguration(true);
   }
 
   @PostMapping("/answer-question")

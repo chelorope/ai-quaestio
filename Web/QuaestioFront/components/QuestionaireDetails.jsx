@@ -11,17 +11,11 @@ export default function NavBar() {
   );
 
   return (
-    <Box fluid className="flex">
+    <Box className="flex">
       <Paper className="p-5 w-full flex justify-between my-5" elevation={3}>
-        <Box fluid className="flex">
-          Name: {questionaireName}
-        </Box>
-        <Box fluid className="flex">
-          Author: {questionaireAuthor}
-        </Box>
-        <Box fluid className="flex">
-          Reference: {questionaireReference}
-        </Box>
+        <Box className="flex">Name: {questionaireName}</Box>
+        <Box className="flex">Author: {questionaireAuthor}</Box>
+        <Box className="flex">Reference: {questionaireReference}</Box>
       </Paper>
     </Box>
   );
