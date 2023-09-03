@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, Fragment } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
@@ -60,7 +60,7 @@ export default function QuestionsList({ type, className }) {
         return (
           <List component="nav" aria-label="main mailbox folders">
             {displayedQuestions.map((question, index) => (
-              <>
+              <Fragment key={index}>
                 {index !== 0 && <Divider />}
                 <ListItemButton
                   selected={selectedQuestion === question.id}
@@ -69,7 +69,7 @@ export default function QuestionsList({ type, className }) {
                 >
                   <ListItemText primary={question.description} />
                 </ListItemButton>
-              </>
+              </Fragment>
             ))}
           </List>
         );

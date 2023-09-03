@@ -27,7 +27,12 @@ export default function NavBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Image src="/quaestio-logo.png" width="40" height="30" />
+          <Image
+            src="/quaestio-logo.png"
+            width="40"
+            height="30"
+            alt="Quaestio Logotype"
+          />
           <Box>
             {buttons.map((page, index) => (
               <Button key={index} onClick={page.action}>
