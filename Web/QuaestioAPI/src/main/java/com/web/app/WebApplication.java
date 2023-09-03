@@ -46,14 +46,14 @@ public class WebApplication {
 		SpringApplication.run(WebApplication.class, args);
 	}
 
-  @GetMapping("/questionaire")
+  @GetMapping("/")
   public String getQuestionaireState(HttpSession session) {
     Questionaire questionaire = getSessionQuestionaire(session);
     QuestionaireState state = questionaire.getCurrentState();
     return (new JSONObject(state)).toString();
   }
 
-  @PostMapping("/open-questionaire")
+  @PostMapping("/open")
   public String openQuestionaire(@RequestParam("uploaded_file") MultipartFile file, HttpSession session) {
     Path tempFile;
     if (!uploadDir.exists()) {
@@ -115,7 +115,7 @@ public class WebApplication {
     }
   }
 
-  @PostMapping("/answer-question")
+  @PostMapping("/question/answer")
   public String answerQuestion(@RequestBody String body, HttpSession session) {
     Questionaire questionaire = getSessionQuestionaire(session);
     JSONObject answer = new JSONObject(body);
@@ -134,7 +134,7 @@ public class WebApplication {
     return (new JSONObject(state)).toString();
   }
 
-  @PostMapping("/rollback-question")
+  @PostMapping("/question/rollback")
   public String rollbackQuestion(@RequestBody String body, HttpSession session) {
     Questionaire questionaire = getSessionQuestionaire(session);
     JSONObject rollback = new JSONObject(body);

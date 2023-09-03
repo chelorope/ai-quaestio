@@ -1,19 +1,25 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import axios from "axios";
 
-export const questionaireAPI = createApi({
-  reducerPath: "questionaireAPI",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5050/" }),
-  endpoints: (builder) => ({
-    loadQuestionaire: builder.mutation({
-      query: (file) => ({
-        url: `open-questionaire`,
-        method: "POST",
-        body: file,
-      }),
-    }),
-  }),
+const request = axios.create({
+  baseURL: "http://localhost:5050",
+  timeout: 1000,
+  withCredentials: true,
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { loadQuestionaire } = questionaireAPI;
+export const loadQuestionarie = async () => request.get("/");
+
+export const openQuestionaire = async (formData) =>
+  request.post("/open", formData);
+
+export const continueQuestionaire = async () => request.get("/continue");
+
+export const completeQuestionaire = async () => request.get("/complete");
+
+export const exportQuestionaire = async () =>
+  request.get("/export", { responseType: "blob" });
+
+export const answerQuestion = async (body) =>
+  request.post("/question/answer", body);
+
+export const rollbackQuestion = async (questionId) =>
+  request.post("/question/rollback", { questionId });
