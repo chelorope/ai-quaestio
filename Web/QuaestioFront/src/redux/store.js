@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
-import questionaireReducer from "./questionaireSlice";
+import questionnaireReducer from "./questionnaireSlice";
 import modalReducer from "./modalSlice";
 
 export const store = configureStore({
   reducer: {
-    questionaire: questionaireReducer,
+    questionnaire: questionnaireReducer,
     modal: modalReducer,
   },
 });

@@ -3,47 +3,47 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { openModal } from "./modalSlice";
 import * as Service from "@/src/service";
 
-export const openQuestionaire = createAsyncThunk(
-  "questionaire/openQuestionaire",
+export const openQuestionnaire = createAsyncThunk(
+  "questionnaire/openQuestionnaire",
   async (formData) => {
-    const response = await Service.openQuestionaire(formData);
+    const response = await Service.openQuestionnaire(formData);
     return response.data;
   }
 );
 
 export const loadQuestionarie = createAsyncThunk(
-  "questionaire/loadQuestionarie",
+  "questionnaire/loadQuestionarie",
   async () => {
     const response = await Service.loadQuestionarie();
     return response.data;
   }
 );
 
-export const continueQuestionaire = createAsyncThunk(
-  "questionaire/continueQuestionaire",
+export const continueQuestionnaire = createAsyncThunk(
+  "questionnaire/continueQuestionnaire",
   async () => {
-    const response = await Service.continueQuestionaire();
+    const response = await Service.continueQuestionnaire();
     return response.data;
   }
 );
 
-export const completeQuestionaire = createAsyncThunk(
-  "questionaire/completeQuestionaire",
+export const completeQuestionnaire = createAsyncThunk(
+  "questionnaire/completeQuestionnaire",
   async (_, { dispatch }) => {
-    const response = await Service.completeQuestionaire();
+    const response = await Service.completeQuestionnaire();
     dispatch(openModal("export"));
     return response.data;
   }
 );
 
-export const exportQuestionaire = createAsyncThunk(
-  "questionaire/exportQuestionaire",
+export const exportQuestionnaire = createAsyncThunk(
+  "questionnaire/exportQuestionnaire",
   async (_, { getState }) => {
     try {
-      const response = await Service.exportQuestionaire();
+      const response = await Service.exportQuestionnaire();
 
       const aElement = document.createElement("a");
-      aElement.setAttribute("download", `${getState().questionaire.name}.dcl`);
+      aElement.setAttribute("download", `${getState().questionnaire.name}.dcl`);
       const href = URL.createObjectURL(response.data);
       aElement.href = href;
       aElement.setAttribute("target", "_blank");
@@ -56,7 +56,7 @@ export const exportQuestionaire = createAsyncThunk(
 );
 
 export const answerQuestion = createAsyncThunk(
-  "questionaire/answerQuestion",
+  "questionnaire/answerQuestion",
   async (body, { dispatch }) => {
     const response = await Service.answerQuestion(body);
     const data = response.data;
@@ -73,7 +73,7 @@ export const answerQuestion = createAsyncThunk(
 );
 
 export const rollbackQuestion = createAsyncThunk(
-  "questionaire/rollbackQuestion",
+  "questionnaire/rollbackQuestion",
   async (questionId) => {
     const response = await Service.rollbackQuestion(questionId);
     return response.data;

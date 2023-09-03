@@ -1,13 +1,13 @@
 package com.web.quaestio;
 
-public class QuestionaireQuestion {
+public class QuestionnaireQuestion {
     private String id;
     private String description;
     private String guidelines;
     private Boolean answered;
     private String[] facts;
 
-    public QuestionaireQuestion(String id, String description, String guidelines, Boolean answered, String[] facts) {
+    public QuestionnaireQuestion(String id, String description, String guidelines, Boolean answered, String[] facts) {
         this.id = id;
         this.description = description;
         this.guidelines = guidelines;

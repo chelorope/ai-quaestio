@@ -6,7 +6,7 @@ const initialState = {
 };
 
 export const counterSlice = createSlice({
-  name: "questionaire",
+  name: "questionnaire",
   initialState,
   reducers: {
     openModal: (state, action) => {

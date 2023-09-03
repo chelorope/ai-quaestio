@@ -5,7 +5,7 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 
 import { useSelector, useDispatch } from "react-redux";
 import { closeModal } from "@/src/redux/modalSlice";
-import { openQuestionaire } from "@/src/redux/questionaireThunks";
+import { openQuestionnaire } from "@/src/redux/questionnaireThunks";
 
 export default function FileModal() {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ export default function FileModal() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
-    await dispatch(openQuestionaire(data));
+    await dispatch(openQuestionnaire(data));
     handleClose();
   };
 

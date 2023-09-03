@@ -3,13 +3,13 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import { useDispatch } from "react-redux";
-import { exportQuestionaire } from "@/src/redux/questionaireThunks";
+import { exportQuestionnaire } from "@/src/redux/questionnaireThunks";
 
 export default function ExportButton({ onClick = () => {}, className }) {
   const dispatch = useDispatch();
 
   const handleExport = () => {
-    dispatch(exportQuestionaire());
+    dispatch(exportQuestionnaire());
     onClick();
   };
 

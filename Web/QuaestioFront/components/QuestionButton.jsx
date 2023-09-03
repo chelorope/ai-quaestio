@@ -6,17 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   answerQuestion,
   rollbackQuestion,
-} from "@/src/redux/questionaireThunks";
+} from "@/src/redux/questionnaireThunks";
 
 export default function QuestionButton() {
   const dispatch = useDispatch();
-  const questions = useSelector((state) => state.questionaire.questions);
-  const facts = useSelector((state) => state.questionaire.facts);
+  const questions = useSelector((state) => state.questionnaire.questions);
+  const facts = useSelector((state) => state.questionnaire.facts);
   const selectedQuestion = useSelector(
-    (state) => state.questionaire.selectedQuestion
+    (state) => state.questionnaire.selectedQuestion
   );
   const answeredFacts = useSelector(
-    (state) => state.questionaire.answeredFacts
+    (state) => state.questionnaire.answeredFacts
   );
 
   const areFactsAnswered = useMemo(

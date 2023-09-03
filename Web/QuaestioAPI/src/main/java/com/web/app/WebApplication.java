@@ -1,7 +1,7 @@
 package com.web.app;
 
-import com.web.quaestio.Questionaire;
-import com.web.quaestio.QuestionaireState;
+import com.web.quaestio.Questionnaire;
+import com.web.quaestio.QuestionnaireState;
 
 
 import java.io.File;
@@ -36,7 +36,7 @@ import jakarta.servlet.http.HttpSession;
 @CrossOrigin(origins = "http://localhost:3001", maxAge = 3600, allowCredentials = "true")
 @RestController
 public class WebApplication {
-	private HashMap<String, Questionaire> questionaires = new HashMap<String, Questionaire>();
+	private HashMap<String, Questionnaire> questionnaires = new HashMap<String, Questionnaire>();
   private final File uploadDir = new File("upload");
   
   @Value("${sessions.maxInactiveInterval}")
@@ -47,14 +47,14 @@ public class WebApplication {
 	}
 
   @GetMapping("/")
-  public String getQuestionaireState(HttpSession session) {
-    Questionaire questionaire = getSessionQuestionaire(session);
-    QuestionaireState state = questionaire.getCurrentState();
+  public String getQuestionnaireState(HttpSession session) {
+    Questionnaire questionnaire = getSessionQuestionnaire(session);
+    QuestionnaireState state = questionnaire.getCurrentState();
     return (new JSONObject(state)).toString();
   }
 
   @PostMapping("/open")
-  public String openQuestionaire(@RequestParam("uploaded_file") MultipartFile file, HttpSession session) {
+  public String openQuestionnaire(@RequestParam("uploaded_file") MultipartFile file, HttpSession session) {
     Path tempFile;
     if (!uploadDir.exists()) {
       uploadDir.mkdir();
@@ -70,43 +70,43 @@ public class WebApplication {
     session.setMaxInactiveInterval(this.sessionMaxInactiveInterval);
     String sessionId = session.getId();
 
-    Questionaire questionaire = new Questionaire((File) tempFile.toFile());
-    this.questionaires.put(sessionId, questionaire);
-    QuestionaireState state = questionaire.getCurrentState();
+    Questionnaire questionnaire = new Questionnaire((File) tempFile.toFile());
+    this.questionnaires.put(sessionId, questionnaire);
+    QuestionnaireState state = questionnaire.getCurrentState();
     return (new JSONObject(state)).toString();
   }
 
-  private Questionaire getSessionQuestionaire(HttpSession session) {
+  private Questionnaire getSessionQuestionnaire(HttpSession session) {
     String sessionId = session.getId();
-    Questionaire questionaire = this.questionaires.get(sessionId);
+    Questionnaire questionnaire = this.questionnaires.get(sessionId);
 
-    if (questionaire == null) {
+    if (questionnaire == null) {
       throw new ResponseStatusException(
-           HttpStatus.NOT_FOUND, "Questionaire not found");
+           HttpStatus.NOT_FOUND, "Questionnaire not found");
     }
 
-    return questionaire;
+    return questionnaire;
   }
 
   @GetMapping("/continue")
   public void continueConfiguration(HttpSession session) {
-    Questionaire questionaire = getSessionQuestionaire(session);
-    questionaire.setContinueConfiguration();
+    Questionnaire questionnaire = getSessionQuestionnaire(session);
+    questionnaire.setContinueConfiguration();
   }
 
   @GetMapping("/complete")
-  public String completeQuestionaire(HttpSession session) {
-    Questionaire questionaire = getSessionQuestionaire(session);
-    questionaire.completeWithDefaults();
-    QuestionaireState state = questionaire.getCurrentState();
+  public String completeQuestionnaire(HttpSession session) {
+    Questionnaire questionnaire = getSessionQuestionnaire(session);
+    questionnaire.completeWithDefaults();
+    QuestionnaireState state = questionnaire.getCurrentState();
     return (new JSONObject(state)).toString();
   }
 
   @GetMapping(value = "/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
   public Resource exportDCL(HttpSession session) {
     try {
-    Questionaire questionaire = getSessionQuestionaire(session);
-    Path path = Paths.get(questionaire.exportDCL().toURI());
+    Questionnaire questionnaire = getSessionQuestionnaire(session);
+    Path path = Paths.get(questionnaire.exportDCL().toURI());
     ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
     return resource;
     } catch (Exception error) {
@@ -117,7 +117,7 @@ public class WebApplication {
 
   @PostMapping("/question/answer")
   public String answerQuestion(@RequestBody String body, HttpSession session) {
-    Questionaire questionaire = getSessionQuestionaire(session);
+    Questionnaire questionnaire = getSessionQuestionnaire(session);
     JSONObject answer = new JSONObject(body);
 
     JSONArray answers = answer.getJSONArray("answeredFacts");
@@ -129,20 +129,20 @@ public class WebApplication {
       answersMap.put(factId, factValue);
     }
 
-    questionaire.answerQuestion(answer.getString("questionId"), answersMap);
-    QuestionaireState state = questionaire.getCurrentState();
+    questionnaire.answerQuestion(answer.getString("questionId"), answersMap);
+    QuestionnaireState state = questionnaire.getCurrentState();
     return (new JSONObject(state)).toString();
   }
 
   @PostMapping("/question/rollback")
   public String rollbackQuestion(@RequestBody String body, HttpSession session) {
-    Questionaire questionaire = getSessionQuestionaire(session);
+    Questionnaire questionnaire = getSessionQuestionnaire(session);
     JSONObject rollback = new JSONObject(body);
     
     String questionId = rollback.getString("questionId");
 
-    questionaire.rollbackQuestion(questionId);
-    QuestionaireState state = questionaire.getCurrentState();
+    questionnaire.rollbackQuestion(questionId);
+    QuestionnaireState state = questionnaire.getCurrentState();
     return (new JSONObject(state)).toString();
   }
 }

@@ -9,18 +9,18 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import DoneIcon from "@mui/icons-material/Done";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectFact, toggleAnsweredFact } from "@/src/redux/questionaireSlice";
+import { selectFact, toggleAnsweredFact } from "@/src/redux/questionnaireSlice";
 
 export default function FactList({ className }) {
   const dispatch = useDispatch();
-  const questions = useSelector((state) => state.questionaire.questions);
-  const facts = useSelector((state) => state.questionaire.facts);
+  const questions = useSelector((state) => state.questionnaire.questions);
+  const facts = useSelector((state) => state.questionnaire.facts);
   const selectedQuestion = useSelector(
-    (state) => state.questionaire.selectedQuestion
+    (state) => state.questionnaire.selectedQuestion
   );
-  const selectedFact = useSelector((state) => state.questionaire.selectedFact);
+  const selectedFact = useSelector((state) => state.questionnaire.selectedFact);
   const answeredFacts = useSelector(
-    (state) => state.questionaire.answeredFacts
+    (state) => state.questionnaire.answeredFacts
   );
 
   const question = questions[selectedQuestion];

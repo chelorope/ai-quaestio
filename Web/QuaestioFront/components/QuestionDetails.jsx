@@ -5,10 +5,10 @@ import Divider from "@mui/material/Divider";
 import { useSelector } from "react-redux";
 
 export default function QuestionsList({ className }) {
-  const questions = useSelector((state) => state.questionaire.questions);
+  const questions = useSelector((state) => state.questionnaire.questions);
 
   const selectedQuestion = useSelector(
-    (state) => state.questionaire.selectedQuestion
+    (state) => state.questionnaire.selectedQuestion
   );
   return (
     questions[selectedQuestion]?.guidelines && (

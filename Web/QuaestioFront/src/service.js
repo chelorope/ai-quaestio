@@ -8,14 +8,14 @@ const request = axios.create({
 
 export const loadQuestionarie = async () => request.get("/");
 
-export const openQuestionaire = async (formData) =>
+export const openQuestionnaire = async (formData) =>
   request.post("/open", formData);
 
-export const continueQuestionaire = async () => request.get("/continue");
+export const continueQuestionnaire = async () => request.get("/continue");
 
-export const completeQuestionaire = async () => request.get("/complete");
+export const completeQuestionnaire = async () => request.get("/complete");
 
-export const exportQuestionaire = async () =>
+export const exportQuestionnaire = async () =>
   request.get("/export", { responseType: "blob" });
 
 export const answerQuestion = async (body) =>

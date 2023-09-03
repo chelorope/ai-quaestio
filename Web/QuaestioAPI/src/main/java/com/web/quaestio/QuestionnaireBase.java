@@ -15,7 +15,7 @@ import com.processconfiguration.quaestio.QuestionTypeListModel;
 
 import jakarta.xml.bind.*;
 
-public class QuestionaireBase {
+public class QuestionnaireBase {
 	QMLType qml;
 	protected List<State> states = null;
 	protected State tempS = null;
@@ -45,7 +45,7 @@ public class QuestionaireBase {
 	String author;
 	String reference;
 
-	public QuestionaireBase(File file) {
+	public QuestionnaireBase(File file) {
 		initialize();
 		qml = fromFile(file);
 		readModel();

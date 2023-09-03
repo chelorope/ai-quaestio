@@ -2,12 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import {
   loadQuestionarie,
-  openQuestionaire,
+  openQuestionnaire,
   answerQuestion,
   rollbackQuestion,
-  continueQuestionaire,
-  completeQuestionaire,
-} from "./questionaireThunks";
+  continueQuestionnaire,
+  completeQuestionnaire,
+} from "./questionnaireThunks";
 
 const initialState = {
   name: "",
@@ -55,8 +55,8 @@ const setAnsweredFacts = (state, question) => {
   }, {});
 };
 
-export const questionaireSlice = createSlice({
-  name: "questionaire",
+export const questionnaireSlice = createSlice({
+  name: "questionnaire",
   initialState,
   reducers: {
     selectQuestion: (state, action) => {
@@ -72,7 +72,7 @@ export const questionaireSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(openQuestionaire.fulfilled, (state, action) => {
+    builder.addCase(openQuestionnaire.fulfilled, (state, action) => {
       setInitialState(state);
       replaceStateData(state, action.payload);
     });
@@ -89,9 +89,9 @@ export const questionaireSlice = createSlice({
       replaceStateData(state, action.payload);
     });
 
-    builder.addCase(continueQuestionaire.fulfilled, (state, action) => {});
+    builder.addCase(continueQuestionnaire.fulfilled, (state, action) => {});
 
-    builder.addCase(completeQuestionaire.fulfilled, (state, action) => {
+    builder.addCase(completeQuestionnaire.fulfilled, (state, action) => {
       replaceStateData(state, action.payload);
     });
   },
@@ -99,6 +99,6 @@ export const questionaireSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { selectQuestion, selectFact, toggleAnsweredFact } =
-  questionaireSlice.actions;
+  questionnaireSlice.actions;
 
-export default questionaireSlice.reducer;
+export default questionnaireSlice.reducer;

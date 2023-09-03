@@ -7,7 +7,7 @@ import { Provider, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 
-import { loadQuestionarie } from "@/src/redux/questionaireThunks";
+import { loadQuestionarie } from "@/src/redux/questionnaireThunks";
 import { openModal } from "@/src/redux/modalSlice";
 
 const inter = Inter({ subsets: ["latin"] });

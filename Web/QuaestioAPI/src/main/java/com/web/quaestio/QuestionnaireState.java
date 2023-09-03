@@ -1,6 +1,6 @@
 package com.web.quaestio;
 
-public class QuestionaireState {
+public class QuestionnaireState {
     private String name;
     private String author;
     private String reference;
@@ -8,7 +8,7 @@ public class QuestionaireState {
     private FactsMap facts;
     private QuestionsMap questions;
 
-    public QuestionaireState(String name, String author, String reference, Boolean mandatoryFactsAnswered, FactsMap facts, QuestionsMap questions) {
+    public QuestionnaireState(String name, String author, String reference, Boolean mandatoryFactsAnswered, FactsMap facts, QuestionsMap questions) {
         this.name = name;
         this.author = author;
         this.reference = reference;

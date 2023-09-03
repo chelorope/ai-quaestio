@@ -5,9 +5,9 @@ import Box from "@mui/material/Box";
 import { useDispatch } from "react-redux";
 import { closeModal } from "@/src/redux/modalSlice";
 import {
-  continueQuestionaire,
-  completeQuestionaire,
-} from "@/src/redux/questionaireThunks";
+  continueQuestionnaire,
+  completeQuestionnaire,
+} from "@/src/redux/questionnaireThunks";
 
 export default function CompleteModal() {
   const dispatch = useDispatch();
@@ -15,14 +15,14 @@ export default function CompleteModal() {
 
   const handleContinue = async (event) => {
     event.preventDefault();
-    dispatch(continueQuestionaire());
+    dispatch(continueQuestionnaire());
     handleClose();
   };
 
   const handleComplete = (event) => {
     event.preventDefault();
     handleClose();
-    dispatch(completeQuestionaire());
+    dispatch(completeQuestionnaire());
   };
 
   return (

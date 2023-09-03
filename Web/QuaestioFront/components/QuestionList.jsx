@@ -9,7 +9,7 @@ import Divider from "@mui/material/Divider";
 import ExportButton from "@/components/ExportButton";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectQuestion } from "@/src/redux/questionaireSlice";
+import { selectQuestion } from "@/src/redux/questionnaireSlice";
 import { Typography } from "@mui/material";
 
 const questionType = {
@@ -19,7 +19,7 @@ const questionType = {
 
 export default function QuestionsList({ type, className }) {
   const dispatch = useDispatch();
-  const questions = useSelector((state) => state.questionaire.questions);
+  const questions = useSelector((state) => state.questionnaire.questions);
   const displayedQuestions = useMemo(() =>
     Object.values(questions).filter(
       (question) => {
@@ -33,7 +33,7 @@ export default function QuestionsList({ type, className }) {
     )
   );
   const selectedQuestion = useSelector(
-    (state) => state.questionaire.selectedQuestion
+    (state) => state.questionnaire.selectedQuestion
   );
 
   const handleListItemClick = (event, questionId) => {

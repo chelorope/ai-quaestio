@@ -15,19 +15,19 @@ import com.processconfiguration.quaestio.QuestionTypeListModel;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 
-public class Questionaire extends QuestionaireBase {
+public class Questionnaire extends QuestionnaireBase {
 	
 
-	public Questionaire(File file) {
+	public Questionnaire(File file) {
 		super(file);
 	}
 
-	public QuestionaireState getCurrentState() {
+	public QuestionnaireState getCurrentState() {
 		QuestionsMap questions = getSerializableQuestions(this.validQ, false);
 		questions.putAll(getSerializableQuestions(this.answeredQ, true));
 		FactsMap facts = getSerializableFacts(questions);
 
-		QuestionaireState state = new QuestionaireState(this.name, this.author, this.reference, this.allMandatoryFactsAnswered, facts, questions);
+		QuestionnaireState state = new QuestionnaireState(this.name, this.author, this.reference, this.allMandatoryFactsAnswered, facts, questions);
 		return state;
 	}
 
@@ -39,7 +39,7 @@ public class Questionaire extends QuestionaireBase {
 			List<String> factsList = q.getMapQFL();
 			String[] facts = new String[factsList.size()];
         	facts = factsList.toArray(facts);
-			questions.put(q.getId(), new QuestionaireQuestion(q.getId(), q.getDescription(), q.getGuidelines(), answered, facts));
+			questions.put(q.getId(), new QuestionnaireQuestion(q.getId(), q.getDescription(), q.getGuidelines(), answered, facts));
 		}
 		return questions;
 	}
@@ -52,7 +52,7 @@ public class Questionaire extends QuestionaireBase {
 			for (int i = 0; i < questionFacts.length; i++) {
 				String factId = questionFacts[i];
 				FactType fact = FactsMap.get(factId);
-				facts.put(factId, new QuestionaireFact(fact.getId(), fact.getDescription(), fact.isDefault(), fact.isMandatory(), currentS.vs.get(fact.getId()) == TRUE));
+				facts.put(factId, new QuestionnaireFact(fact.getId(), fact.getDescription(), fact.isDefault(), fact.isMandatory(), currentS.vs.get(fact.getId()) == TRUE));
 			}
 		});
 		return facts;

@@ -2,7 +2,7 @@
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import QuestionDetails from "@/components/QuestionDetails";
-import QuestionaireDetails from "@/components/QuestionaireDetails";
+import QuestionnaireDetails from "@/components/QuestionnaireDetails";
 import NavBar from "@/components/NavBar";
 import Modal from "@/components/Modal/Modal";
 import QuestionList from "@/components/QuestionList";
@@ -16,7 +16,7 @@ export default function Home() {
     <main className="h-screen">
       <NavBar />
       <Container className="my-auto">
-        <QuestionaireDetails />
+        <QuestionnaireDetails />
         <Box className="flex flex-col md:flex-wrap lg:flex-nowrap w-full justify-between md:h-[600px] lg:flex-row">
           <QuestionList type="valid" />
           <Box className="flex flex-col min-w-[300px] my-5 md:my-0 md:order-3 md:self-end md:w-[49%] lg:self-auto lg:order-2 lg:mx-5 lg:w-full">
