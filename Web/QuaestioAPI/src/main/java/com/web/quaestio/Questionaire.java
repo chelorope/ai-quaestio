@@ -5,10 +5,15 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import com.processconfiguration.dcl.DCL;
 import com.processconfiguration.qml.FactType;
 import com.processconfiguration.qml.QuestionType;
 import com.processconfiguration.quaestio.QuestionTypeListModel;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
 
 public class Questionaire extends QuestionaireBase {
 	
@@ -127,5 +132,38 @@ public class Questionaire extends QuestionaireBase {
 
 		validQ.clear();
 		updateValidQ();
+	}
+
+	public File exportDCL() {
+		FactType factQML;
+		File fInConf = new File("");
+		try {
+			DCL dcl = new DCL();
+			dcl.setAuthor(qml.getAuthor());
+			dcl.setName(qml.getName());
+			dcl.setReference(qml.getReference());
+			for (Entry<String, String> fact : currentS.vs.entrySet()) {
+				factQML = FactsMap.get(fact.getKey());
+				com.processconfiguration.dcl.FactType factDCL = new com.processconfiguration.dcl.FactType();
+				factDCL.setDescription(factQML.getDescription());
+				factDCL.setId(factQML.getId());
+				factDCL.setValue(Boolean.parseBoolean(fact.getValue()));
+				if (factQML.isDefault() == Boolean
+						.parseBoolean(fact.getValue()))
+					factDCL.setDeviates(false);
+				else
+					factDCL.setDeviates(true);
+				dcl.getFact().add(factDCL);
+			}
+			// create temporary file
+			fInConf = File.createTempFile("temp", ".dcl");
+			JAXBContext jaxbcontext = JAXBContext
+					.newInstance("com.processconfiguration.dcl");
+			Marshaller marshaller = jaxbcontext.createMarshaller();
+			marshaller.marshal(dcl, fInConf);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return fInConf;
 	}
 }

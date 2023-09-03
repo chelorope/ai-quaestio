@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useDispatch } from "react-redux";
 import { exportQuestionaire } from "@/src/redux/questionaireThunks";
 
-export default function ExportButton({ onClick, className }) {
+export default function ExportButton({ onClick = () => {}, className }) {
   const dispatch = useDispatch();
 
   const handleExport = () => {

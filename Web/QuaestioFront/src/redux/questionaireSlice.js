@@ -14,13 +14,23 @@ const initialState = {
   author: "",
   reference: "",
   questions: {},
-  validQuestions: [],
-  answeredQuestions: [],
   selectedQuestion: "",
   facts: {},
   selectedFact: "",
   answeredFacts: {},
   mandatoryFactsAnswered: false,
+};
+
+const setInitialState = (state) => {
+  state.name = initialState.name;
+  state.author = initialState.author;
+  state.reference = initialState.reference;
+  state.questions = initialState.questions;
+  state.selectedQuestion = initialState.selectedQuestion;
+  state.facts = initialState.facts;
+  state.selectedFact = initialState.selectedFact;
+  state.answeredFacts = initialState.answeredFacts;
+  state.mandatoryFactsAnswered = initialState.mandatoryFactsAnswered;
 };
 
 const replaceStateData = (state, data) => {
@@ -63,7 +73,7 @@ export const questionaireSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(openQuestionaire.fulfilled, (state, action) => {
-      state = { ...initialState };
+      setInitialState(state);
       replaceStateData(state, action.payload);
     });
 

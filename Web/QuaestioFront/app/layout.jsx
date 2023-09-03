@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import { loadQuestionarie } from "@/src/redux/questionaireThunks";
+import { openModal } from "@/src/redux/modalSlice";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,15 @@ const darkTheme = createTheme({
 
 export default function RootLayout({ children }) {
   useEffect(() => {
-    store.dispatch(loadQuestionarie());
+    (async () => {
+      try {
+        await store.dispatch(loadQuestionarie()).unwrap();
+      } catch (e) {
+        if (e.code === "ERR_BAD_REQUEST") {
+          store.dispatch(openModal("file"));
+        }
+      }
+    })();
   }, []);
 
   return (

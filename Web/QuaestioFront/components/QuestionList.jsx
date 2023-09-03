@@ -42,7 +42,12 @@ export default function QuestionsList({ type, className }) {
 
   const getContent = useMemo(
     () => () => {
-      if (type === questionType.VALID && displayedQuestions.length === 0) {
+      if (Object.keys(questions).length === 0) {
+        return <div></div>;
+      } else if (
+        type === questionType.VALID &&
+        displayedQuestions.length === 0
+      ) {
         return (
           <div className="w-full h-full flex flex-col justify-center items-center">
             <Typography variant="h6" align="center" className="mb-5">
@@ -84,6 +89,7 @@ export default function QuestionsList({ type, className }) {
             ? "Answered Questions"
             : "Valid Questions"
         }
+        titleTypographyProps={{ align: "center" }}
       />
       <Divider />
       <CardContent className="h-[93%] overflow-scroll py-0">

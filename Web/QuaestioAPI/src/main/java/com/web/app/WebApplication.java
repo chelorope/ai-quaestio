@@ -9,16 +9,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -94,6 +100,19 @@ public class WebApplication {
     questionaire.completeWithDefaults();
     QuestionaireState state = questionaire.getCurrentState();
     return (new JSONObject(state)).toString();
+  }
+
+  @GetMapping(value = "/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+  public Resource exportDCL(HttpSession session) {
+    try {
+    Questionaire questionaire = getSessionQuestionaire(session);
+    Path path = Paths.get(questionaire.exportDCL().toURI());
+    ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+    return resource;
+    } catch (Exception error) {
+      throw new ResponseStatusException(
+           HttpStatus.INTERNAL_SERVER_ERROR, error.getMessage());
+    }
   }
 
   @PostMapping("/answer-question")

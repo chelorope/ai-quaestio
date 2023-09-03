@@ -59,7 +59,7 @@ export const continueQuestionaire = createAsyncThunk(
 
 export const completeQuestionaire = createAsyncThunk(
   "questionaire/completeQuestionaire",
-  async () => {
+  async (_, { dispatch }) => {
     const response = await request.get("/complete");
     dispatch(openModal("export"));
     return response.data;
@@ -68,8 +68,18 @@ export const completeQuestionaire = createAsyncThunk(
 
 export const exportQuestionaire = createAsyncThunk(
   "questionaire/exportQuestionaire",
-  async () => {
-    const response = await request.get("/export");
-    return response.data;
+  async (_, { getState }) => {
+    try {
+      const response = await request.get("/export", { responseType: "blob" });
+      const aElement = document.createElement("a");
+      aElement.setAttribute("download", `${getState().questionaire.name}.dcl`);
+      const href = URL.createObjectURL(response.data);
+      aElement.href = href;
+      aElement.setAttribute("target", "_blank");
+      aElement.click();
+      URL.revokeObjectURL(href);
+    } catch (error) {
+      console.log("ERROR", error);
+    }
   }
 );
