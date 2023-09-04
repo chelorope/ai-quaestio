@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
-import Image from "next/image";
+import SVGLogo from "@/components/SVGLogo";
 
 import { useDispatch } from "react-redux";
 import { openModal } from "@/src/redux/modalSlice";
@@ -26,13 +26,8 @@ export default function NavBar() {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Image
-            src="/quaestio-logo.png"
-            width="40"
-            height="30"
-            alt="Quaestio Logotype"
-          />
+        <Toolbar disableGutters className="justify-between">
+          <SVGLogo className="w-8 h-8" />
           <Box>
             {buttons.map((page, index) => (
               <Button key={index} onClick={page.action}>
