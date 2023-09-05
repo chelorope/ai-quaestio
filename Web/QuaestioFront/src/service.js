@@ -1,5 +1,4 @@
 import axios from "axios";
-console.log("process.env.API_URL", process.env.NEXT_PUBLIC_API_URL);
 const request = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5050",
   timeout: 1000,
