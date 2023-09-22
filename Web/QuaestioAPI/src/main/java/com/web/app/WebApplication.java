@@ -14,14 +14,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +31,7 @@ import jakarta.servlet.http.HttpSession;
 
 
 @SpringBootApplication
-@CrossOrigin(origins = "http://localhost:3001", maxAge = 3600, allowCredentials = "true")
+@CrossOrigin(origins = "${client.url}", maxAge = 3600, allowCredentials = "true")
 @RestController
 public class WebApplication {
 	private HashMap<String, Questionnaire> questionnaires = new HashMap<String, Questionnaire>();

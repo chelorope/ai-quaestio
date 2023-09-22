@@ -40,7 +40,7 @@ public class ExecBDDC {
 			if (osName.startsWith("Windows"))
 				osName = "./bddc/bddc.exe";
 			else if (osName.startsWith("Linux"))
-				osName = "./startsWith/bddcL";
+				osName = "./bddc/bddcL";
 			else if (osName.startsWith("Solaris"))
 				osName = "./bddc/bddcS";
 			else if (osName.startsWith("Mac OS X"))
