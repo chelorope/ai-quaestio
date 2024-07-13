@@ -4,8 +4,8 @@ import Typography from "@mui/material/Typography";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 
 import { useSelector, useDispatch } from "react-redux";
-import { closeModal } from "@/src/redux/modalSlice";
-import { openQuestionnaire } from "@/src/redux/questionnaireThunks";
+import { closeModal } from "@/redux/modalSlice";
+import { openQuestionnaire } from "@/redux/questionnaireThunks";
 
 export default function FileModal() {
   const dispatch = useDispatch();
@@ -24,11 +24,11 @@ export default function FileModal() {
   };
 
   return (
-    <form className="flex" onSubmit={handleSubmit}>
-      <Button className="mr-5">
+    <form style={{ display: "flex" }} onSubmit={handleSubmit}>
+      <Button sx={{ mr: 5 }}>
         <Typography>Select File</Typography>
         <input
-          className="opacity-0 absolute  cursor-pointer"
+          style={{ opacity: 0, position: "absolute", cursor: "pointer" }}
           type="file"
           name="uploaded_file"
           accept=".qml"

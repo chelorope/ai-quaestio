@@ -93,7 +93,6 @@ public class QuestionnaireBase {
 			currentS.t.clear();
 			currentS.f.clear();
 			currentS.qs.clear();
-			// TODO: Disable export option on the frontned, a configuration cannot be exported if just opened
 			
 			continueC = false;
 			allMandatoryFactsAnswered = false;
@@ -274,13 +273,9 @@ public class QuestionnaireBase {
 		int forceable;
 		boolean skippable = true;
 
-		for (String currentFID : currentQ.getMapQFL()) {// for each fact in the
-														// question
+		for (String currentFID : currentQ.getMapQFL()) {// for each fact in the question
 			currentF = retrieveFact(currentFID);
-			String currentFValue = currentS.vs.get(currentF.getId());// the fact
-																		// is
-																		// always
-																		// contained
+			String currentFValue = currentS.vs.get(currentF.getId());// the fact is always contained
 			// TODO: verify why XOR facts are left UNSET
 			// System.out.println(currentFID+": "+currentFValue);
 
@@ -290,24 +285,12 @@ public class QuestionnaireBase {
 												// THIS BIAS THE SKIPPABILITY OF
 												// A QUESTION?
 
-				if ((forceable = bddc.isForceable(currentF.getId())) == 1) {// forceable
-																			// to
-																			// true:
-																			// vs
-																			// and
-																			// t
-																			// need
-																			// to
-																			// be
-																			// updated
+				if ((forceable = bddc.isForceable(currentF.getId())) == 1) {// forceable to true: vs and t need to be updated
 					currentS.vs.put(currentF.getId(), TRUE);// update vs and t
 					currentS.t.add(currentF.getId());
 					bddc.setFact(currentF.getId(), "1");
 				} else if (forceable == -1) {// forceable to false
-					currentS.vs.put(currentF.getId(), FALSE);// update vs and f:
-																// vs and t
-																// needs to be
-																// updated
+					currentS.vs.put(currentF.getId(), FALSE);// update vs and f: vs and t needs to be updated
 					currentS.f.add(currentF.getId());
 					bddc.setFact(currentF.getId(), "0");
 				} else

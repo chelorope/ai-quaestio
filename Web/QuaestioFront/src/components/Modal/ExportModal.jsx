@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 import { useDispatch } from "react-redux";
-import { closeModal } from "@/src/redux/modalSlice";
+import { closeModal } from "@/redux/modalSlice";
 import ExportButton from "@/components/ExportButton";
 
 export default function ExportModal() {
@@ -15,14 +15,14 @@ export default function ExportModal() {
   };
 
   return (
-    <Box className="flex flex-col">
-      <Typography className="mb-5">
+    <Box display="flex" flexDirection="column">
+      <Typography sx={{ mb: 5 }}>
         All the facts have been set correctly.
       </Typography>
-      <Typography className="mb-5">
+      <Typography sx={{ mb: 5 }}>
         Click Export DCL to export this configuration.
       </Typography>
-      <ExportButton className="mb-5" onClick={handleExport} />
+      <ExportButton sx={{ mb: 5 }} onClick={handleExport} />
       <Button variant="contained" color="secondary" onClick={handleClose}>
         Cancel
       </Button>

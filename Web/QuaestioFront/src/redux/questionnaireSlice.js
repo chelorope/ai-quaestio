@@ -19,6 +19,7 @@ const initialState = {
   selectedFact: "",
   answeredFacts: {},
   mandatoryFactsAnswered: false,
+  factInspectorOpen: false,
 };
 
 const setInitialState = (state) => {
@@ -61,6 +62,8 @@ export const questionnaireSlice = createSlice({
   reducers: {
     selectQuestion: (state, action) => {
       state.selectedQuestion = action.payload;
+      state.selectedFact = "";
+      state.factInspectorOpen = false;
       setAnsweredFacts(state, state.questions[action.payload]);
     },
     selectFact: (state, action) => {
@@ -69,6 +72,9 @@ export const questionnaireSlice = createSlice({
     toggleAnsweredFact: (state, action) => {
       state.answeredFacts[action.payload] =
         !state.answeredFacts[action.payload];
+    },
+    setFactInspectorOpen: (state, action) => {
+      state.factInspectorOpen = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -98,7 +104,11 @@ export const questionnaireSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { selectQuestion, selectFact, toggleAnsweredFact } =
-  questionnaireSlice.actions;
+export const {
+  selectQuestion,
+  selectFact,
+  toggleAnsweredFact,
+  setFactInspectorOpen,
+} = questionnaireSlice.actions;
 
 export default questionnaireSlice.reducer;

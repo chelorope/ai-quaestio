@@ -9,9 +9,9 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import DoneIcon from "@mui/icons-material/Done";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectFact, toggleAnsweredFact } from "@/src/redux/questionnaireSlice";
+import { selectFact, toggleAnsweredFact } from "@/redux/questionnaireSlice";
 
-export default function FactList({ className }) {
+export default function FactList({ sx }) {
   const dispatch = useDispatch();
   const questions = useSelector((state) => state.questionnaire.questions);
   const facts = useSelector((state) => state.questionnaire.facts);
@@ -36,7 +36,7 @@ export default function FactList({ className }) {
 
   return (
     question && (
-      <Paper className={`${className} w-full`} elevation={10}>
+      <Paper sx={{ ...sx, width: "100%" }} elevation={2}>
         <List component="nav" aria-label="main mailbox folders">
           {question?.facts?.map((factId) => (
             <ListItemButton
@@ -59,7 +59,7 @@ export default function FactList({ className }) {
                   </Tooltip>
                 </ListItemIcon>
               )}
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: 0, ml: 1 }}>
                 <Checkbox
                   disabled={disabled}
                   edge="start"

@@ -5,11 +5,12 @@ import CardHeader from "@mui/material/CardHeader";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import ExportButton from "@/components/ExportButton";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectQuestion } from "@/src/redux/questionnaireSlice";
+import { selectQuestion } from "@/redux/questionnaireSlice";
 import { Typography } from "@mui/material";
 
 const questionType = {
@@ -17,7 +18,7 @@ const questionType = {
   VALID: "valid",
 };
 
-export default function QuestionsList({ type, className }) {
+export default function QuestionsList({ type, sx }) {
   const dispatch = useDispatch();
   const questions = useSelector((state) => state.questionnaire.questions);
   const displayedQuestions = useMemo(() =>
@@ -49,12 +50,21 @@ export default function QuestionsList({ type, className }) {
         displayedQuestions.length === 0
       ) {
         return (
-          <div className="w-full h-full flex flex-col justify-center items-center">
-            <Typography variant="h6" align="center" className="mb-5">
+          <Box
+            sx={{
+              width: 1,
+              height: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h6" align="center" sx={{ mb: 2 }}>
               All questions have been answered
             </Typography>
             <ExportButton />
-          </div>
+          </Box>
         );
       } else {
         return (
@@ -80,10 +90,16 @@ export default function QuestionsList({ type, className }) {
 
   return (
     <Card
-      className={`${className} w-full min-w-[302px] md:w-[49%] md:h-[290px] lg:w-full lg:h-full lg:max-w-md`}
+      sx={{
+        ...sx,
+        width: "100%",
+        minWidth: "300px",
+        width: { xs: 1, md: "49%", lg: "100%" },
+        height: { md: "290px", lg: 1 },
+        maxWidth: { lg: "md" },
+      }}
     >
       <CardHeader
-        className=""
         title={
           type === questionType.ANSWERED
             ? "Answered Questions"
@@ -92,7 +108,7 @@ export default function QuestionsList({ type, className }) {
         titleTypographyProps={{ align: "center" }}
       />
       <Divider />
-      <CardContent className="h-[93%] overflow-scroll py-0">
+      <CardContent sx={{ height: "85%", overflow: "scroll", py: 0 }}>
         {getContent()}
       </CardContent>
     </Card>

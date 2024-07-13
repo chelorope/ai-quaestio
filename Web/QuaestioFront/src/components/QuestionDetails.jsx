@@ -4,7 +4,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Divider from "@mui/material/Divider";
 import { useSelector } from "react-redux";
 
-export default function QuestionsList({ className }) {
+export default function QuestionsDetails({ sx }) {
   const questions = useSelector((state) => state.questionnaire.questions);
 
   const selectedQuestion = useSelector(
@@ -12,9 +12,8 @@ export default function QuestionsList({ className }) {
   );
   return (
     questions[selectedQuestion]?.guidelines && (
-      <Card className={`${className} w-full`}>
+      <Card sx={{ ...sx, width: 1 }}>
         <CardHeader
-          className=""
           title="Guidelines"
           titleTypographyProps={{ variant: "h6" }}
         />

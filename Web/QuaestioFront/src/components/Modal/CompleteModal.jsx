@@ -3,11 +3,11 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 import { useDispatch } from "react-redux";
-import { closeModal } from "@/src/redux/modalSlice";
+import { closeModal } from "@/redux/modalSlice";
 import {
   continueQuestionnaire,
   completeQuestionnaire,
-} from "@/src/redux/questionnaireThunks";
+} from "@/redux/questionnaireThunks";
 
 export default function CompleteModal() {
   const dispatch = useDispatch();
@@ -26,17 +26,17 @@ export default function CompleteModal() {
   };
 
   return (
-    <Box className="flex flex-col">
-      <Typography className="mb-5">
+    <Box display="flex" flexDirection="column">
+      <Typography sx={{ mb: 5 }}>
         All the mandatory facts have been answered and default values can be
         used for the remaining ones without violating the constraints.
       </Typography>
-      <Typography className="mb-5">
+      <Typography sx={{ mb: 5 }}>
         Do you want to continue the configuration or let the configuration be
         automatically completed?
       </Typography>
       <Button
-        className="mb-5"
+        sx={{ mb: 2 }}
         variant="contained"
         color="secondary"
         onClick={handleContinue}

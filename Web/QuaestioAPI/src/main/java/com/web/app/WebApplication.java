@@ -44,6 +44,18 @@ public class WebApplication {
 		SpringApplication.run(WebApplication.class, args);
 	}
 
+  private Questionnaire getSessionQuestionnaire(HttpSession session) {
+    String sessionId = session.getId();
+    Questionnaire questionnaire = this.questionnaires.get(sessionId);
+
+    if (questionnaire == null) {
+      throw new ResponseStatusException(
+           HttpStatus.NOT_FOUND, "Questionnaire not found");
+    }
+
+    return questionnaire;
+  }
+
   @GetMapping("/")
   public String getQuestionnaireState(HttpSession session) {
     Questionnaire questionnaire = getSessionQuestionnaire(session);
@@ -72,18 +84,6 @@ public class WebApplication {
     this.questionnaires.put(sessionId, questionnaire);
     QuestionnaireState state = questionnaire.getCurrentState();
     return (new JSONObject(state)).toString();
-  }
-
-  private Questionnaire getSessionQuestionnaire(HttpSession session) {
-    String sessionId = session.getId();
-    Questionnaire questionnaire = this.questionnaires.get(sessionId);
-
-    if (questionnaire == null) {
-      throw new ResponseStatusException(
-           HttpStatus.NOT_FOUND, "Questionnaire not found");
-    }
-
-    return questionnaire;
   }
 
   @GetMapping("/continue")

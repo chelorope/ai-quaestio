@@ -3,12 +3,9 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  answerQuestion,
-  rollbackQuestion,
-} from "@/src/redux/questionnaireThunks";
+import { answerQuestion, rollbackQuestion } from "@/redux/questionnaireThunks";
 
-export default function QuestionButton() {
+export default function QuestionButton({ sx }) {
   const dispatch = useDispatch();
   const questions = useSelector((state) => state.questionnaire.questions);
   const facts = useSelector((state) => state.questionnaire.facts);
@@ -60,6 +57,7 @@ export default function QuestionButton() {
 
   return (
     <Button
+      sx={sx}
       variant="contained"
       color={isQuestionAnswered ? "error" : "primary"}
       disabled={!selectedQuestion}

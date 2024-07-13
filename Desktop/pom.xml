@@ -9,17 +9,17 @@
 	<maven.compiler.release>17</maven.compiler.release>
   </properties>
   <dependencies>
-	<dependency>
-	  <groupId>jakarta.xml.bind</groupId>
-	  <artifactId>jakarta.xml.bind-api</artifactId>
-	  <version>4.0.0</version>
-	</dependency>
-	<dependency>
-	  <groupId>com.sun.xml.bind</groupId>
-	  <artifactId>jaxb-impl</artifactId>
-	  <version>4.0.0</version>
-	  <scope>runtime</scope>
-	</dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>4.0.0</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -39,6 +39,30 @@
           <source>17</source>
           <target>17</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>com.processconfiguration.quaestio.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.4.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

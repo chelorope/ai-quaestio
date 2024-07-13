@@ -3,9 +3,9 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import { useDispatch } from "react-redux";
-import { exportQuestionnaire } from "@/src/redux/questionnaireThunks";
+import { exportQuestionnaire } from "@/redux/questionnaireThunks";
 
-export default function ExportButton({ onClick = () => {}, className }) {
+export default function ExportButton({ onClick = () => {}, sx }) {
   const dispatch = useDispatch();
 
   const handleExport = () => {
@@ -14,7 +14,7 @@ export default function ExportButton({ onClick = () => {}, className }) {
   };
 
   return (
-    <Button variant="contained" onClick={handleExport} className={className}>
+    <Button variant="contained" onClick={handleExport} sx={sx}>
       Export DCL
     </Button>
   );

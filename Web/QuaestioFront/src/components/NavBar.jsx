@@ -6,35 +6,49 @@ import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import SVGLogo from "@/components/SVGLogo";
+import { Switch } from "@mui/material";
 
 import { useDispatch } from "react-redux";
-import { openModal } from "@/src/redux/modalSlice";
+import { openModal } from "@/redux/modalSlice";
+import { useTheme } from "@mui/material/styles";
+import ThemeSwitch from "./ThemeSwitch";
 
-export default function NavBar() {
+export default function NavBar({ setColorMode }) {
   const dispatch = useDispatch();
+  const theme = useTheme();
+
   const buttons = useMemo(
     () => [
       {
         title: "Open File",
         action: () => dispatch(openModal("file")),
-        icon: <SaveIcon className="mr-2" />,
+        icon: <SaveIcon sx={{ mr: 1 }} />,
       },
     ],
     []
   );
 
+  const handleColorChange = (event) => {
+    setColorMode(event.target.checked);
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar disableGutters className="justify-between">
-          <SVGLogo className="w-8 h-8" />
+        <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
+          <SVGLogo sx={{ width: 30, height: 30 }} />
           <Box>
             {buttons.map((page, index) => (
-              <Button key={index} onClick={page.action}>
+              <Button key={index} onClick={page.action} variant="secondary">
                 {page.icon}
                 {page.title}
               </Button>
             ))}
+            <ThemeSwitch
+              color="default"
+              value={theme.palette.mode}
+              onChange={handleColorChange}
+            />
           </Box>
         </Toolbar>
       </Container>
