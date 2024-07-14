@@ -16,7 +16,6 @@ import Modal from "@/components/Modal/Modal";
 
 export default function RootLayout({ children }) {
   const [colorMode, setColorMode] = useState("light");
-  console.log("colorMode", colorMode);
   const theme = useMemo(
     () =>
       createTheme({
