@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { exportQMLFile } from "./qmlGeneratorThunks";
 
 const initialQuestion = {
   description: "",
@@ -61,9 +60,14 @@ const initialState = {
       default: false,
     },
   ],
-  conditions: {},
+  constraints: "",
   selectedQuestion: 0,
   selectedFact: 0,
+  fileDetails: {
+    name: "",
+    reference: "",
+    author: "",
+  },
 };
 
 export const qmlGeneratorSlice = createSlice({
@@ -143,9 +147,19 @@ export const qmlGeneratorSlice = createSlice({
     setSelectedFact: (state, action) => {
       state.selectedFact = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(exportQMLFile.fulfilled, exportQMLFile);
+
+    // File details
+    updateFileDetails: (state, action) => {
+      state.fileDetails = { ...state.fileDetails, ...action.payload };
+    },
+
+    // Constraints
+    updateConstraints: (state, action) => {
+      state.constraints = action.payload;
+    },
+    insertConstraints: (state, action) => {
+      state.constraints = action.payload;
+    },
   },
 });
 
@@ -169,6 +183,13 @@ export const {
   updateFactDependency,
   removeFact,
   setSelectedFact,
+
+  // File details
+  updateFileDetails,
+
+  // Constraints
+  updateConstraints,
+  insertConstraints,
 } = qmlGeneratorSlice.actions;
 
 export default qmlGeneratorSlice.reducer;

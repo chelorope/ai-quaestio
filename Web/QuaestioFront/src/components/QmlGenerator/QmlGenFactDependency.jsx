@@ -21,7 +21,6 @@ export default function QmlGenFactDependency({ factId, type = "partially" }) {
       })
     );
   };
-  console.log("QmlGenQuestionDependency", facts, dependencies);
   return (
     <SelectableCardList
       items={facts}

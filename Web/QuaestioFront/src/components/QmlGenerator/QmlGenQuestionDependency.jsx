@@ -24,7 +24,6 @@ export default function QmlGenQuestionDependency({
       })
     );
   };
-  console.log("QmlGenQuestionDependency", questions, dependencies);
   return (
     <SelectableCardList
       items={questions}

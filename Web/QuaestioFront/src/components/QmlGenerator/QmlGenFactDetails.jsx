@@ -12,10 +12,8 @@ export default function QmlGenFactDetails({
   isMandatory,
   isDefault,
 }) {
-  console.log("isMandatory", isMandatory);
   const dispatch = useDispatch();
   const handleMandatoryChange = (value) => {
-    console.log(value);
     dispatch(updateFactMandatory({ index: factId, value }));
   };
   const handleDefaultChange = (value) => {

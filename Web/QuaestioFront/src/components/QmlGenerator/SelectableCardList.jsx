@@ -3,7 +3,7 @@ import { Avatar, Card, CardActionArea, Typography } from "@mui/material";
 export default function SelectableCardList({
   items = [],
   selected = [],
-  onSelectToggle,
+  onSelectToggle = () => {},
   itemPrefix = "F",
 }) {
   return items.map((item, index) => {
