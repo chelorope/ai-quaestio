@@ -7,16 +7,9 @@ import { useMemo, useRef } from "react";
 export default function QmlGenConstraintsTab() {
   const dispatch = useDispatch();
   const constraints = useSelector((state) => state.qmlGenerator.constraints);
-  const questions = useSelector((state) => state.qmlGenerator.questions);
   const facts = useSelector((state) => state.qmlGenerator.facts);
 
   const inputRef = useRef(null);
-
-  const handleConstraintInsertQuestion = (item) => {
-    const newConstraints = constraints + `q${item + 1}`;
-    dispatch(updateConstraints(newConstraints));
-    inputRef.current.focus();
-  };
 
   const handleConstraintInsertFact = (item) => {
     const newConstraints = constraints + `f${item + 1}`;
@@ -40,16 +33,6 @@ export default function QmlGenConstraintsTab() {
           sx={{ mr: { md: 2 }, mb: { xs: 2, md: 0 }, p: 3, width: 1 }}
           variant="outlined"
         >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Questions
-          </Typography>
-          <SelectableCardList
-            items={questions}
-            itemPrefix="Q"
-            onSelectToggle={handleConstraintInsertQuestion}
-          />
-        </Paper>
-        <Paper sx={{ p: 3, width: 1 }} variant="outlined">
           <Typography variant="h6" sx={{ mb: 2 }}>
             Facts
           </Typography>
