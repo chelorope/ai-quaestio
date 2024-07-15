@@ -3,11 +3,13 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { closeModal } from "@/redux/modalSlice";
 import { openQuestionnaire } from "@/redux/questionnaireThunks";
+import { useRouter } from "next/navigation"
 
 export default function FileModal() {
+  const router = useRouter();
   const dispatch = useDispatch();
   const handleClose = () => dispatch(closeModal());
   const [file, setFile] = useState(null);
@@ -20,6 +22,7 @@ export default function FileModal() {
     event.preventDefault();
     const data = new FormData(event.target);
     await dispatch(openQuestionnaire(data));
+    router.push("/")
     handleClose();
   };
 
