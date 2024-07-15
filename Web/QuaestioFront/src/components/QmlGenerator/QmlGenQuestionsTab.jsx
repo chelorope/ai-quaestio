@@ -36,7 +36,7 @@ export default function QuestionsTab() {
           tabs={[
             {
               label: "Details",
-              content: (
+              content: selectedQuestionId !== undefined && (
                 <QmlGenQuestionDetails
                   questionId={selectedQuestionId}
                   guidelines={selectedQuestion?.guidelines}

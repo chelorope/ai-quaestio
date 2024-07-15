@@ -1,4 +1,4 @@
-import { Add } from "@mui/icons-material";
+import { Add, Close } from "@mui/icons-material";
 import {
   Avatar,
   List,
@@ -17,6 +17,7 @@ export default function EditableList({
   onItemChange = () => {},
   onItemSelect = () => {},
   onItemAdd = () => {},
+  onItemRemove = () => {},
 }) {
   const handleItemChange = (value, index) => {
     onItemChange(value, index);
@@ -48,6 +49,13 @@ export default function EditableList({
             onChange={(event) => handleItemChange(event.target.value, index)}
             fullWidth
             variant="standard"
+          />
+          <Close
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onItemRemove(index);
+            }}
           />
         </ListItemButton>
       ))}

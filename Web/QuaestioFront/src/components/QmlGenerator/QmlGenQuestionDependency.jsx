@@ -9,8 +9,8 @@ export default function QmlGenQuestionDependency({
   const dispatch = useDispatch();
   const dependencies = useSelector((state) =>
     type === "partially"
-      ? state.qmlGenerator.questions[questionId].partiallyDepends
-      : state.qmlGenerator.questions[questionId].fullyDepends
+      ? state.qmlGenerator.questions[questionId]?.partiallyDepends
+      : state.qmlGenerator.questions[questionId]?.fullyDepends
   );
   const questions = useSelector((state) =>
     state.qmlGenerator.questions.filter((_, index) => index < questionId)

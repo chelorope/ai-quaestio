@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import EditableList from "./EditableList";
 import {
   addFact,
+  removeFact,
   setSelectedFact,
   setSelectedQuestion,
   updateFactDescription,
@@ -26,6 +27,10 @@ export default function QmlGenFacts() {
     dispatch(addFact());
   };
 
+  const handleItemRemove = (index) => {
+    dispatch(removeFact(index));
+  };
+
   return (
     <EditableList
       items={facts}
@@ -34,6 +39,7 @@ export default function QmlGenFacts() {
       onItemChange={handleItemChange}
       onItemSelect={handleItemSelect}
       onItemAdd={handleItemAdd}
+      onItemRemove={handleItemRemove}
     />
   );
 }

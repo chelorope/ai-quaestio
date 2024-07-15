@@ -7,7 +7,8 @@ export default function QmlGenQuestionFacts({ questionId }) {
   const facts = useSelector((state) => state.qmlGenerator.facts);
   const questionFacts = useSelector(
     (state) =>
-      state.qmlGenerator.questions[state.qmlGenerator.selectedQuestion].facts
+      state.qmlGenerator.questions[state.qmlGenerator.selectedQuestion]
+        ?.facts || []
   );
   const handleSelectToggle = (factId) => {
     dispatch(

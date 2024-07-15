@@ -61,8 +61,8 @@ const initialState = {
     },
   ],
   constraints: "",
-  selectedQuestion: 0,
-  selectedFact: 0,
+  selectedQuestion: undefined,
+  selectedFact: undefined,
   fileDetails: {
     name: "",
     reference: "",
@@ -107,6 +107,7 @@ export const qmlGeneratorSlice = createSlice({
     },
     removeQuestion: (state, action) => {
       state.questions.splice(action.payload, 1);
+      state.selectedQuestion = undefined;
     },
     setSelectedQuestion: (state, action) => {
       state.selectedQuestion = action.payload;
@@ -143,6 +144,7 @@ export const qmlGeneratorSlice = createSlice({
     },
     removeFact: (state, action) => {
       state.facts.splice(action.payload, 1);
+      state.selectedFact = undefined;
     },
     setSelectedFact: (state, action) => {
       state.selectedFact = action.payload;

@@ -13,7 +13,7 @@ export default function FactsTab() {
     (state) => state.qmlGenerator.selectedFact
   );
   const selectedFact = useSelector(
-    (state) => state.qmlGenerator.facts[selectedFactId]
+    (state) => state.qmlGenerator.facts[selectedFactId] || {}
   );
   return (
     <Box
@@ -38,7 +38,7 @@ export default function FactsTab() {
           tabs={[
             {
               label: "Details",
-              content: (
+              content: selectedFactId !== undefined && (
                 <QmlGenFactDetails
                   factId={selectedFactId}
                   isMandatory={selectedFact.mandatory}

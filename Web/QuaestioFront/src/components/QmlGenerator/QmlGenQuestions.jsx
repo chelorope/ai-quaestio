@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import EditableList from "./EditableList";
 import {
   addQuestion,
+  removeQuestion,
   setSelectedQuestion,
   updateQuestionDescription,
 } from "@/redux/qmlGeneratorSlice";
@@ -26,6 +27,11 @@ export default function QmlGenQuestions() {
   const handleItemAdd = () => {
     dispatch(addQuestion());
   };
+
+  const handleItemRemove = (index) => {
+    dispatch(removeQuestion(index));
+  };
+
   return (
     <EditableList
       items={questions}
@@ -34,6 +40,7 @@ export default function QmlGenQuestions() {
       onItemChange={handleItemChange}
       onItemSelect={handleItemSelect}
       onItemAdd={handleItemAdd}
+      onItemRemove={handleItemRemove}
     />
   );
 }
