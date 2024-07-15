@@ -7,7 +7,9 @@ export default function TabsView({ tabs, type = "default" }) {
   const [currentTab, setCuttentTab] = useState(0);
 
   const handleChange = (event, newValue) => {
-    setCuttentTab(newValue);
+    if (newValue !== null) {
+      setCuttentTab(newValue);
+    }
   };
 
   const TabsHeader = useMemo(() => {

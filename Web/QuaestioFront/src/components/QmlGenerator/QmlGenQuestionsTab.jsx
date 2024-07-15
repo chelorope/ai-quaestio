@@ -1,18 +1,10 @@
-import {
-  Box,
-  FormControlLabel,
-  Paper,
-  TextField,
-  TextareaAutosize,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
-import { useState } from "react";
-import TabPanel from "@/components/TabPanel";
+import { Box, Paper } from "@mui/material";
 import QmlGenQuestions from "./QmlGenQuestions";
 import TabsView from "./TabsView";
 import QmlGenQuestionDetails from "./QmlGenQuestionDetails";
 import { useSelector } from "react-redux";
+import QmlGenQuestionFacts from "./QmlGenQuestionFacts";
+import QmlGenQuestionDependency from "./QmlGenQuestionDependency";
 
 export default function QuestionsTab() {
   const selectedQuestionId = useSelector(
@@ -53,23 +45,24 @@ export default function QuestionsTab() {
             },
             {
               label: "Facts",
+              content: <QmlGenQuestionFacts questionId={selectedQuestionId} />,
+            },
+            {
+              label: "Fully Depends",
               content: (
-                <TextField
-                  label="Facts Guidelines"
-                  rows={4}
-                  multiline
-                  fullWidth
+                <QmlGenQuestionDependency
+                  questionId={selectedQuestionId}
+                  type="fully"
                 />
               ),
             },
             {
-              label: "Fully Depends",
-              content: <TextField label="Fully" rows={4} multiline fullWidth />,
-            },
-            {
               label: "Partially Depends",
               content: (
-                <TextField label="Partially" rows={4} multiline fullWidth />
+                <QmlGenQuestionDependency
+                  questionId={selectedQuestionId}
+                  type="partially"
+                />
               ),
             },
           ]}

@@ -1,17 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { exportQMLFile } from "./qmlGeneratorThunks";
 
 const initialQuestion = {
   description: "",
   guidelines: "",
-  fullyDepends: [],
-  partiallyDepends: [],
-  facts: [],
+  fullyDepends: {},
+  partiallyDepends: {},
+  facts: {},
 };
 
 const initialFact = {
   description: "",
   guidelines: "",
-  fullyDepends: [],
+  fullyDepends: {},
+  partiallyDepends: {},
   mandatory: false,
   default: false,
 };
@@ -21,15 +23,16 @@ const initialState = {
     {
       description: "The description of q1",
       guidelines: "The guidelines of q1",
-      fullyDepends: [],
-      partiallyDepends: [],
-      facts: [0, 1],
+      fullyDepends: {},
+      partiallyDepends: {},
+      facts: { 0: true, 5: true },
     },
     {
       description: "The description of q2",
       guidelines: "The guidelines of q2",
-      fullyDepends: [0],
-      partiallyDepends: [1],
+      fullyDepends: { 0: true },
+      partiallyDepends: { 1: true },
+      facts: {},
     },
   ],
   facts: [
@@ -38,17 +41,22 @@ const initialState = {
       guidelines: "The guidelines of f1",
       mandatory: true,
       default: true,
+      fullyDepends: {},
+      partiallyDepends: {},
     },
     {
       description: "The description of f2",
       guidelines: "The guidelines of f2",
       mandatory: false,
       default: false,
+      fullyDepends: {},
+      partiallyDepends: {},
     },
     {
       description: "The description of f3",
       guidelines: "The guidelines of f3",
-      fullyDepends: [0],
+      fullyDepends: { 0: true },
+      partiallyDepends: {},
       mandatory: true,
       default: false,
     },
@@ -69,8 +77,29 @@ export const qmlGeneratorSlice = createSlice({
     updateQuestionDescription: (state, action) => {
       state.questions[action.payload.index].description = action.payload.value;
     },
+    updateQuestionFacts: (state, action) => {
+      state.questions[action.payload.index].facts[action.payload.value] =
+        !state.questions[action.payload.index].facts[action.payload.value];
+    },
     updateQuestionGuidelines: (state, action) => {
       state.questions[action.payload.index].guidelines = action.payload.value;
+    },
+    updateQuestionDependency: (state, action) => {
+      if (action.payload.type === "fully") {
+        state.questions[action.payload.index].fullyDepends[
+          action.payload.value
+        ] =
+          !state.questions[action.payload.index].fullyDepends[
+            action.payload.value
+          ];
+      } else {
+        state.questions[action.payload.index].partiallyDepends[
+          action.payload.value
+        ] =
+          !state.questions[action.payload.index].partiallyDepends[
+            action.payload.value
+          ];
+      }
     },
     removeQuestion: (state, action) => {
       state.questions.splice(action.payload, 1);
@@ -95,12 +124,28 @@ export const qmlGeneratorSlice = createSlice({
     updateFactDefault: (state, action) => {
       state.facts[action.payload.index].default = action.payload.value;
     },
+    updateFactDependency: (state, action) => {
+      if (action.payload.type === "fully") {
+        state.facts[action.payload.index].fullyDepends[action.payload.value] =
+          !state.facts[action.payload.index].fullyDepends[action.payload.value];
+      } else {
+        state.facts[action.payload.index].partiallyDepends[
+          action.payload.value
+        ] =
+          !state.facts[action.payload.index].partiallyDepends[
+            action.payload.value
+          ];
+      }
+    },
     removeFact: (state, action) => {
       state.facts.splice(action.payload, 1);
     },
     setSelectedFact: (state, action) => {
       state.selectedFact = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(exportQMLFile.fulfilled, exportQMLFile);
   },
 });
 
@@ -109,7 +154,9 @@ export const {
   //Questions
   addQuestion,
   updateQuestionDescription,
+  updateQuestionFacts,
   updateQuestionGuidelines,
+  updateQuestionDependency,
   removeQuestion,
   setSelectedQuestion,
 
@@ -119,6 +166,7 @@ export const {
   updateFactGuidelines,
   updateFactMandatory,
   updateFactDefault,
+  updateFactDependency,
   removeFact,
   setSelectedFact,
 } = qmlGeneratorSlice.actions;

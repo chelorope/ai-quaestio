@@ -6,6 +6,7 @@ import TabsView from "./TabsView";
 import QmlGenDetails from "./QmlGenDetails";
 import { useSelector } from "react-redux";
 import QmlGenFactDetails from "./QmlGenFactDetails";
+import QmlGenFactDependency from "./QmlGenFactDependency";
 
 export default function FactsTab() {
   const selectedFactId = useSelector(
@@ -46,8 +47,21 @@ export default function FactsTab() {
                 />
               ),
             },
-            { label: "Fully Depends", content: "Item Two" },
-            { label: "Partially Depends", content: "Item Three" },
+            {
+              label: "Fully Depends",
+              content: (
+                <QmlGenFactDependency factId={selectedFactId} type="fully" />
+              ),
+            },
+            {
+              label: "Partially Depends",
+              content: (
+                <QmlGenFactDependency
+                  factId={selectedFactId}
+                  type="partially"
+                />
+              ),
+            },
           ]}
         />
       </Paper>
