@@ -1,4 +1,4 @@
-import xmlBuilder from "xmlbuilder";
+import { create } from "xmlbuilder2";
 
 const idsFromKeys = (object, prefix = "q") =>
   Object.keys(object)
@@ -55,7 +55,9 @@ export const exportQMLFile = () => async (_, getState) => {
   };
 
   // Generate XML string from object
-  const XMLString = xmlBuilder.create(XMLObj, { encoding: "utf-8" }).toString();
+  const XMLString = create(XMLObj, { encoding: "utf-8" }).end({
+    prettyPrint: true,
+  });
 
   // Export QML file
   saveFile(`${fileDetails.name}.qml`, XMLString);
