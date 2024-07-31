@@ -3,7 +3,6 @@ import EditableList from "./EditableList";
 import {
   addQuestion,
   removeQuestion,
-  selectQuestionDescriptions,
   selectQuestions,
   setSelectedQuestion,
   updateQuestionDescription,

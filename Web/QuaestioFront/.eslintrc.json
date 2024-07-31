@@ -1,11 +1,6 @@
 {
   "root": true,
-  "extends": [
-    "eslint:recommended",
-    "next/babel",
-    "next/core-web-vitals",
-    "plugin:tailwindcss/recommended"
-  ],
+  "extends": ["eslint:recommended", "next/core-web-vitals"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],

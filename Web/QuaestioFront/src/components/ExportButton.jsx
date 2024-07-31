@@ -1,6 +1,4 @@
-import { useMemo } from "react";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 
 import { useDispatch } from "react-redux";
 import { exportQuestionnaire } from "@/redux/thunks/questionnaireThunks";

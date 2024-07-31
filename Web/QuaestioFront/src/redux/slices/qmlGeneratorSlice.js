@@ -1,5 +1,4 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { isBrowser } from "@/utils";
 
 const initialQuestion = {
   description: "",
@@ -37,7 +36,7 @@ export const qmlGeneratorSlice = createSlice({
   initialState: persistedState ? JSON.parse(persistedState) : initialState,
   reducers: {
     // Questions
-    addQuestion: (state, action) => {
+    addQuestion: (state) => {
       state.questions.push({ ...initialQuestion });
     },
     updateQuestionDescription: (state, action) => {
@@ -76,7 +75,7 @@ export const qmlGeneratorSlice = createSlice({
     },
 
     // Facts
-    addFact: (state, action) => {
+    addFact: (state) => {
       state.facts.push({ ...initialFact });
     },
     updateFactDescription: (state, action) => {

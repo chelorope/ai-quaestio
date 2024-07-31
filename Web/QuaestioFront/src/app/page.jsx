@@ -25,7 +25,7 @@ export default function Home() {
         }
       }
     })();
-  }, []);
+  }, [dispatch]);
   return (
     <Container sx={{ my: "auto", height: "100%" }}>
       <QuestionnaireDetails sx={{ my: 3 }} />

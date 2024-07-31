@@ -5,7 +5,7 @@ import {
 import { Box, Paper, TextField, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import SelectableCardList from "./SelectableCardList";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 
 const operators = [
   { id: ".", description: "AND" },

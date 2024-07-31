@@ -42,6 +42,7 @@ export default function QuestionsList({ type, sx }) {
   };
 
   const getContent = useMemo(
+    // eslint-disable-next-line react/display-name
     () => () => {
       if (Object.keys(questions).length === 0) {
         return <div></div>;
@@ -92,7 +93,6 @@ export default function QuestionsList({ type, sx }) {
     <Card
       sx={{
         ...sx,
-        width: "100%",
         minWidth: "300px",
         width: { xs: 1, md: "49%", lg: "100%" },
         height: { md: "290px", lg: 1 },

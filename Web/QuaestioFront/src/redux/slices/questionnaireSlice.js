@@ -95,7 +95,7 @@ export const questionnaireSlice = createSlice({
       replaceStateData(state, action.payload);
     });
 
-    builder.addCase(continueQuestionnaire.fulfilled, (state, action) => {});
+    builder.addCase(continueQuestionnaire.fulfilled, () => {});
 
     builder.addCase(completeQuestionnaire.fulfilled, (state, action) => {
       replaceStateData(state, action.payload);

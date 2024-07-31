@@ -3,10 +3,8 @@ import EditableList from "./EditableList";
 import {
   addFact,
   removeFact,
-  selectFactDescriptions,
   selectFacts,
   setSelectedFact,
-  setSelectedQuestion,
   updateFactDescription,
 } from "@/redux/slices/qmlGeneratorSlice";
 

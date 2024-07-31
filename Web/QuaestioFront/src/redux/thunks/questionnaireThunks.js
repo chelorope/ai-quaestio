@@ -1,4 +1,3 @@
-import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { openModal } from "../slices/modalSlice";
 import * as Service from "@/service";

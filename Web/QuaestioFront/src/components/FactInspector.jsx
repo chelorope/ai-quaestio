@@ -43,8 +43,9 @@ export default function FactInspector({ sx }) {
         <Divider />
         <CardContent>
           <Box display="flex">
-            {inputs.map(({ label, value }) => (
+            {inputs.map(({ label, value }, index) => (
               <TextField
+                key={index}
                 sx={{ width: 0.8, ml: 4, color: "text.primary" }}
                 label={label}
                 size="small"

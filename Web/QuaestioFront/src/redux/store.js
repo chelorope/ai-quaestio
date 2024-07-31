@@ -29,7 +29,7 @@ export const store = configureStore({
     qmlGenerator: persistedReducer,
   },
   extraReducers: (builder) => {
-    builder.addCase(PURGE, (state) => {
+    builder.addCase(PURGE, () => {
       persistConfig.storage.removeItem(`persist:${persistConfig.key}`);
     });
   },
