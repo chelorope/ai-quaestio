@@ -1,6 +1,6 @@
 "use client";
 import {
-  Create as CreateIcon,
+  Delete as DeleteIcon,
   MoreVert,
   Save as SaveIcon,
 } from "@mui/icons-material";
@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { openModal } from "@/redux/slices/modalSlice";
+import { persistor } from "@/redux/store";
 
 export default function NavMenu() {
   const router = useRouter();
@@ -25,6 +26,13 @@ export default function NavMenu() {
           router.push("/");
         },
         icon: <SaveIcon sx={{ mr: 1 }} />,
+      },
+      {
+        title: "Clear Data",
+        action: () => {
+          persistor.purge();
+        },
+        icon: <DeleteIcon sx={{ mr: 1 }} />,
       },
     ],
     []

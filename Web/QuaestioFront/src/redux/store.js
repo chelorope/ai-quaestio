@@ -22,20 +22,24 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, qmlGeneratorReducer);
 
-export const makeStore = () =>
-  configureStore({
-    reducer: {
-      questionnaire: questionnaireReducer,
-      modal: modalReducer,
-      qmlGenerator: persistedReducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-      // Required for react-persist
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }),
-  });
+export const store = configureStore({
+  reducer: {
+    questionnaire: questionnaireReducer,
+    modal: modalReducer,
+    qmlGenerator: persistedReducer,
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, (state) => {
+      persistConfig.storage.removeItem(`persist:${persistConfig.key}`);
+    });
+  },
+  middleware: (getDefaultMiddleware) =>
+    // Required for react-persist
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
 
-export const makePersistor = (store) => persistStore(store);
+export const persistor = persistStore(store);

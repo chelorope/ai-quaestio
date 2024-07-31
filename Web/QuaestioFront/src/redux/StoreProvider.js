@@ -1,7 +1,7 @@
 "use client";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Provider } from "react-redux";
-import { makePersistor, makeStore } from "@/redux/store";
+import { persistor, store } from "@/redux/store";
 import { PersistGate } from "redux-persist/lib/integration/react";
 
 export default function StoreProvider({ children }) {
@@ -10,8 +10,8 @@ export default function StoreProvider({ children }) {
   const persistorRef = useRef();
   if (!storeRef.current) {
     // Create the store instance the first time this renders
-    storeRef.current = makeStore();
-    persistorRef.current = makePersistor(storeRef.current);
+    // storeRef.current = makeStore();
+    // persistorRef.current = makePersistor(storeRef.current);
   }
 
   useEffect(() => {
@@ -19,12 +19,10 @@ export default function StoreProvider({ children }) {
   }, []);
 
   const Component = useMemo(() => (isClient ? PersistGate : Fragment));
-  const props = useMemo(() =>
-    isClient ? { loading: null, persistor: persistorRef.current } : {}
-  );
+  const props = useMemo(() => (isClient ? { loading: null, persistor } : {}));
 
   return (
-    <Provider store={storeRef.current}>
+    <Provider store={store}>
       <Component {...props}>{children}</Component>
     </Provider>
   );
