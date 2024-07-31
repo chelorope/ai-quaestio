@@ -47,6 +47,10 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-export default function ThemeSwitch({ ...props }) {
-  return <MaterialUISwitch sx={{ m: 1 }} {...props} />;
+export default function ThemeSwitch({ onChange, ...props }) {
+  const handleChange = (event) => {
+    onChange(event.target.checked ? "dark" : "light");
+  };
+
+  return <MaterialUISwitch sx={{ m: 1 }} onChange={handleChange} {...props} />;
 }

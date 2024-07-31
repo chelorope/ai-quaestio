@@ -7,7 +7,7 @@ import {
   rollbackQuestion,
   continueQuestionnaire,
   completeQuestionnaire,
-} from "./questionnaireThunks";
+} from "../thunks/questionnaireThunks";
 
 const initialState = {
   name: "",
@@ -60,13 +60,13 @@ export const questionnaireSlice = createSlice({
   name: "questionnaire",
   initialState,
   reducers: {
-    selectQuestion: (state, action) => {
+    setSelectedQuestion: (state, action) => {
       state.selectedQuestion = action.payload;
       state.selectedFact = "";
       state.factInspectorOpen = false;
       setAnsweredFacts(state, state.questions[action.payload]);
     },
-    selectFact: (state, action) => {
+    setSelectedFact: (state, action) => {
       state.selectedFact = action.payload;
     },
     toggleAnsweredFact: (state, action) => {
@@ -105,8 +105,8 @@ export const questionnaireSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  selectQuestion,
-  selectFact,
+  setSelectedQuestion,
+  setSelectedFact,
   toggleAnsweredFact,
   setFactInspectorOpen,
 } = questionnaireSlice.actions;

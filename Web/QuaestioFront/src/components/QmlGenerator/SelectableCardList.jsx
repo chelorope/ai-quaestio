@@ -1,26 +1,38 @@
-import { Avatar, Card, CardActionArea, Typography } from "@mui/material";
+import {
+  ErrorOutline as ErrorOutlineIcon,
+  Done as DoneIcon,
+} from "@mui/icons-material";
+import {
+  Avatar,
+  Card,
+  CardActionArea,
+  Tooltip,
+  Typography,
+  Box,
+} from "@mui/material";
 
 export default function SelectableCardList({
   items = [],
   selected = [],
-  onSelectToggle = () => {},
+  onSelect = () => {},
   itemPrefix = "F",
+  showIcon = true,
 }) {
-  return items.map((item, index) => {
-    const isSelected = selected[index];
+  return items.map((item) => {
+    const isSelected = selected[item.id];
     return (
       <Card
         sx={{
           mb: 1,
         }}
-        key={index}
+        key={item.id}
         elevation={isSelected ? 5 : 1}
-        onClick={() => onSelectToggle(index)}
+        onClick={() => onSelect(item.id)}
       >
         <CardActionArea
           sx={(theme) => ({
             display: "flex",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             p: 3,
             ...(isSelected
               ? {
@@ -29,15 +41,31 @@ export default function SelectableCardList({
               : {}),
           })}
         >
-          <Avatar>
-            <Typography>
-              {itemPrefix}
-              {index + 1}
+          <Box display="flex" alignItems="center">
+            {showIcon && (
+              <Avatar>
+                <Typography>
+                  {itemPrefix}
+                  {item.id + 1}
+                </Typography>
+              </Avatar>
+            )}
+            <Typography sx={{ ml: 1 }} vatiant="body2" textOverflow="ellipsis">
+              {item.description}
             </Typography>
-          </Avatar>
-          <Typography sx={{ ml: 1 }} vatiant="body2">
-            {item.description}
-          </Typography>
+          </Box>
+          <Box display="flex">
+            {item.mandatory && (
+              <Tooltip title="Mandatory Fact">
+                <ErrorOutlineIcon sx={{ mr: 1 }} />
+              </Tooltip>
+            )}
+            {item.default && (
+              <Tooltip title="True by default">
+                <DoneIcon />
+              </Tooltip>
+            )}
+          </Box>
         </CardActionArea>
       </Card>
     );

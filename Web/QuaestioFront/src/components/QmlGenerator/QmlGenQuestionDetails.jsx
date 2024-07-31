@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import QmlGenDetails from "./QmlGenDetails";
-import { updateQuestionGuidelines } from "@/redux/qmlGeneratorSlice";
+import { updateQuestionGuidelines } from "@/redux/slices/qmlGeneratorSlice";
 
 export default function QmlGenQuestionDetails({ questionId, guidelines }) {
   const dispatch = useDispatch();

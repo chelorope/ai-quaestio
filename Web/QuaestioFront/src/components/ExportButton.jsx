@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import { useDispatch } from "react-redux";
-import { exportQuestionnaire } from "@/redux/questionnaireThunks";
+import { exportQuestionnaire } from "@/redux/thunks/questionnaireThunks";
 
 export default function ExportButton({ onClick = () => {}, sx }) {
   const dispatch = useDispatch();

@@ -3,15 +3,15 @@ import EditableList from "./EditableList";
 import {
   addQuestion,
   removeQuestion,
+  selectQuestionDescriptions,
+  selectQuestions,
   setSelectedQuestion,
   updateQuestionDescription,
-} from "@/redux/qmlGeneratorSlice";
+} from "@/redux/slices/qmlGeneratorSlice";
 
 export default function QmlGenQuestions() {
   const dispatch = useDispatch();
-  const questions = useSelector((state) =>
-    state.qmlGenerator.questions.map((question) => question.description)
-  );
+  const questions = useSelector(selectQuestions);
   const selectedQuestion = useSelector(
     (state) => state.qmlGenerator.selectedQuestion
   );

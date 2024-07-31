@@ -1,6 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import SelectableCardList from "./SelectableCardList";
-import { updateQuestionDependency } from "@/redux/qmlGeneratorSlice";
+import {
+  selectRestQuestions,
+  selectQuestionDependencies,
+  updateQuestionDependency,
+} from "@/redux/slices/qmlGeneratorSlice";
 
 export default function QmlGenQuestionDependency({
   questionId,
@@ -8,12 +12,10 @@ export default function QmlGenQuestionDependency({
 }) {
   const dispatch = useDispatch();
   const dependencies = useSelector((state) =>
-    type === "partially"
-      ? state.qmlGenerator.questions[questionId]?.partiallyDepends
-      : state.qmlGenerator.questions[questionId]?.fullyDepends
+    selectQuestionDependencies(state, questionId, type)
   );
   const questions = useSelector((state) =>
-    state.qmlGenerator.questions.filter((_, index) => index < questionId)
+    selectRestQuestions(state, questionId)
   );
   const handleSelectToggle = (factId) => {
     dispatch(
@@ -28,7 +30,7 @@ export default function QmlGenQuestionDependency({
     <SelectableCardList
       items={questions}
       selected={dependencies}
-      onSelectToggle={handleSelectToggle}
+      onSelect={handleSelectToggle}
       itemPrefix="Q"
     />
   );

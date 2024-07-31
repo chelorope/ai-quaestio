@@ -3,16 +3,16 @@ import EditableList from "./EditableList";
 import {
   addFact,
   removeFact,
+  selectFactDescriptions,
+  selectFacts,
   setSelectedFact,
   setSelectedQuestion,
   updateFactDescription,
-} from "@/redux/qmlGeneratorSlice";
+} from "@/redux/slices/qmlGeneratorSlice";
 
 export default function QmlGenFacts() {
   const dispatch = useDispatch();
-  const facts = useSelector((state) =>
-    state.qmlGenerator.facts.map((fact) => fact.description)
-  );
+  const facts = useSelector(selectFacts);
   const selectedFact = useSelector((state) => state.qmlGenerator.selectedFact);
 
   const handleItemChange = (value, index) => {

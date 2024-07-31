@@ -3,7 +3,10 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import { useDispatch, useSelector } from "react-redux";
-import { answerQuestion, rollbackQuestion } from "@/redux/questionnaireThunks";
+import {
+  answerQuestion,
+  rollbackQuestion,
+} from "@/redux/thunks/questionnaireThunks";
 
 export default function QuestionButton({ sx }) {
   const dispatch = useDispatch();

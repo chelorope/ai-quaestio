@@ -1,18 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import SelectableCardList from "./SelectableCardList";
-import { updateFactDependency } from "@/redux/qmlGeneratorSlice";
+import {
+  selectFactDependencies,
+  selectRestFacts,
+  updateFactDependency,
+} from "@/redux/slices/qmlGeneratorSlice";
 
 export default function QmlGenFactDependency({ factId, type = "partially" }) {
   const dispatch = useDispatch();
-  const dependencies = useSelector(
-    (state) =>
-      (type === "partially"
-        ? state.qmlGenerator.facts[factId]?.partiallyDepends
-        : state.qmlGenerator.facts[factId]?.fullyDepends) || []
+  const dependencies = useSelector((state) =>
+    selectFactDependencies(state, factId, type)
   );
-  const facts = useSelector((state) =>
-    state.qmlGenerator.facts.filter((_, index) => index < factId)
-  );
+  const facts = useSelector((state) => selectRestFacts(state, factId));
   const handleSelectToggle = (itemId) => {
     dispatch(
       updateFactDependency({
@@ -26,7 +25,7 @@ export default function QmlGenFactDependency({ factId, type = "partially" }) {
     <SelectableCardList
       items={facts}
       selected={dependencies}
-      onSelectToggle={handleSelectToggle}
+      onSelect={handleSelectToggle}
       itemPrefix="F"
     />
   );

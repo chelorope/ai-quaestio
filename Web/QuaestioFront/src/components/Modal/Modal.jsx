@@ -10,7 +10,7 @@ import CompleteModal from "@/components/Modal/CompleteModal";
 import ExportModal from "@/components/Modal/ExportModal";
 
 import { useSelector, useDispatch } from "react-redux";
-import { closeModal } from "@/redux/modalSlice";
+import { closeModal } from "@/redux/slices/modalSlice";
 
 const getModal = (type) => {
   let Component, title;

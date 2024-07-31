@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setFactInspectorOpen } from "@/redux/questionnaireSlice";
+import { setFactInspectorOpen } from "@/redux/slices/questionnaireSlice";
 
 export default function FactButton({ sx }) {
   const dispatch = useDispatch();

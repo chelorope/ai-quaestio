@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { isBrowser } from "@/utils";
 
 const initialQuestion = {
   description: "",
@@ -18,48 +19,8 @@ const initialFact = {
 };
 
 const initialState = {
-  questions: [
-    {
-      description: "The description of q1",
-      guidelines: "The guidelines of q1",
-      fullyDepends: {},
-      partiallyDepends: {},
-      facts: { 0: true, 5: true },
-    },
-    {
-      description: "The description of q2",
-      guidelines: "The guidelines of q2",
-      fullyDepends: { 0: true },
-      partiallyDepends: { 1: true },
-      facts: {},
-    },
-  ],
-  facts: [
-    {
-      description: "The description of f1",
-      guidelines: "The guidelines of f1",
-      mandatory: true,
-      default: true,
-      fullyDepends: {},
-      partiallyDepends: {},
-    },
-    {
-      description: "The description of f2",
-      guidelines: "The guidelines of f2",
-      mandatory: false,
-      default: false,
-      fullyDepends: {},
-      partiallyDepends: {},
-    },
-    {
-      description: "The description of f3",
-      guidelines: "The guidelines of f3",
-      fullyDepends: { 0: true },
-      partiallyDepends: {},
-      mandatory: true,
-      default: false,
-    },
-  ],
+  questions: [{ ...initialQuestion }],
+  facts: [{ ...initialFact }],
   constraints: "",
   selectedQuestion: undefined,
   selectedFact: undefined,
@@ -70,9 +31,10 @@ const initialState = {
   },
 };
 
+const persistedState = false; //isBrowser() && localStorage.getItem("qmlGenState");
 export const qmlGeneratorSlice = createSlice({
   name: "qmlGenerator",
-  initialState,
+  initialState: persistedState ? JSON.parse(persistedState) : initialState,
   reducers: {
     // Questions
     addQuestion: (state, action) => {
@@ -165,6 +127,70 @@ export const qmlGeneratorSlice = createSlice({
   },
 });
 
+// Selectors
+const selectSelectedQuestion = (state) => state.qmlGenerator.selectedQuestion;
+
+export const selectFacts = createSelector(
+  [(state) => state.qmlGenerator.facts],
+  (facts) => facts.map((fact, index) => ({ ...fact, id: index }))
+);
+export const selectQuestions = createSelector(
+  [(state) => state.qmlGenerator.questions],
+  (questions) =>
+    questions.map((question, index) => ({ ...question, id: index }))
+);
+
+export const selectFact = createSelector(
+  [selectFacts, (_, factId) => factId],
+  (facts, factId) => facts[factId]
+);
+
+export const selectQuestion = createSelector(
+  [selectQuestions, (_, questionId) => questionId],
+  (questions, questionId) => questions[questionId]
+);
+
+export const selectSelectedQuestionObject = createSelector(
+  [selectQuestions, selectSelectedQuestion],
+  (questions, selectedQuestion) => questions[selectedQuestion]
+);
+
+export const selectFactDescriptions = createSelector([selectFacts], (facts) =>
+  facts.map((fact) => fact.description)
+);
+
+export const selectQuestionDescriptions = createSelector(
+  [selectQuestions],
+  (questions) => questions.map((question) => question.description)
+);
+
+export const selectRestFacts = createSelector(
+  [selectFacts, (_, factId) => factId],
+  (facts, factId) => facts.filter((_, index) => index !== factId)
+);
+
+export const selectRestQuestions = createSelector(
+  [selectQuestions, (_, questionId) => questionId],
+  (questions, questionId) =>
+    questions.filter((_, index) => index !== questionId)
+);
+
+export const selectFactDependencies = createSelector(
+  [selectFacts, (_, factId) => factId, (_, type) => type],
+  (facts, factId, type) =>
+    type === "partially"
+      ? facts[factId]?.partiallyDepends
+      : facts[factId]?.fullyDepends
+);
+
+export const selectQuestionDependencies = createSelector(
+  [selectQuestions, (_, questionId) => questionId, (_, type) => type],
+  (questions, questionId, type) =>
+    type === "partially"
+      ? questions[questionId]?.partiallyDepends
+      : questions[questionId]?.fullyDepends
+);
+
 // Action creators are generated for each case reducer function
 export const {
   //Questions
@@ -193,5 +219,6 @@ export const {
   updateConstraints,
   insertConstraints,
 } = qmlGeneratorSlice.actions;
+export const actions = Object.values(qmlGeneratorSlice.actions);
 
 export default qmlGeneratorSlice.reducer;

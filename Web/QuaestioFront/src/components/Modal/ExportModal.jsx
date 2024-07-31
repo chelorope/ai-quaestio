@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 import { useDispatch } from "react-redux";
-import { closeModal } from "@/redux/modalSlice";
+import { closeModal } from "@/redux/slices/modalSlice";
 import ExportButton from "@/components/ExportButton";
 
 export default function ExportModal() {

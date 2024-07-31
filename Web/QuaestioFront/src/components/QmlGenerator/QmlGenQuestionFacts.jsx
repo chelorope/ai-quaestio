@@ -1,14 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import SelectableCardList from "./SelectableCardList";
-import { updateQuestionFacts } from "@/redux/qmlGeneratorSlice";
+import {
+  selectFacts,
+  selectSelectedQuestionObject,
+  updateQuestionFacts,
+} from "@/redux/slices/qmlGeneratorSlice";
 
 export default function QmlGenQuestionFacts({ questionId }) {
   const dispatch = useDispatch();
-  const facts = useSelector((state) => state.qmlGenerator.facts);
+  const facts = useSelector(selectFacts);
   const questionFacts = useSelector(
-    (state) =>
-      state.qmlGenerator.questions[state.qmlGenerator.selectedQuestion]
-        ?.facts || []
+    (state) => selectSelectedQuestionObject(state)?.facts || []
   );
   const handleSelectToggle = (factId) => {
     dispatch(
@@ -22,7 +24,7 @@ export default function QmlGenQuestionFacts({ questionId }) {
     <SelectableCardList
       items={facts}
       selected={questionFacts}
-      onSelectToggle={handleSelectToggle}
+      onSelect={handleSelectToggle}
     />
   );
 }

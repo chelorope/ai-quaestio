@@ -4,9 +4,9 @@ import Typography from "@mui/material/Typography";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 
 import { useDispatch } from "react-redux";
-import { closeModal } from "@/redux/modalSlice";
-import { openQuestionnaire } from "@/redux/questionnaireThunks";
-import { useRouter } from "next/navigation"
+import { closeModal } from "@/redux/slices/modalSlice";
+import { openQuestionnaire } from "@/redux/thunks/questionnaireThunks";
+import { useRouter } from "next/navigation";
 
 export default function FileModal() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function FileModal() {
     event.preventDefault();
     const data = new FormData(event.target);
     await dispatch(openQuestionnaire(data));
-    router.push("/")
+    router.push("/");
     handleClose();
   };
 

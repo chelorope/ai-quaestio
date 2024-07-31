@@ -1,16 +1,41 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
+import { createPersistStorage } from "@/redux/persist-storage";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 
-import questionnaireReducer from "./questionnaireSlice";
-import modalReducer from "./modalSlice";
-import qmlGeneratorReducer from "./qmlGeneratorSlice";
+import questionnaireReducer from "./slices/questionnaireSlice";
+import modalReducer from "./slices/modalSlice";
+import qmlGeneratorReducer from "./slices/qmlGeneratorSlice";
 
-export const store = configureStore({
-  reducer: {
-    questionnaire: questionnaireReducer,
-    modal: modalReducer,
-    qmlGenerator: qmlGeneratorReducer,
-  },
-});
+const persistConfig = {
+  key: "root",
+  storage: createPersistStorage(),
+};
 
-setupListeners(store.dispatch);
+const persistedReducer = persistReducer(persistConfig, qmlGeneratorReducer);
+
+export const makeStore = () =>
+  configureStore({
+    reducer: {
+      questionnaire: questionnaireReducer,
+      modal: modalReducer,
+      qmlGenerator: persistedReducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+      // Required for react-persist
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      }),
+  });
+
+export const makePersistor = (store) => persistStore(store);

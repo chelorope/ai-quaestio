@@ -3,11 +3,11 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 import { useDispatch } from "react-redux";
-import { closeModal } from "@/redux/modalSlice";
+import { closeModal } from "@/redux/slices/modalSlice";
 import {
   continueQuestionnaire,
   completeQuestionnaire,
-} from "@/redux/questionnaireThunks";
+} from "@/redux/thunks/questionnaireThunks";
 
 export default function CompleteModal() {
   const dispatch = useDispatch();

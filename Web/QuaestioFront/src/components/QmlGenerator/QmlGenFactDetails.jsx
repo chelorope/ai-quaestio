@@ -4,7 +4,7 @@ import {
   updateFactDefault,
   updateFactGuidelines,
   updateFactMandatory,
-} from "@/redux/qmlGeneratorSlice";
+} from "@/redux/slices/qmlGeneratorSlice";
 
 export default function QmlGenFactDetails({
   factId,

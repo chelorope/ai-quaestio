@@ -2,17 +2,29 @@ import { Box, Paper } from "@mui/material";
 import QmlGenQuestions from "./QmlGenQuestions";
 import TabsView from "./TabsView";
 import QmlGenQuestionDetails from "./QmlGenQuestionDetails";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import QmlGenQuestionFacts from "./QmlGenQuestionFacts";
 import QmlGenQuestionDependency from "./QmlGenQuestionDependency";
+import {
+  selectQuestion,
+  setSelectedQuestion,
+} from "@/redux/slices/qmlGeneratorSlice";
+import { useEffect } from "react";
 
 export default function QuestionsTab() {
+  const dispatch = useDispatch();
   const selectedQuestionId = useSelector(
     (state) => state.qmlGenerator.selectedQuestion
   );
-  const selectedQuestion = useSelector(
-    (state) => state.qmlGenerator.questions[selectedQuestionId]
+  const selectedQuestion = useSelector((state) =>
+    selectQuestion(state, selectedQuestionId)
   );
+
+  useEffect(() => {
+    if (selectedQuestionId === undefined) {
+      dispatch(setSelectedQuestion(0));
+    }
+  }, []);
   return (
     <Box
       display="flex"

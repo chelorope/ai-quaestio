@@ -9,9 +9,9 @@ import QuestionButton from "@/components/QuestionButton";
 import FactButton from "@/components/FactButton";
 import FactInspector from "@/components/FactInspector";
 import { useDispatch } from "react-redux";
-import { openModal } from "@/redux/modalSlice";
+import { openModal } from "@/redux/slices/modalSlice";
 import { useEffect } from "react";
-import { loadQuestionarie } from "@/redux/questionnaireThunks";
+import { loadQuestionarie } from "@/redux/thunks/questionnaireThunks";
 
 export default function Home() {
   const dispatch = useDispatch();

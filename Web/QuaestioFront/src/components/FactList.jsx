@@ -9,7 +9,10 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import DoneIcon from "@mui/icons-material/Done";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectFact, toggleAnsweredFact } from "@/redux/questionnaireSlice";
+import {
+  setSelectedFact,
+  toggleAnsweredFact,
+} from "@/redux/slices/questionnaireSlice";
 
 export default function FactList({ sx }) {
   const dispatch = useDispatch();
@@ -27,7 +30,7 @@ export default function FactList({ sx }) {
   const disabled = question?.answered;
 
   const handleListItemClick = (id) => {
-    dispatch(selectFact(id));
+    dispatch(setSelectedFact(id));
   };
 
   const handleToggle = (id) => () => {

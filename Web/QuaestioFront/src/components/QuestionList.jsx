@@ -10,7 +10,7 @@ import Divider from "@mui/material/Divider";
 import ExportButton from "@/components/ExportButton";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectQuestion } from "@/redux/questionnaireSlice";
+import { setSelectedQuestion } from "@/redux/slices/questionnaireSlice";
 import { Typography } from "@mui/material";
 
 const questionType = {
@@ -38,7 +38,7 @@ export default function QuestionsList({ type, sx }) {
   );
 
   const handleListItemClick = (event, questionId) => {
-    dispatch(selectQuestion(questionId));
+    dispatch(setSelectedQuestion(questionId));
   };
 
   const getContent = useMemo(

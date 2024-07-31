@@ -1,5 +1,5 @@
-import { updateFileDetails } from "@/redux/qmlGeneratorSlice";
-import { exportQMLFile } from "@/redux/qmlGeneratorThunks";
+import { updateFileDetails } from "@/redux/slices/qmlGeneratorSlice";
+import { exportQMLFile } from "@/redux/thunks/qmlGeneratorThunks";
 import { Box, Button, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 

@@ -8,7 +8,7 @@ import { IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { openModal } from "@/redux/modalSlice";
+import { openModal } from "@/redux/slices/modalSlice";
 
 export default function NavMenu() {
   const router = useRouter();
@@ -20,15 +20,11 @@ export default function NavMenu() {
     () => [
       {
         title: "Open File",
-        action: () => dispatch(openModal("file")),
-        icon: <SaveIcon sx={{ mr: 1 }} />,
-      },
-      {
-        title: "QML Generator",
         action: () => {
-          router.push("/qml");
+          dispatch(openModal("file"));
+          router.push("/");
         },
-        icon: <CreateIcon sx={{ mr: 1 }} />,
+        icon: <SaveIcon sx={{ mr: 1 }} />,
       },
     ],
     []

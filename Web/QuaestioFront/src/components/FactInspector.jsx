@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector, useDispatch } from "react-redux";
-import { setFactInspectorOpen } from "@/redux/questionnaireSlice";
+import { setFactInspectorOpen } from "@/redux/slices/questionnaireSlice";
 
 export default function FactInspector({ sx }) {
   const dispatch = useDispatch();
