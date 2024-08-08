@@ -1,5 +1,5 @@
 import { create } from "xmlbuilder2";
-import { initialState, setState } from "../slices/qmlGeneratorSlice";
+import { getInitialState, setState } from "../slices/qmlGeneratorSlice";
 
 const idsFromKeys = (object, prefix = "q") =>
   Object.keys(object)
@@ -107,7 +107,7 @@ export const loadQMLFile = (file) => async (dispatch) => {
   const xmlObject = doc.end({ format: "object" });
   const qmlObject = xmlObject["qml:QML"];
   console.log("QML OBJECT", qmlObject);
-  const qmlEditorState = JSON.parse(JSON.stringify(initialState));
+  const qmlEditorState = getInitialState();
 
   qmlObject.Question.forEach((question) => {
     qmlEditorState.questions[indexFromId(question["@id"])] = {

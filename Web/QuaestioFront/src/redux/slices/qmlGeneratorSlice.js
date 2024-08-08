@@ -17,27 +17,32 @@ const initialFact = {
   default: false,
 };
 
-export const initialState = {
-  questions: [{ ...initialQuestion }],
-  facts: [{ ...initialFact }],
-  constraints: "",
-  selectedQuestion: undefined,
-  selectedFact: undefined,
-  fileDetails: {
-    name: "",
-    reference: "",
-    author: "",
-  },
-};
+export const getInitialState = () =>
+  JSON.parse(
+    JSON.stringify({
+      questions: [{ ...initialQuestion }],
+      facts: [{ ...initialFact }],
+      constraints: "",
+      selectedQuestion: undefined,
+      selectedFact: undefined,
+      fileDetails: {
+        name: "",
+        reference: "",
+        author: "",
+      },
+    })
+  );
 
-const persistedState = false; //isBrowser() && localStorage.getItem("qmlGenState");
 export const qmlGeneratorSlice = createSlice({
   name: "qmlGenerator",
-  initialState: persistedState ? JSON.parse(persistedState) : initialState,
+  initialState: getInitialState(),
   reducers: {
     // Load from file
     setState: (state, action) => {
       return action.payload;
+    },
+    resetState: () => {
+      return getInitialState();
     },
 
     // Questions
@@ -209,6 +214,8 @@ export const selectQuestionDependencies = createSelector(
 // Action creators are generated for each case reducer function
 export const {
   setState,
+  resetState,
+
   //Questions
   addQuestion,
   updateQuestionDescription,
