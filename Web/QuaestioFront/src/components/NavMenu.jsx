@@ -7,12 +7,10 @@ import {
 import { IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
 import { openModal } from "@/redux/slices/modalSlice";
 import { persistor } from "@/redux/store";
 
 export default function NavMenu() {
-  const router = useRouter();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(1);
@@ -23,7 +21,6 @@ export default function NavMenu() {
         title: "Open File",
         action: () => {
           dispatch(openModal("file"));
-          router.push("/");
         },
         icon: <SaveIcon sx={{ mr: 1 }} />,
       },
@@ -35,7 +32,7 @@ export default function NavMenu() {
         icon: <DeleteIcon sx={{ mr: 1 }} />,
       },
     ],
-    []
+    [dispatch]
   );
 
   const open = Boolean(anchorEl);

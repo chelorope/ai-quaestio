@@ -11,8 +11,14 @@ export default function StoreProvider({ children }) {
     setIsClient(true);
   }, []);
 
-  const Component = useMemo(() => (isClient ? PersistGate : Fragment));
-  const props = useMemo(() => (isClient ? { loading: null, persistor } : {}));
+  const Component = useMemo(
+    () => (isClient ? PersistGate : Fragment),
+    [isClient]
+  );
+  const props = useMemo(
+    () => (isClient ? { loading: null, persistor } : {}),
+    [isClient]
+  );
 
   return (
     <Provider store={store}>

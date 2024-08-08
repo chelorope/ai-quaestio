@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
@@ -6,13 +6,21 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { useDispatch } from "react-redux";
 import { closeModal } from "@/redux/slices/modalSlice";
 import { openQuestionnaire } from "@/redux/thunks/questionnaireThunks";
-import { useRouter } from "next/navigation";
+import { loadQMLFile } from "@/redux/thunks/qmlGeneratorThunks";
+
+const readFile = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => resolve(event.target.result);
+    reader.onerror = reject;
+    reader.readAsText(file);
+  });
 
 export default function FileModal() {
-  const router = useRouter();
   const dispatch = useDispatch();
   const handleClose = () => dispatch(closeModal());
   const [file, setFile] = useState(null);
+  const inputRef = useRef(null);
 
   const handleFileSelect = (event) => {
     setFile(event.target.files[0]);
@@ -20,9 +28,13 @@ export default function FileModal() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // Load the file into QML Editor
+    const qmlText = await readFile(inputRef.current.files[0]);
+    dispatch(loadQMLFile(qmlText));
+
+    // Send the file to the server
     const data = new FormData(event.target);
     await dispatch(openQuestionnaire(data));
-    router.push("/");
     handleClose();
   };
 
@@ -31,6 +43,7 @@ export default function FileModal() {
       <Button sx={{ mr: 5 }}>
         <Typography>Select File</Typography>
         <input
+          ref={inputRef}
           style={{ opacity: 0, position: "absolute", cursor: "pointer" }}
           type="file"
           name="uploaded_file"

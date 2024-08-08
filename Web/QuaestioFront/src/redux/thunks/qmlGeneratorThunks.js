@@ -1,10 +1,21 @@
 import { create } from "xmlbuilder2";
+import { initialState, setState } from "../slices/qmlGeneratorSlice";
 
 const idsFromKeys = (object, prefix = "q") =>
   Object.keys(object)
     .filter((key) => object[key])
     .reduce((accum, item) => accum + ` #${prefix}${Number(item) + 1}`, "")
     .trim();
+
+const indexFromId = (str) => Number(str.match(/\d+/)[0]) - 1;
+const keysFromIds = (str) => str.split(" ").map((item) => indexFromId(item));
+const getDependenciesFromStr = (dependencyStr) =>
+  dependencyStr
+    ? keysFromIds(dependencyStr).reduce((accum, item) => {
+        accum[item] = true;
+        return accum;
+      }, {})
+    : {};
 
 function saveFile(filename, data) {
   const blob = new Blob([data], { type: "text/csv" });
@@ -89,4 +100,39 @@ export const exportQMLFile = () => async (_, getState) => {
 
   // Export QML file
   saveFile(`${fileDetails.name}.qml`, XMLString);
+};
+
+export const loadQMLFile = (file) => async (dispatch) => {
+  const doc = create(file);
+  const xmlObject = doc.end({ format: "object" });
+  const qmlObject = xmlObject["qml:QML"];
+  console.log("QML OBJECT", qmlObject);
+  const qmlEditorState = JSON.parse(JSON.stringify(initialState));
+
+  qmlObject.Question.forEach((question) => {
+    qmlEditorState.questions[indexFromId(question["@id"])] = {
+      description: question.description,
+      guidelines: question.guidelines,
+      fullyDepends: getDependenciesFromStr(question["@fullyDepends"]),
+      partiallyDepends: getDependenciesFromStr(question["@partiallyDepends"]),
+      facts: getDependenciesFromStr(question["@mapQF"]),
+    };
+  });
+  qmlObject.Fact.forEach((fact) => {
+    qmlEditorState.facts[indexFromId(fact["@id"])] = {
+      description: fact.description,
+      guidelines: fact.guidelines,
+      mandatory: Boolean(fact.mandatory),
+      default: Boolean(fact.default),
+      fullyDepends: getDependenciesFromStr(fact["@fullyDepends"]),
+      partiallyDepends: getDependenciesFromStr(fact["@partiallyDepends"]),
+    };
+  });
+  qmlEditorState.constraints = qmlObject.Constraints;
+  qmlEditorState.fileDetails = {
+    name: qmlObject["@name"],
+    reference: qmlObject["@reference"],
+    author: qmlObject["@author"],
+  };
+  dispatch(setState(qmlEditorState));
 };

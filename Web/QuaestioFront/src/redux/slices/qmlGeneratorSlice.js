@@ -17,7 +17,7 @@ const initialFact = {
   default: false,
 };
 
-const initialState = {
+export const initialState = {
   questions: [{ ...initialQuestion }],
   facts: [{ ...initialFact }],
   constraints: "",
@@ -35,6 +35,11 @@ export const qmlGeneratorSlice = createSlice({
   name: "qmlGenerator",
   initialState: persistedState ? JSON.parse(persistedState) : initialState,
   reducers: {
+    // Load from file
+    setState: (state, action) => {
+      return action.payload;
+    },
+
     // Questions
     addQuestion: (state) => {
       state.questions.push({ ...initialQuestion });
@@ -68,7 +73,11 @@ export const qmlGeneratorSlice = createSlice({
     },
     removeQuestion: (state, action) => {
       state.questions.splice(action.payload, 1);
-      state.selectedQuestion = undefined;
+      state.selectedQuestion = state.questions[0] ? 0 : undefined;
+      state.questions.forEach((question) => {
+        delete question.fullyDepends[action.payload];
+        delete question.partiallyDepends[action.payload];
+      });
     },
     setSelectedQuestion: (state, action) => {
       state.selectedQuestion = action.payload;
@@ -105,7 +114,14 @@ export const qmlGeneratorSlice = createSlice({
     },
     removeFact: (state, action) => {
       state.facts.splice(action.payload, 1);
-      state.selectedFact = undefined;
+      state.selectedFact = state.facts[0] ? 0 : undefined;
+      state.facts.forEach((fact) => {
+        delete fact.fullyDepends[action.payload];
+        delete fact.partiallyDepends[action.payload];
+      });
+      state.questions.forEach((question) => {
+        delete question.facts[action.payload];
+      });
     },
     setSelectedFact: (state, action) => {
       state.selectedFact = action.payload;
@@ -192,6 +208,7 @@ export const selectQuestionDependencies = createSelector(
 
 // Action creators are generated for each case reducer function
 export const {
+  setState,
   //Questions
   addQuestion,
   updateQuestionDescription,
