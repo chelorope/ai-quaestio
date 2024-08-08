@@ -106,7 +106,6 @@ export const loadQMLFile = (file) => async (dispatch) => {
   const doc = create(file);
   const xmlObject = doc.end({ format: "object" });
   const qmlObject = xmlObject["qml:QML"];
-  console.log("QML OBJECT", qmlObject);
   const qmlEditorState = getInitialState();
 
   qmlObject.Question.forEach((question) => {
