@@ -30,10 +30,6 @@ public class Utils {
 
 	public final static String qml="qml";
 	public final static String dcl="dcl";
-	public final static String txt="txt";
-	public final static String yawl = "yawl";
-	public final static String epml = "epml";
-	public final static String cmap = "cmap";
 
 	
 	public static String getExtension(File f) {

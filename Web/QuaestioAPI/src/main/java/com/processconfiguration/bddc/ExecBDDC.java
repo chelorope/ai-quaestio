@@ -17,6 +17,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -31,10 +35,24 @@ public class ExecBDDC {
 	private TreeMap<String, Boolean> valuation;
 	private static boolean ValuationSet;
 
+	public void ListFiles(String pathStr) {
+        Path path = Paths.get(pathStr);
+
+		System.out.println("LISTING FILES IN " + pathStr);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+            for (Path file: stream) {
+                System.out.println(file.getFileName());
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading directory: " + e.getMessage());
+        }
+    }
+
 	public ExecBDDC(String constraints) {
 		cos = constraints + ";";
 		cos_v = "c := " + cos;
 		Runtime rt = Runtime.getRuntime();
+		ListFiles("./bddc/");
 		try {
 			String osName = System.getProperty("os.name");
 			if (osName.startsWith("Windows"))

@@ -1,8 +1,6 @@
 package com.web.quaestio;
 
 import java.io.File;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,7 +37,7 @@ public class Questionnaire extends QuestionnaireBase {
 			List<String> factsList = q.getMapQFL();
 			String[] facts = new String[factsList.size()];
         	facts = factsList.toArray(facts);
-			questions.put(q.getId(), new QuestionnaireQuestion(q.getId(), q.getDescription(), q.getGuidelines(), answered, facts));
+			questions.put(q.getId(), new QuestionnaireQuestion(q.getId(), q.getDescription(), q.getGuidelines(), answered, q.isSkippable(), facts));
 		}
 		return questions;
 	}
