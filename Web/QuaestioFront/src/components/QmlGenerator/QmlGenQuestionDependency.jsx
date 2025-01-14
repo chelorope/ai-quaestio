@@ -26,6 +26,7 @@ export default function QmlGenQuestionDependency({
       })
     );
   };
+  type === "partially" && console.log("QUESTIONS", questions, dependencies);
   return (
     <SelectableCardList
       items={questions}

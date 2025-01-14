@@ -133,5 +133,6 @@ export const loadQMLFile = (file) => async (dispatch) => {
     reference: qmlObject["@reference"],
     author: qmlObject["@author"],
   };
+  console.log("qmlEditorState", qmlEditorState);
   dispatch(setState(qmlEditorState));
 };

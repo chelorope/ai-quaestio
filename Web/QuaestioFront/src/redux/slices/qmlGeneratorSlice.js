@@ -60,6 +60,13 @@ export const qmlGeneratorSlice = createSlice({
       state.questions[action.payload.index].guidelines = action.payload.value;
     },
     updateQuestionDependency: (state, action) => {
+      console.log(
+        "UPDATE DEPENDENCY",
+        state.questions[action.payload.index].partiallyDepends[
+          action.payload.value
+        ],
+        action
+      );
       if (action.payload.type === "fully") {
         state.questions[action.payload.index].fullyDepends[
           action.payload.value

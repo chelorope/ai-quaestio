@@ -51,7 +51,6 @@ public class ExecBDDC {
 	public ExecBDDC(String constraints) {
 		cos = constraints + ";";
 		cos_v = "c := " + cos;
-		Runtime rt = Runtime.getRuntime();
 		ListFiles("./bddc/");
 		try {
 			String osName = System.getProperty("os.name");
@@ -68,7 +67,8 @@ public class ExecBDDC {
 						.println("Operating System not supported or os.name protected. Assume Windows architecture.");
 				osName = "./bddc/bddc.exe";
 			}
-			p = rt.exec(osName);
+			ProcessBuilder processBuilder = new ProcessBuilder(osName);
+			p = processBuilder.start();
 			writer = new PrintWriter(p.getOutputStream());
 			reader = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));
@@ -96,7 +96,8 @@ public class ExecBDDC {
 						.println("Operating System not supported or os.name protected. Assume Windows architecture.");
 				osName = "./bddc/bddc.exe";
 			}
-			p = rt.exec(osName);
+			ProcessBuilder processBuilder = new ProcessBuilder(osName);
+			p = processBuilder.start();
 			writer = new PrintWriter(p.getOutputStream());
 			reader = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));

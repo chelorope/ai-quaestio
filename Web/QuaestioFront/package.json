@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.16.1",
     "@mui/material": "^5.16.1",
     "@reduxjs/toolkit": "^1.9.5",
+    "@xyflow/react": "^12.3.5",
     "axios": "^1.4.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.4",
