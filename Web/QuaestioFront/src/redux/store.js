@@ -14,6 +14,7 @@ import {
 import questionnaireReducer from "./slices/questionnaireSlice";
 import modalReducer from "./slices/modalSlice";
 import qmlGeneratorReducer from "./slices/qmlGeneratorSlice";
+import flowReducer from "./slices/flowSlice";
 
 const persistConfig = {
   key: "root",
@@ -27,6 +28,7 @@ export const store = configureStore({
     questionnaire: questionnaireReducer,
     modal: modalReducer,
     qmlGenerator: persistedReducer,
+    flow: flowReducer,
   },
   extraReducers: (builder) => {
     builder.addCase(PURGE, () => {

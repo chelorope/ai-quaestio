@@ -2,10 +2,7 @@ import React, { memo } from "react";
 import { Handle, NodeToolbar, Position } from "@xyflow/react";
 import { Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
 
-const onConnect = (params) => console.log("handle onConnect", params);
-
 function TextNode(props) {
-  console.log(props.id);
   const onChange = (event) => console.log("text changed", event.target.value);
   return (
     <Box>
@@ -18,15 +15,14 @@ function TextNode(props) {
         }}
       >
         <NodeToolbar
-          isVisible={props.data.toolbarVisible}
-          position={props.data.toolbarPosition}
+          isVisible={props.data?.toolbarVisible}
+          position={props.data?.toolbarPosition}
         >
           <ButtonGroup
             variant="outlined"
             aria-label="Basic button group"
             size="small"
           >
-            <Button>Add Fact</Button>
             <Button>Delete</Button>
           </ButtonGroup>
         </NodeToolbar>
@@ -41,8 +37,13 @@ function TextNode(props) {
           InputProps={{ disableUnderline: true }}
         />
       </Box>
-      <Handle type="target" position={Position.Left} onConnect={onConnect} />
-      <Handle type="source" position={Position.Right} />
+      <Handle id="left-target" type="target" position={Position.Left} />
+      <Handle id="top-target" type="target" position={Position.Top} />
+      <Handle id="top-source" type="source" position={Position.Top} />
+      <Handle id="rigt-target" type="target" position={Position.Right} />
+      <Handle id="right-source" type="source" position={Position.Right} />
+      <Handle id="bottom-source" type="target" position={Position.Bottom} />
+      <Handle id="bottom-source" type="source" position={Position.Bottom} />
     </Box>
   );
 }

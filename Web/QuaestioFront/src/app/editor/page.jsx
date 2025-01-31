@@ -1,121 +1,85 @@
 "use client";
 import FactNode from "@/components/QmlEditor/FactNode";
+import QuestionDependencyEdge from "@/components/QmlEditor/QuestionDependencyEdge";
 import QuestionNode from "@/components/QmlEditor/QuestionNode";
+import {
+  addQuestion,
+  onConnect,
+  onEdgesChange,
+  onNodesChange,
+  selectEdges,
+  selectNodes,
+  selectQuestions,
+} from "@/redux/slices/flowSlice";
 import { useTheme } from "@emotion/react";
-import { Button, ButtonGroup } from "@mui/material";
-import Container from "@mui/material/Container";
+import { Box, Button, ButtonGroup } from "@mui/material";
 import {
   ReactFlow,
   Background,
   BackgroundVariant,
   Controls,
-  applyNodeChanges,
-  applyEdgeChanges,
-  addEdge,
   Panel,
   useReactFlow,
   ReactFlowProvider,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
-import { useCallback, useState } from "react";
-
-const initialNodes = [
-  {
-    id: "1",
-    position: { x: 0, y: 0 },
-    data: { label: "1" },
-    type: "question",
-  },
-  {
-    id: "2",
-    position: { x: 250, y: 0 },
-    data: { label: "2" },
-    type: "question",
-  },
-  {
-    id: "3",
-    position: { x: 500, y: 0 },
-    data: { label: "3" },
-    type: "question",
-  },
-];
-const initialEdges = [{ id: "e1-2", source: "1", target: "2", animated: true }];
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const nodeTypes = { question: QuestionNode, fact: FactNode };
+const edgeTypes = { questionDependency: QuestionDependencyEdge };
 
 const EditorLayout = () => {
+  const dispatch = useDispatch();
   const theme = useTheme();
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+
+  const edges = useSelector(selectEdges);
+  const questionNodes = useSelector(selectQuestions);
+  const nodes = useSelector(selectNodes);
 
   const { setCenter } = useReactFlow();
 
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
-  );
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    []
-  );
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    []
-  );
-
   const handleCreateQuestionNode = useCallback(() => {
-    const id = String(nodes.length + 1);
-    const newPosition = { ...nodes[nodes.length - 1].position };
+    const newPosition = {
+      ...(questionNodes[questionNodes.length - 1]?.position || { x: 0, y: 0 }),
+    };
     newPosition.y += 100;
-    setNodes((nds) => [
-      ...nds,
-      {
-        id,
+    dispatch(
+      addQuestion({
         position: newPosition,
-        data: { label: id },
-        type: "question",
-      },
-    ]);
-    setCenter(newPosition.x, newPosition.y, { duration: 400 });
-  }, [nodes, setCenter]);
-
-  // const handleCreateFactNode = useCallback(
-  //   (questionId) => {
-  //     const id = String(nodes.length + 1);
-  //     const newPosition = { ...nodes[nodes.length - 1].position };
-  //     newPosition.y += 100;
-  //     setNodes((nds) => [
-  //       ...nds,
-  //       {
-  //         id,
-  //         position: newPosition,
-  //         data: { label: id },
-  //         type: "fact",
-  //       },
-  //     ]);
-  //     setCenter(newPosition.x, newPosition.y, { duration: 400 });
-  //   },
-  //   [nodes, setCenter]
-  // );
+        // selected: true,
+      })
+    );
+    setCenter(newPosition.x, newPosition.y, { duration: 400, zoom: 1 });
+  }, [setCenter, questionNodes, dispatch]);
 
   return (
-    <Container sx={{ my: "auto", p: 5, height: 1, width: 1 }}>
+    <Box
+      sx={{
+        my: "auto",
+        p: 1,
+        height: 1,
+        width: 1,
+        backgroundColor: "background.default",
+      }}
+    >
       <ReactFlow
         colorMode={theme.palette.mode}
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        edgeTypes={edgeTypes}
+        onNodesChange={(e) => dispatch(onNodesChange(e))}
+        onEdgesChange={(e) => dispatch(onEdgesChange(e))}
+        onConnect={(e) => dispatch(onConnect(e))}
         fitView
       >
         <Panel position="top-left">
           <ButtonGroup variant="contained" aria-label="Basic button group">
             <Button onClick={handleCreateQuestionNode}>Add Question</Button>
-            <Button>Two</Button>
-            <Button>Three</Button>
+            <Button>Constraints</Button>
+            <Button>Export</Button>
           </ButtonGroup>
         </Panel>
         <Background
@@ -126,7 +90,7 @@ const EditorLayout = () => {
         />
         <Controls />
       </ReactFlow>
-    </Container>
+    </Box>
   );
 };
 

@@ -6,7 +6,7 @@ import TabsView from "@/components/QmlGenerator/TabsView";
 import QmlGenExportTab from "@/components/QmlGenerator/QmlGenExportTab";
 import QmlGenConstraintsTab from "@/components/QmlGenerator/QmlGenConstraintsTab";
 
-export default function Home() {
+export default function QMLEditor() {
   return (
     <Container sx={{ my: "auto", p: 5, height: 1 }}>
       <TabsView
