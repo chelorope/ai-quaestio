@@ -35,8 +35,8 @@ const EditorLayout = () => {
   const theme = useTheme();
 
   const edges = useSelector(selectEdges);
-  const questionNodes = useSelector(selectQuestions);
   const nodes = useSelector(selectNodes);
+  const questionNodes = useSelector(selectQuestions);
 
   const { setCenter } = useReactFlow();
 

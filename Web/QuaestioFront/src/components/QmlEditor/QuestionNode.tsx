@@ -1,16 +1,35 @@
 import React, { memo, useCallback, useEffect, useRef } from "react";
-import { Handle, NodeToolbar, Position, useReactFlow } from "@xyflow/react";
+import {
+  Handle,
+  Node,
+  NodeProps,
+  NodeToolbar,
+  Position,
+  useReactFlow,
+} from "@xyflow/react";
 import { Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { addFact } from "@/redux/slices/flowSlice";
+import { addFact, updateQuestionTitle } from "@/redux/slices/flowSlice";
+import { openDrawer } from "@/redux/slices/drawerSlice";
 
-function QuestionNode(props) {
-  const inputRef = useRef();
+export type QuestionNode = Node<
+  {
+    title: string;
+    description: string;
+  },
+  "question"
+>;
+
+function QuestionNode(props: NodeProps<QuestionNode>) {
+  const inputRef = useRef<HTMLInputElement>();
   const dispatch = useDispatch();
 
   const { getNode, setCenter } = useReactFlow();
 
-  const onChange = (event) => console.log("text changed", event.target.value);
+  const onChange = (event) => {
+    dispatch(updateQuestionTitle({ title: event.target.value, id: props.id }));
+    console.log("text changed", event.target.value);
+  };
 
   const handleDelete = () => {
     console.log("Deleting", props);
@@ -18,7 +37,7 @@ function QuestionNode(props) {
 
   useEffect(() => {
     console.log("Current Text", inputRef.current);
-    inputRef.current.focus();
+    inputRef.current?.focus();
   }, []);
 
   const handleCreateFactNode = useCallback(
@@ -35,11 +54,11 @@ function QuestionNode(props) {
         })
       );
       setCenter(
-        questionNode.position.x + newPosition.x,
-        questionNode.position.y + newPosition.y,
+        (questionNode?.position?.x || 0) + newPosition.x,
+        (questionNode?.position?.y || 0) + newPosition.y,
         {
           duration: 400,
-          zoom: 2,
+          zoom: 1,
         }
       );
     },
@@ -69,7 +88,16 @@ function QuestionNode(props) {
             <Button onClick={() => handleCreateFactNode(props.id)}>
               Add Fact
             </Button>
-            <Button onClick={() => handleCreateFactNode(props.id)}>
+            <Button
+              onClick={() =>
+                dispatch(
+                  openDrawer({
+                    type: "question-details",
+                    data: { questionId: props.id },
+                  })
+                )
+              }
+            >
               Details
             </Button>
             <Button onClick={handleDelete}>Delete</Button>
@@ -90,6 +118,7 @@ function QuestionNode(props) {
           inputRef={inputRef}
           id="text"
           name="text"
+          value={props.data?.title || ""}
           onChange={onChange}
           size="small"
           sx={{ backgroundColor: "background.default", borderRadius: "4px" }}

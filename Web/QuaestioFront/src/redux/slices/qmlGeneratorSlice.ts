@@ -1,4 +1,5 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { isBrowser } from "../../utils";
 
 const initialQuestion = {
   description: "",
@@ -17,20 +18,24 @@ const initialFact = {
   default: false,
 };
 
+const persistedState = isBrowser() && localStorage.getItem("qmlGenerator");
+
 export const getInitialState = () =>
   JSON.parse(
-    JSON.stringify({
-      questions: [{ ...initialQuestion }],
-      facts: [{ ...initialFact }],
-      constraints: "",
-      selectedQuestion: undefined,
-      selectedFact: undefined,
-      fileDetails: {
-        name: "",
-        reference: "",
-        author: "",
-      },
-    })
+    persistedState
+      ? persistedState
+      : JSON.stringify({
+          questions: [{ ...initialQuestion }],
+          facts: [{ ...initialFact }],
+          constraints: "",
+          selectedQuestion: undefined,
+          selectedFact: undefined,
+          fileDetails: {
+            name: "",
+            reference: "",
+            author: "",
+          },
+        })
   );
 
 export const qmlGeneratorSlice = createSlice({
@@ -163,8 +168,10 @@ export const selectFacts = createSelector(
 );
 export const selectQuestions = createSelector(
   [(state) => state.qmlGenerator.questions],
-  (questions) =>
-    questions.map((question, index) => ({ ...question, id: index }))
+  (questions) => {
+    console.log("QUESTIONS", questions);
+    return questions.map((question, index) => ({ ...question, id: index }));
+  }
 );
 
 export const selectFact = createSelector(

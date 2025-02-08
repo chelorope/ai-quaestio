@@ -8,7 +8,6 @@ import { IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { openModal } from "@/redux/slices/modalSlice";
-import { persistor } from "@/redux/store";
 import { resetState } from "@/redux/slices/qmlGeneratorSlice";
 
 export default function NavMenu() {
@@ -28,7 +27,6 @@ export default function NavMenu() {
       {
         title: "Clear Data",
         action: () => {
-          persistor.purge();
           dispatch(resetState());
         },
         icon: <DeleteIcon sx={{ mr: 1 }} />,
