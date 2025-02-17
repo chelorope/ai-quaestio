@@ -8,6 +8,9 @@ import QuestionDetailsDrawer from "./QuestionDetailsDrawer";
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { closeDrawer, selectDrawer } from "@/redux/slices/drawerSlice";
+import FactDetailsDrawer from "./FactDetailsDrawer";
+import ConstraintsDrawer from "./ConstraintsDrawer";
+import ExportDrawer from "./ExportDrawer";
 
 export default function Drawer() {
   const drawer = useAppSelector(selectDrawer);
@@ -28,6 +31,21 @@ export default function Drawer() {
               onClose={handleClose}
             />
           ),
+        };
+      case "fact-details":
+        return {
+          title: "Fact Details",
+          component: <FactDetailsDrawer factId={drawer.data?.factId} />,
+        };
+      case "constraints":
+        return {
+          title: "Constraints",
+          component: <ConstraintsDrawer />,
+        };
+      case "export":
+        return {
+          title: "Export",
+          component: <ExportDrawer />,
         };
       default:
         return { component: <Box />, title: "" };

@@ -1,16 +1,14 @@
 import React, { memo, useCallback, useEffect, useRef } from "react";
-import {
-  Handle,
-  Node,
-  NodeProps,
-  NodeToolbar,
-  Position,
-  useReactFlow,
-} from "@xyflow/react";
-import { Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
+import { Node, NodeProps, useReactFlow } from "@xyflow/react";
+import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { addFact, updateQuestionTitle } from "@/redux/slices/flowSlice";
+import {
+  addFact,
+  removeQuestion,
+  updateQuestionTitle,
+} from "@/redux/slices/flowSlice";
 import { openDrawer } from "@/redux/slices/drawerSlice";
+import BaseNode from "./BaseNode";
 
 export type QuestionNode = Node<
   {
@@ -26,12 +24,12 @@ function QuestionNode(props: NodeProps<QuestionNode>) {
 
   const { getNode, setCenter } = useReactFlow();
 
-  const onChange = (event) => {
-    dispatch(updateQuestionTitle({ title: event.target.value, id: props.id }));
-    console.log("text changed", event.target.value);
+  const handleChange = (value: string) => {
+    dispatch(updateQuestionTitle({ title: value, id: props.id }));
   };
 
   const handleDelete = () => {
+    dispatch(removeQuestion(props.id));
     console.log("Deleting", props);
   };
 
@@ -66,73 +64,33 @@ function QuestionNode(props: NodeProps<QuestionNode>) {
   );
 
   return (
-    <Box>
-      <Box
-        display="flex"
-        sx={{
-          border: 1,
-          borderColor: "divider",
-          borderRadius: "4px",
-          padding: 1,
-          display: "flex",
-          alignItems: "center",
-          backgroundColor: "background.default",
-        }}
-      >
-        <NodeToolbar>
-          <ButtonGroup
-            variant="outlined"
-            aria-label="Basic button group"
-            size="small"
-          >
-            <Button onClick={() => handleCreateFactNode(props.id)}>
-              Add Fact
-            </Button>
-            <Button
-              onClick={() =>
-                dispatch(
-                  openDrawer({
-                    type: "question-details",
-                    data: { questionId: props.id },
-                  })
-                )
-              }
-            >
-              Details
-            </Button>
-            <Button onClick={handleDelete}>Delete</Button>
-          </ButtonGroup>
-        </NodeToolbar>
-        <Box
-          sx={{
-            borderRadius: "50%",
-            mr: 1,
-            py: 0.2,
-            px: 0.7,
-            backgroundColor: "grey.100",
-          }}
+    <BaseNode
+      id={props.id}
+      value={props.data?.title}
+      backgroundColor="#ffffcc"
+      toolbarButtons={[
+        <Button key={0} onClick={() => handleCreateFactNode(props.id)}>
+          Add Fact
+        </Button>,
+        <Button
+          key={1}
+          onClick={() =>
+            dispatch(
+              openDrawer({
+                type: "question-details",
+                data: { questionId: props.id },
+              })
+            )
+          }
         >
-          <Typography variant="h6">{props.id}</Typography>
-        </Box>
-        <TextField
-          inputRef={inputRef}
-          id="text"
-          name="text"
-          value={props.data?.title || ""}
-          onChange={onChange}
-          size="small"
-          sx={{ backgroundColor: "background.default", borderRadius: "4px" }}
-          variant="standard"
-          // InputProps={{ disableUnderline: true }}
-        />
-      </Box>
-      <Handle id="top-target" type="target" position={Position.Top} />
-      <Handle id="top-source" type="source" position={Position.Top} />
-      <Handle id="bottom-target" type="target" position={Position.Bottom} />
-      <Handle id="bottom-source" type="source" position={Position.Bottom} />
-      <Handle id="left-target" type="target" position={Position.Left} />
-      <Handle id="right-source" type="source" position={Position.Right} />
-    </Box>
+          Details
+        </Button>,
+        <Button key={2} onClick={handleDelete}>
+          Delete
+        </Button>,
+      ]}
+      onChange={handleChange}
+    />
   );
 }
 

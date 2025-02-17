@@ -7,7 +7,8 @@ export type DrawerType =
   | ""
   | "question-details"
   | "fact-details"
-  | "constraints";
+  | "constraints"
+  | "export";
 
 export type DrawerPosition = "left" | "right" | "top" | "bottom";
 

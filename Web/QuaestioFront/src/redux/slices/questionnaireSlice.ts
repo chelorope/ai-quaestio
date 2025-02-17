@@ -9,7 +9,30 @@ import {
   completeQuestionnaire,
 } from "../thunks/questionnaireThunks";
 
-const initialState = {
+interface QuestionaireState {
+  name: string;
+  author: string;
+  reference: string;
+  questions: Record<string, Question>;
+  selectedQuestion: string;
+  facts: Record<string, Fact>;
+  selectedFact: string;
+  answeredFacts: Record<string, boolean>;
+  mandatoryFactsAnswered: boolean;
+  factInspectorOpen: boolean;
+}
+
+interface Question {
+  description: string;
+  facts: string[];
+}
+
+interface Fact {
+  value: boolean;
+  description: string;
+}
+
+const initialState: QuestionaireState = {
   name: "",
   author: "",
   reference: "",
@@ -22,7 +45,7 @@ const initialState = {
   factInspectorOpen: false,
 };
 
-const setInitialState = (state) => {
+const setInitialState = (state: QuestionaireState) => {
   state.name = initialState.name;
   state.author = initialState.author;
   state.reference = initialState.reference;
@@ -34,7 +57,7 @@ const setInitialState = (state) => {
   state.mandatoryFactsAnswered = initialState.mandatoryFactsAnswered;
 };
 
-const replaceStateData = (state, data) => {
+const replaceStateData = (state: QuestionaireState, data) => {
   const { name, author, reference, mandatoryFactsAnswered, facts, questions } =
     data;
   state.name = name;
@@ -49,7 +72,7 @@ const replaceStateData = (state, data) => {
   }
 };
 
-const setAnsweredFacts = (state, question) => {
+const setAnsweredFacts = (state: QuestionaireState, question) => {
   state.answeredFacts = question.facts.reduce((acc, fact) => {
     acc[fact] = state.facts[fact].value;
     return acc;

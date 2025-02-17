@@ -1,6 +1,6 @@
 "use client";
 import FactNode from "@/components/QmlEditor/FactNode";
-import QuestionDependencyEdge from "@/components/QmlEditor/QuestionDependencyEdge";
+import DependencyEdge from "@/components/QmlEditor/DependencyEdge";
 import QuestionNode from "@/components/QmlEditor/QuestionNode";
 import {
   addQuestion,
@@ -26,9 +26,10 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { openDrawer } from "@/redux/slices/drawerSlice";
 
 const nodeTypes = { question: QuestionNode, fact: FactNode };
-const edgeTypes = { questionDependency: QuestionDependencyEdge };
+const edgeTypes = { dependency: DependencyEdge };
 
 const EditorLayout = () => {
   const dispatch = useDispatch();
@@ -54,6 +55,14 @@ const EditorLayout = () => {
     setCenter(newPosition.x, newPosition.y, { duration: 400, zoom: 1 });
   }, [setCenter, questionNodes, dispatch]);
 
+  const handleConstraintsDrawer = useCallback(() => {
+    dispatch(openDrawer({ type: "constraints" }));
+  }, [dispatch]);
+
+  const handleExportDrawer = useCallback(() => {
+    dispatch(openDrawer({ type: "export" }));
+  }, [dispatch]);
+
   return (
     <Box
       sx={{
@@ -78,8 +87,8 @@ const EditorLayout = () => {
         <Panel position="top-left">
           <ButtonGroup variant="contained" aria-label="Basic button group">
             <Button onClick={handleCreateQuestionNode}>Add Question</Button>
-            <Button>Constraints</Button>
-            <Button>Export</Button>
+            <Button onClick={handleConstraintsDrawer}>Constraints</Button>
+            <Button onClick={handleExportDrawer}>Export</Button>
           </ButtonGroup>
         </Panel>
         <Background

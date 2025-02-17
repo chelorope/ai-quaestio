@@ -45,8 +45,9 @@ export default function SelectableCardList({
             {showIcon && (
               <Avatar>
                 <Typography>
-                  {itemPrefix}
-                  {item.id + 1}
+                  {typeof item.id === "string"
+                    ? item.id
+                    : `${itemPrefix}${item.id + 1}`}
                 </Typography>
               </Avatar>
             )}
