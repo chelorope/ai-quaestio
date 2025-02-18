@@ -12,7 +12,14 @@ import {
   selectQuestions,
 } from "@/redux/slices/flowSlice";
 import { useTheme } from "@emotion/react";
-import { Box, Button, ButtonGroup } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Collapse,
+  Paper,
+  Typography,
+} from "@mui/material";
 import {
   ReactFlow,
   Background,
@@ -27,6 +34,7 @@ import "@xyflow/react/dist/style.css";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openDrawer } from "@/redux/slices/drawerSlice";
+import Legend from "@/components/QmlEditor/Legend";
 
 const nodeTypes = { question: QuestionNode, fact: FactNode };
 const edgeTypes = { dependency: DependencyEdge };
@@ -91,13 +99,16 @@ const EditorLayout = () => {
             <Button onClick={handleExportDrawer}>Export</Button>
           </ButtonGroup>
         </Panel>
+        <Panel position="bottom-left">
+          <Legend />
+        </Panel>
         <Background
           color="#888"
           gap={16}
           size={1}
           variant={BackgroundVariant.Dots}
         />
-        <Controls />
+        <Controls orientation="horizontal" style={{ marginBottom: "160px" }} />
       </ReactFlow>
     </Box>
   );

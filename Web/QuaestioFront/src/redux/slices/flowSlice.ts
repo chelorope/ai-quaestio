@@ -112,7 +112,6 @@ export const flow = createSlice({
         source: action.payload.parentId,
         targetHandle: "left-target",
         target: newId,
-        animated: true,
       };
       state.edges = addEdge(factEdge, state.edges);
     },
