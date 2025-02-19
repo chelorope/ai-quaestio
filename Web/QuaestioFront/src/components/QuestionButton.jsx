@@ -2,20 +2,20 @@ import { useMemo } from "react";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-import { useDispatch, useSelector } from "react-redux";
 import {
   answerQuestion,
   rollbackQuestion,
 } from "@/redux/thunks/questionnaireThunks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 export default function QuestionButton({ sx }) {
-  const dispatch = useDispatch();
-  const questions = useSelector((state) => state.questionnaire.questions);
-  const facts = useSelector((state) => state.questionnaire.facts);
-  const selectedQuestion = useSelector(
+  const dispatch = useAppDispatch();
+  const questions = useAppSelector((state) => state.questionnaire.questions);
+  const facts = useAppSelector((state) => state.questionnaire.facts);
+  const selectedQuestion = useAppSelector(
     (state) => state.questionnaire.selectedQuestion
   );
-  const answeredFacts = useSelector(
+  const answeredFacts = useAppSelector(
     (state) => state.questionnaire.answeredFacts
   );
 

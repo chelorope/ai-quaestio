@@ -12,10 +12,10 @@ export default function DetailsDrawer({
   guidelines,
   onGuidelinesChange,
 }: {
-  isDefault: boolean;
-  onDefaultChange: (value: boolean) => void;
-  isMandatory: boolean;
-  onMandatoryChange: (value: boolean) => void;
+  isDefault?: boolean;
+  onDefaultChange?: (value: boolean) => void;
+  isMandatory?: boolean;
+  onMandatoryChange?: (value: boolean) => void;
   title: string;
   onTitleChange: (value: string) => void;
   guidelines: string;
@@ -38,7 +38,7 @@ export default function DetailsDrawer({
         alignItems: "flex-start",
       }}
     >
-      {isMandatory !== undefined ? (
+      {isMandatory !== undefined && onMandatoryChange ? (
         <FormControlLabel
           sx={{ mb: 1 }}
           control={<Switch />}
@@ -49,7 +49,7 @@ export default function DetailsDrawer({
           }
         />
       ) : null}
-      {isDefault !== undefined ? (
+      {isDefault !== undefined && onDefaultChange ? (
         <FormControlLabel
           sx={{ mb: 3 }}
           control={<Switch />}

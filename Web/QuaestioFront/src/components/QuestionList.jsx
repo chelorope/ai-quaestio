@@ -38,7 +38,9 @@ export default function QuestionsList({ type, sx }) {
 
   const handleListItemClick = useMemo(
     (event, questionId) => {
-      dispatch(setSelectedQuestion(questionId));
+      if (questionId) {
+        dispatch(setSelectedQuestion(questionId));
+      }
     },
     [dispatch]
   );
