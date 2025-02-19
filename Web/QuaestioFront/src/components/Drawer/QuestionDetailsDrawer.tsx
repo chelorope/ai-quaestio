@@ -18,7 +18,7 @@ export default function QuestionDetailsDrawer({
 }) {
   const dispatch = useDispatch();
   const question = useAppSelector(selectQuestion(questionId));
-  console.log("question", question, questionId);
+
   const handleTitleChange = (event) => {
     dispatch(
       updateQuestionTitle({ title: event.target.value, id: questionId })

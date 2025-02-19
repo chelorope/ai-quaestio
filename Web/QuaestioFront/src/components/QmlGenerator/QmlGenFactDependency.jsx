@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import SelectableCardList from "./SelectableCardList";
+import SelectableCardList from "./SelectableCardList.tsx";
 import {
   selectFactDependencies,
   selectRestFacts,

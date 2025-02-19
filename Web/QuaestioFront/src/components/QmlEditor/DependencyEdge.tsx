@@ -4,12 +4,8 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import {
   BaseEdge,
   EdgeLabelRenderer,
-  getBezierPath,
   getSimpleBezierPath,
-  getStraightPath,
-  useReactFlow,
 } from "@xyflow/react";
-import { useEffect, useState } from "react";
 
 const DEFAULT_MARKER_END = "url('#outlined-marker')";
 
@@ -24,25 +20,18 @@ export default function DependencyEdge({
   data,
 }) {
   const dispatch = useAppDispatch();
-  const { setEdges } = useReactFlow();
   const [edgePath, labelX, labelY] = getSimpleBezierPath({
     sourceX,
     sourceY,
     targetX,
     targetY,
   });
-  console.log("DATA", data);
+
   const handleTypeChange = (type) => {
     if (type !== null) {
       dispatch(updateDependencyEdgeType({ id, type }));
     }
   };
-
-  useEffect(() => {
-    setEdges((es) =>
-      es.map((e) => (e.id !== id ? e : { ...e, selected: true }))
-    );
-  }, [id, setEdges]);
 
   return (
     <>

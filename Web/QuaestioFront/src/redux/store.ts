@@ -6,6 +6,7 @@ import flowReducer from "./slices/flowSlice";
 import drawerReducer from "./slices/drawerSlice";
 import qmlGeneratorReducer from "./slices/qmlGeneratorSlice";
 import qmlGeneratorPersistanceMiddleware from "./middlewares/qmlGeneratorPersistanceMiddleware";
+import flowPersistanceMiddleware from "./middlewares/flowPersistanceMiddleware";
 
 export const makeStore = () => {
   return configureStore({
@@ -17,9 +18,9 @@ export const makeStore = () => {
       drawer: drawerReducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().prepend(
-        qmlGeneratorPersistanceMiddleware.middleware
-      ),
+      getDefaultMiddleware()
+        .prepend(qmlGeneratorPersistanceMiddleware.middleware)
+        .prepend(flowPersistanceMiddleware.middleware),
   });
 };
 

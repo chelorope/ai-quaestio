@@ -11,13 +11,27 @@ import {
   Box,
 } from "@mui/material";
 
+interface SelectableCardListProps {
+  // TODO: Define the type of the items array
+  items: {
+    id: string;
+    description: string;
+    mandatory?: boolean;
+    default?: boolean;
+  }[];
+  selected?: boolean[];
+  onSelect: (id: string) => void;
+  itemPrefix?: string;
+  showIcon?: boolean;
+}
+
 export default function SelectableCardList({
   items = [],
   selected = [],
   onSelect = () => {},
   itemPrefix = "F",
   showIcon = true,
-}) {
+}: SelectableCardListProps) {
   return items.map((item) => {
     const isSelected = selected[item.id];
     return (
@@ -51,7 +65,7 @@ export default function SelectableCardList({
                 </Typography>
               </Avatar>
             )}
-            <Typography sx={{ ml: 1 }} vatiant="body2" textOverflow="ellipsis">
+            <Typography sx={{ ml: 1 }} variant="body2" textOverflow="ellipsis">
               {item.description}
             </Typography>
           </Box>

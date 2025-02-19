@@ -1,14 +1,15 @@
 import React, { memo, useCallback, useEffect, useRef } from "react";
 import { Node, NodeProps, useReactFlow } from "@xyflow/react";
 import { Button } from "@mui/material";
-import { useDispatch } from "react-redux";
 import {
   addFact,
   removeQuestion,
+  selectQuestionFacts,
   updateQuestionTitle,
 } from "@/redux/slices/flowSlice";
 import { openDrawer } from "@/redux/slices/drawerSlice";
 import BaseNode from "./BaseNode";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 export type QuestionNode = Node<
   {
@@ -20,9 +21,10 @@ export type QuestionNode = Node<
 
 function QuestionNode(props: NodeProps<QuestionNode>) {
   const inputRef = useRef<HTMLInputElement>();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const questionFacts = useAppSelector(selectQuestionFacts(props.id));
 
-  const { getNode, setCenter } = useReactFlow();
+  const { setCenter } = useReactFlow();
 
   const handleChange = (value: string) => {
     dispatch(updateQuestionTitle({ title: value, id: props.id }));
@@ -30,21 +32,22 @@ function QuestionNode(props: NodeProps<QuestionNode>) {
 
   const handleDelete = () => {
     dispatch(removeQuestion(props.id));
-    console.log("Deleting", props);
   };
 
   useEffect(() => {
-    console.log("Current Text", inputRef.current);
     inputRef.current?.focus();
   }, []);
 
   const handleCreateFactNode = useCallback(
     (questionId) => {
-      const questionNode = getNode(questionId);
-      const newPosition = {
-        x: 350,
-        y: 0,
-      };
+      const lastSibling = questionFacts[questionFacts.length - 1];
+
+      const newPosition = lastSibling
+        ? {
+            x: lastSibling?.position?.x,
+            y: lastSibling?.position?.y + 100,
+          }
+        : { x: 350, y: 0 };
       dispatch(
         addFact({
           parentId: questionId,
@@ -52,15 +55,21 @@ function QuestionNode(props: NodeProps<QuestionNode>) {
         })
       );
       setCenter(
-        (questionNode?.position?.x || 0) + newPosition.x,
-        (questionNode?.position?.y || 0) + newPosition.y,
+        newPosition.x + props.positionAbsoluteX,
+        newPosition.y + props.positionAbsoluteY,
         {
           duration: 400,
           zoom: 1,
         }
       );
     },
-    [getNode, setCenter, dispatch]
+    [
+      setCenter,
+      dispatch,
+      questionFacts,
+      props.positionAbsoluteX,
+      props.positionAbsoluteY,
+    ]
   );
 
   return (

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
@@ -31,9 +31,9 @@ export default function RootLayout({ children }) {
     setColorMode(mode);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const mode = localStorage.getItem("colorMode");
-    mode && setColorMode(mode);
+    if (mode) setColorMode(mode);
   }, []);
 
   return (

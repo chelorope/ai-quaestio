@@ -86,7 +86,14 @@ export default function QuestionsList({ type, sx }) {
         );
       }
     },
-    [type, displayedQuestions]
+    [
+      type,
+      displayedQuestions,
+      selectedQuestion,
+      questions,
+      dispatch,
+      handleListItemClick,
+    ]
   );
 
   return (

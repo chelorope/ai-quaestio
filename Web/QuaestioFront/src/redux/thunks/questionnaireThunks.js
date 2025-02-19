@@ -49,7 +49,7 @@ export const exportQuestionnaire = createAsyncThunk(
       aElement.click();
       URL.revokeObjectURL(href);
     } catch (error) {
-      console.log("ERROR", error);
+      console.error("ERROR", error);
     }
   }
 );

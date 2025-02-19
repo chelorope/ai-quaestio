@@ -8,7 +8,7 @@ import { IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { openModal } from "@/redux/slices/modalSlice";
-import { resetState } from "@/redux/slices/qmlGeneratorSlice";
+import { resetState } from "@/redux/slices/flowSlice";
 
 export default function NavMenu() {
   const dispatch = useDispatch();
@@ -64,7 +64,7 @@ export default function NavMenu() {
       >
         {options.map((option, index) => (
           <MenuItem
-            key={option}
+            key={index}
             selected={index === selectedIndex}
             onClick={() => handleMenuItemClick(option.action, index)}
           >

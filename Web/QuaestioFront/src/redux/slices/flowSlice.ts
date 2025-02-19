@@ -5,38 +5,59 @@ import {
   applyEdgeChanges,
   Node,
   Edge,
-  MarkerType,
 } from "@xyflow/react";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { isBrowser } from "@/utils";
 
 interface FlowState {
+  viewport: { x: number; y: number; zoom: number };
   questions: Node[];
   facts: Node[];
   edges: Edge[];
   constraints: string;
+  fileDetails: {
+    author: string;
+    name: string;
+    reference: string;
+  };
 }
 
 const initialState: FlowState = {
+  viewport: { x: 0, y: 0, zoom: 1 },
   questions: [],
   facts: [],
   edges: [],
   constraints: "",
+  fileDetails: {
+    author: "",
+    name: "",
+    reference: "",
+  },
 };
 
-interface AddEdgePayload {
-  source: string;
-  target: string;
-}
+// interface AddEdgePayload {
+//   source: string;
+//   target: string;
+// }
 
 // const getInitialQuestion = ({ id, ...flowProps }: Node): Node => ({
 //   id,
 //   ...flowProps,
 // });
 
+const persistedState = isBrowser() && localStorage.getItem("flow");
+
+const getInitialState = (initial?: boolean) =>
+  JSON.parse(
+    persistedState && !initial ? persistedState : JSON.stringify(initialState)
+  );
+
 export const flow = createSlice({
   name: "flow",
-  initialState,
+  initialState: getInitialState(),
   reducers: {
+    resetState: () => {
+      return getInitialState(true);
+    },
     // EDGE REDUCERS
     setEdges: (state, action) => {
       state.edges = action.payload;
@@ -99,8 +120,10 @@ export const flow = createSlice({
       console.log("addFact", action.payload);
       const lastId = state.facts[state.facts.length - 1]?.id || "F0";
       const newId = `F${Number(lastId.replace("F", "")) + 1}`;
+
       const newNode = {
         ...action.payload,
+        position: action.payload.position,
         id: newId,
         type: "fact",
         data: { title: "", guidelines: "", mandatory: false, default: false },
@@ -152,7 +175,9 @@ export const flow = createSlice({
     },
 
     // FLOW CALLBACK REDUCERS
-
+    onViewportChange: (state, action) => {
+      state.viewport = action.payload;
+    },
     onNodesChange: (state, action) => {
       state.questions = applyNodeChanges(action.payload, state.questions);
       state.facts = applyNodeChanges(action.payload, state.facts);
@@ -189,6 +214,7 @@ export const flow = createSlice({
         (sourceNode.type === "fact" && targetNode.type === "fact")
       ) {
         action.payload.type = "dependency";
+        action.payload.selected = true;
         action.payload.data = { type: "full" };
         // action.payload.markerEnd = {
         //   type: MarkerType.Arrow,
@@ -204,11 +230,16 @@ export const flow = createSlice({
     updateConstraints: (state, action) => {
       state.constraints = action.payload;
     },
+    updateFileDetails: (state, action) => {
+      state.fileDetails = action.payload;
+    },
   },
 });
 
 export const {
+  resetState,
   // Flow
+  onViewportChange,
   onNodesChange,
   onEdgesChange,
   onConnect,
@@ -228,6 +259,7 @@ export const {
   removeFact,
   // Questionaire
   updateConstraints,
+  updateFileDetails,
 } = flow.actions;
 
 // The function below is called a selector and allows us to select a value from
@@ -254,6 +286,13 @@ export const selectFact = (factId) =>
     return facts.find((fact) => fact.id === factId);
   });
 
+export const selectQuestionFacts = (questionId) =>
+  createSelector([selectFacts], (facts) => {
+    return facts.filter((fact) => fact.parentId === questionId);
+  });
+
 export const selectConstraints = (state) => state.flow.constraints;
+
+export const selectViewport = (state) => state.flow.viewport;
 
 export default flow.reducer;

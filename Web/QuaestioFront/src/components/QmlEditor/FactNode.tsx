@@ -24,7 +24,6 @@ function FactNode(props: FactNode) {
 
   const handleFactDetails = () => {
     dispatch(openDrawer({ type: "fact-details", data: { factId: props.id } }));
-    console.log("Fact details");
   };
 
   const handleDeleteFact = () => {

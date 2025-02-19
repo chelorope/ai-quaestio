@@ -24,7 +24,7 @@ export default function QuestionsTab() {
     if (selectedQuestionId === undefined) {
       dispatch(setSelectedQuestion(0));
     }
-  }, []);
+  }, [dispatch, selectedQuestionId]);
   return (
     <Box
       display="flex"

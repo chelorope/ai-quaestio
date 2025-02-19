@@ -23,17 +23,15 @@ export default function ConstraintsDrawer() {
   const constraints = useAppSelector(selectConstraints);
   const facts = useAppSelector(selectFacts);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleConstraintInsertFact = (item) => {
-    console.log("Insert Fact", item);
     const newConstraints = constraints + item;
     dispatch(updateConstraints(newConstraints));
     inputRef.current?.focus();
   };
 
   const handleConstraintInsertOperator = (item) => {
-    console.log("Insert Operator", item);
     const newConstraints = constraints + item;
     dispatch(updateConstraints(newConstraints));
     inputRef.current?.focus();

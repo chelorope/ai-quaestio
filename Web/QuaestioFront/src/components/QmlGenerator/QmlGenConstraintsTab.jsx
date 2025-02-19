@@ -4,7 +4,7 @@ import {
 } from "@/redux/slices/qmlGeneratorSlice";
 import { Box, Paper, TextField, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import SelectableCardList from "./SelectableCardList";
+import SelectableCardList from "./SelectableCardList.tsx";
 import { useRef } from "react";
 
 const operators = [

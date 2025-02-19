@@ -7,19 +7,14 @@ import {
   onConnect,
   onEdgesChange,
   onNodesChange,
+  onViewportChange,
   selectEdges,
   selectNodes,
   selectQuestions,
+  selectViewport,
 } from "@/redux/slices/flowSlice";
 import { useTheme } from "@emotion/react";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Collapse,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Button, ButtonGroup } from "@mui/material";
 import {
   ReactFlow,
   Background,
@@ -43,6 +38,7 @@ const EditorLayout = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
 
+  const viewport = useSelector(selectViewport);
   const edges = useSelector(selectEdges);
   const nodes = useSelector(selectNodes);
   const questionNodes = useSelector(selectQuestions);
@@ -82,6 +78,7 @@ const EditorLayout = () => {
       }}
     >
       <ReactFlow
+        viewport={viewport}
         colorMode={theme.palette.mode}
         nodes={nodes}
         edges={edges}
@@ -90,7 +87,9 @@ const EditorLayout = () => {
         onNodesChange={(e) => dispatch(onNodesChange(e))}
         onEdgesChange={(e) => dispatch(onEdgesChange(e))}
         onConnect={(e) => dispatch(onConnect(e))}
+        onViewportChange={(e) => dispatch(onViewportChange(e))}
         fitView
+        snapToGrid={true}
       >
         <Panel position="top-left">
           <ButtonGroup variant="contained" aria-label="Basic button group">

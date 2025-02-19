@@ -25,7 +25,11 @@ export default function NavBar({ colorMode, setColorMode }) {
             >
               Quaestio
             </Button>
-            <Button LinkComponent={Link} href="/qml" sx={{ color: "grey.100" }}>
+            <Button
+              LinkComponent={Link}
+              href="/editor"
+              sx={{ color: "grey.100" }}
+            >
               QML Editor
             </Button>
           </Box>

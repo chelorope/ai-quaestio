@@ -20,7 +20,7 @@ export default function FactsTab() {
     if (selectedFactId === undefined) {
       dispatch(setSelectedFact(0));
     }
-  }, []);
+  }, [dispatch, selectedFactId]);
   return (
     <Box
       display="flex"

@@ -1,9 +1,6 @@
-import React, { memo, useEffect, useMemo, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { Handle, NodeToolbar, Position } from "@xyflow/react";
 import { Avatar, Box, ButtonGroup, TextField, Typography } from "@mui/material";
-
-const FONT_SIZE = 15;
-const DEFAULT_INPUT_WIDTH = 200;
 
 interface BaseNodeProps {
   id: string;
@@ -23,17 +20,8 @@ function BaseNode(props: BaseNodeProps) {
   };
 
   useEffect(() => {
-    console.log("Current Text", inputRef.current);
     inputRef.current?.focus();
   }, []);
-
-  const inputWidth = useMemo(() => {
-    if (props.value.length * FONT_SIZE > DEFAULT_INPUT_WIDTH) {
-      return props.value.length * FONT_SIZE;
-    } else {
-      return DEFAULT_INPUT_WIDTH;
-    }
-  }, [props.value]);
 
   return (
     <Box

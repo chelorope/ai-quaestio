@@ -16,7 +16,7 @@ interface Drawer {
   open: boolean;
   type: DrawerType;
   position: DrawerPosition;
-  data?: object | null;
+  data?: Record<string, string> | null;
 }
 
 const initialState: Drawer = {
@@ -29,7 +29,7 @@ const initialState: Drawer = {
 interface OpenSideDrawerPayload {
   type: DrawerType;
   position?: DrawerPosition;
-  data?: object | null;
+  data?: Record<string, string> | null;
 }
 
 export const drawerSlice = createSlice({

@@ -6,15 +6,15 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { useDispatch } from "react-redux";
 import { closeModal } from "@/redux/slices/modalSlice";
 import { openQuestionnaire } from "@/redux/thunks/questionnaireThunks";
-import { loadQMLFile } from "@/redux/thunks/qmlGeneratorThunks";
+// import { loadQMLFile } from "@/redux/thunks/flowThunks";
 
-const readFile = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (event) => resolve(event.target.result);
-    reader.onerror = reject;
-    reader.readAsText(file);
-  });
+// const readFile = (file) =>
+//   new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.onload = (event) => resolve(event.target.result);
+//     reader.onerror = reject;
+//     reader.readAsText(file);
+//   });
 
 export default function FileModal() {
   const dispatch = useDispatch();
@@ -29,8 +29,8 @@ export default function FileModal() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Load the file into QML Editor
-    const qmlText = await readFile(inputRef.current.files[0]);
-    dispatch(loadQMLFile(qmlText));
+    // const qmlText = await readFile(inputRef.current.files[0]);
+    // dispatch(loadQMLFile(qmlText));
 
     // Send the file to the server
     const data = new FormData(event.target);

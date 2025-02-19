@@ -54,7 +54,7 @@ export default function TabsView({ tabs, type = "default" }) {
           </ToggleButtonGroup>
         );
     }
-  }, [tabs, currentTab]);
+  }, [tabs, currentTab, type]);
 
   return (
     <>

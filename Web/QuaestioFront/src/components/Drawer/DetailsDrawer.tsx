@@ -44,7 +44,9 @@ export default function DetailsDrawer({
           control={<Switch />}
           label="Mandatory"
           checked={isMandatory}
-          onChange={(event) => onMandatoryChange(event.target.checked)}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            onMandatoryChange(event.target.checked)
+          }
         />
       ) : null}
       {isDefault !== undefined ? (
@@ -53,7 +55,9 @@ export default function DetailsDrawer({
           control={<Switch />}
           label="Default"
           checked={isDefault}
-          onChange={(event) => onDefaultChange(event.target.checked)}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            onDefaultChange(event.target.checked)
+          }
         />
       ) : null}
       <TextField
