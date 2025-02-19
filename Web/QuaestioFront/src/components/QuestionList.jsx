@@ -21,25 +21,27 @@ const questionType = {
 export default function QuestionsList({ type, sx }) {
   const dispatch = useDispatch();
   const questions = useSelector((state) => state.questionnaire.questions);
-  const displayedQuestions = useMemo(() =>
-    Object.values(questions).filter(
-      (question) => {
+  const displayedQuestions = useMemo(
+    () =>
+      Object.values(questions).filter((question) => {
         if (type === questionType.ANSWERED && question.answered) {
           return question;
         } else if (type === questionType.VALID && !question.answered) {
           return question;
         }
-      },
-      [questions, type]
-    )
+      }),
+    [questions, type]
   );
   const selectedQuestion = useSelector(
     (state) => state.questionnaire.selectedQuestion
   );
 
-  const handleListItemClick = (event, questionId) => {
-    dispatch(setSelectedQuestion(questionId));
-  };
+  const handleListItemClick = useMemo(
+    (event, questionId) => {
+      dispatch(setSelectedQuestion(questionId));
+    },
+    [dispatch]
+  );
 
   const getContent = useMemo(
     // eslint-disable-next-line react/display-name
@@ -86,14 +88,7 @@ export default function QuestionsList({ type, sx }) {
         );
       }
     },
-    [
-      type,
-      displayedQuestions,
-      selectedQuestion,
-      questions,
-      dispatch,
-      handleListItemClick,
-    ]
+    [type, displayedQuestions, selectedQuestion, questions, handleListItemClick]
   );
 
   return (
