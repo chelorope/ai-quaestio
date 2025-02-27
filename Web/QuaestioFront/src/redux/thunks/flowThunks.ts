@@ -1,4 +1,15 @@
+import { getLayoutedElements } from "@/lib/elk";
 import { create } from "xmlbuilder2";
+import {
+  selectEdges,
+  selectFacts,
+  selectNodes,
+  selectQuestions,
+  setEdges,
+  setFacts,
+  setNodes,
+  setQuestions,
+} from "../slices/flowSlice";
 // import { getInitialState, setState } from "../slices/flowSlice";
 
 // const indexFromId = (str) => Number(str.match(/\d+/)[0]) - 1;
@@ -185,3 +196,27 @@ export const exportQMLFile = () => async (_, getState) => {
 //   };
 //   dispatch(setState(qmlEditorState));
 // };
+
+export const flowLayout =
+  (direction: "DOWN" | "RIGHT") => (dispatch, getState) => {
+    const state = getState();
+    const questions = selectQuestions(state);
+    const facts = selectFacts(state);
+    const edges = selectEdges(state);
+    const opts = { "elk.direction": direction };
+    console.log("FLOW LAYOUT", questions, facts, edges, opts);
+
+    const clonedQuestions = JSON.parse(JSON.stringify(questions));
+    const clonedFacts = JSON.parse(JSON.stringify(facts));
+    const clonedEdges = JSON.parse(JSON.stringify(edges));
+
+    getLayoutedElements(clonedQuestions, clonedFacts, clonedEdges, opts).then(
+      ({ nodes: layoutedNodes, edges: layoutedEdges }) => {
+        console.log("LAYOUTED", layoutedNodes, layoutedEdges);
+        dispatch(setNodes(layoutedNodes));
+        dispatch(setEdges(layoutedEdges));
+
+        // window.requestAnimationFrame(() => fitView());
+      }
+    );
+  };

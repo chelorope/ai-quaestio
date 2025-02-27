@@ -71,8 +71,24 @@ export const flow = createSlice({
       });
     },
 
-    // QUESTION REDUCERS
+    setNodes: (state, action) => {
+      const questions = [] as Node[];
+      const facts = [] as Node[];
+      action.payload.forEach((node) => {
+        if (node.type === "question") {
+          questions.push(node);
+        } else {
+          facts.push(node);
+        }
+      });
+      state.questions = questions;
+      state.facts = facts;
+    },
 
+    // QUESTION REDUCERS
+    setQuestions: (state, action) => {
+      state.questions = action.payload;
+    },
     addQuestion: (state, action) => {
       const lastId = state.questions[state.questions.length - 1]?.id || "Q0";
       const newId = `Q${Number(lastId.replace("Q", "")) + 1}`;
@@ -115,7 +131,9 @@ export const flow = createSlice({
     },
 
     // FACTS REDUCERS
-
+    setFacts: (state, action) => {
+      state.facts = action.payload;
+    },
     addFact: (state, action) => {
       console.log("addFact", action.payload);
       const lastId = state.facts[state.facts.length - 1]?.id || "F0";
@@ -179,6 +197,7 @@ export const flow = createSlice({
       state.viewport = action.payload;
     },
     onNodesChange: (state, action) => {
+      console.log("onNodesChange", action.payload);
       state.questions = applyNodeChanges(action.payload, state.questions);
       state.facts = applyNodeChanges(action.payload, state.facts);
     },
@@ -243,14 +262,17 @@ export const {
   onNodesChange,
   onEdgesChange,
   onConnect,
+  setNodes,
   setEdges,
   updateDependencyEdgeType,
   // Questions,
+  setQuestions,
   addQuestion,
   updateQuestionTitle,
   updateQuestionGuidelines,
   removeQuestion,
   // Facts
+  setFacts,
   addFact,
   updateFactTitle,
   updateFactGuidelines,

@@ -26,10 +26,11 @@ import {
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
-import { useCallback } from "react";
+import { useCallback, useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openDrawer } from "@/redux/slices/drawerSlice";
 import Legend from "@/components/QmlEditor/Legend";
+import { flowLayout } from "@/redux/thunks/flowThunks";
 
 const nodeTypes = { question: QuestionNode, fact: FactNode };
 const edgeTypes = { dependency: DependencyEdge };
@@ -37,13 +38,12 @@ const edgeTypes = { dependency: DependencyEdge };
 const EditorLayout = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { setCenter, fitView } = useReactFlow();
 
   const viewport = useSelector(selectViewport);
   const edges = useSelector(selectEdges);
   const nodes = useSelector(selectNodes);
   const questionNodes = useSelector(selectQuestions);
-
-  const { setCenter } = useReactFlow();
 
   const handleCreateQuestionNode = useCallback(() => {
     const newPosition = {
@@ -66,6 +66,19 @@ const EditorLayout = () => {
   const handleExportDrawer = useCallback(() => {
     dispatch(openDrawer({ type: "export" }));
   }, [dispatch]);
+
+  const handleLayout = useCallback(
+    async ({ direction } = {}) => {
+      await dispatch(flowLayout(direction));
+      // window.requestAnimationFrame(() => fitView());
+    },
+    [dispatch]
+  );
+
+  // Calculate the initial layout on mount.
+  useLayoutEffect(() => {
+    handleLayout({});
+  }, [handleLayout]);
 
   return (
     <Box
@@ -96,6 +109,7 @@ const EditorLayout = () => {
             <Button onClick={handleCreateQuestionNode}>Add Question</Button>
             <Button onClick={handleConstraintsDrawer}>Constraints</Button>
             <Button onClick={handleExportDrawer}>Export</Button>
+            <Button onClick={() => handleLayout()}>Layout</Button>
           </ButtonGroup>
         </Panel>
         <Panel position="bottom-left">

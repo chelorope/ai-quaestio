@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { isBrowser } from "../../utils";
+import { isBrowser } from "@/utils";
 
 const initialQuestion = {
   description: "",
