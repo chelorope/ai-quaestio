@@ -149,7 +149,6 @@ export const flow = createSlice({
       state.facts = action.payload;
     },
     addFact: (state, action) => {
-      console.log("addFact", action.payload);
       const lastId = state.facts[state.facts.length - 1]?.id || "F0";
       const newId = `F${Number(lastId.replace("F", "")) + 1}`;
 
@@ -224,7 +223,6 @@ export const flow = createSlice({
       state.viewport = action.payload;
     },
     onNodesChange: (state, action) => {
-      console.log("onNodesChange", action.payload);
       state.questions = applyNodeChanges(action.payload, state.questions);
       state.facts = applyNodeChanges(action.payload, state.facts);
     },
@@ -239,8 +237,6 @@ export const flow = createSlice({
       const targetNode = nodes.find(
         (node) => action.payload.target === node.id
       );
-
-      console.log("handle onConnect", action.payload, sourceNode, targetNode);
 
       // Connections rules
       if (

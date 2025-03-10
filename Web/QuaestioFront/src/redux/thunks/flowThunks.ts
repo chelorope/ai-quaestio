@@ -6,8 +6,7 @@ import {
   selectFacts,
   selectQuestions,
   setEdges,
-  setFacts,
-  setQuestions,
+  setNodes,
   setState,
 } from "../slices/flowSlice";
 import { Position } from "@xyflow/react";
@@ -89,8 +88,6 @@ export const exportQMLFile = () => async (_, getState) => {
       questionsMap[edge.source].facts += ` #${edge.target.toLowerCase()}`;
     }
   });
-
-  console.log("EXPORT: ", questions, facts, edges, fileDetails, constraints);
 
   // Build XML object from state
   const XMLObj = {
@@ -283,8 +280,6 @@ export const loadQMLFile = (file) => async (dispatch) => {
     reference: qmlObject["@reference"],
     author: qmlObject["@author"],
   };
-
-  console.log("LOAD: ", qmlEditorState);
   dispatch(setState(qmlEditorState));
 };
 
@@ -303,8 +298,9 @@ export const flowLayout =
     getLayoutedElements(clonedQuestions, clonedFacts, clonedEdges, opts).then(
       (graph) => {
         if (!graph) return;
-        dispatch(setQuestions(graph.questions));
-        dispatch(setFacts(graph.facts));
+        dispatch(setNodes(graph.nodes));
+        // dispatch(setQuestions(graph.questions));
+        // dispatch(setFacts(graph.facts));
         dispatch(setEdges(graph.edges));
 
         // window.requestAnimationFrame(() => fitView());

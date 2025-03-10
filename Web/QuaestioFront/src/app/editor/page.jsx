@@ -45,10 +45,6 @@ const EditorLayout = () => {
   const nodes = useSelector(selectNodes);
   const questionNodes = useSelector(selectQuestions);
 
-  console.log("nodes", nodes);
-  console.log("edges", edges);
-  console.log("questionNodes", questionNodes);
-
   const handleCreateQuestionNode = useCallback(() => {
     const newPosition = {
       ...(questionNodes[questionNodes.length - 1]?.position || { x: 0, y: 0 }),

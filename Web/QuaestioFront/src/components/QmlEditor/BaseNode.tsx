@@ -28,7 +28,6 @@ function BaseNode(props: BaseNodeProps) {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-  console.log("Handles", props.targetHandles, props.sourceHandles);
   return (
     <Box
       display="flex"
