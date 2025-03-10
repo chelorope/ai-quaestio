@@ -30,7 +30,7 @@ export default function NavBar({ colorMode, setColorMode }) {
               href="/editor"
               sx={{ color: "grey.100" }}
             >
-              QML Editor
+              Questionaire Designer
             </Button>
           </Box>
           <Box>

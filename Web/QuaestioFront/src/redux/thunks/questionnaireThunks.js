@@ -5,7 +5,12 @@ import * as Service from "@/service";
 export const openQuestionnaire = createAsyncThunk(
   "questionnaire/openQuestionnaire",
   async (formData) => {
-    const response = await Service.openQuestionnaire(formData);
+    let response = { data: {} };
+    try {
+      response = await Service.openQuestionnaire(formData);
+    } catch (error) {
+      console.error("ERROR", error);
+    }
     return response.data;
   }
 );

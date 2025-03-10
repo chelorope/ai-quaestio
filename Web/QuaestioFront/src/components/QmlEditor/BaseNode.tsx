@@ -2,6 +2,10 @@ import React, { memo, useEffect, useRef } from "react";
 import { Handle, NodeToolbar, Position } from "@xyflow/react";
 import { Avatar, Box, ButtonGroup, TextField, Typography } from "@mui/material";
 
+export type BaseHandle = {
+  id: string;
+  position: Position;
+};
 interface BaseNodeProps {
   id: string;
   value: string;
@@ -10,6 +14,8 @@ interface BaseNodeProps {
   defaultTrue?: boolean;
   backgroundColor?: string;
   onChange: (value: string) => void;
+  targetHandles?: BaseHandle[];
+  sourceHandles?: BaseHandle[];
 }
 
 function BaseNode(props: BaseNodeProps) {
@@ -22,7 +28,7 @@ function BaseNode(props: BaseNodeProps) {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-
+  console.log("Handles", props.targetHandles, props.sourceHandles);
   return (
     <Box
       display="flex"
@@ -101,14 +107,30 @@ function BaseNode(props: BaseNodeProps) {
           </Avatar>
         )}
       </Box>
-      <Handle id="top-target" type="target" position={Position.Top} />
+      {props.targetHandles?.map((handle) => (
+        <Handle
+          key={handle.id}
+          id={handle.id}
+          type="target"
+          position={handle.position}
+        />
+      ))}
+      {props.sourceHandles?.map((handle) => (
+        <Handle
+          key={handle.id}
+          id={handle.id}
+          type="source"
+          position={handle.position}
+        />
+      ))}
+      {/* <Handle id="top-target" type="target" position={Position.Top} />
       <Handle id="top-source" type="source" position={Position.Top} />
       <Handle id="bottom-target" type="target" position={Position.Bottom} />
       <Handle id="bottom-source" type="source" position={Position.Bottom} />
       <Handle id="left-target" type="target" position={Position.Left} />
       <Handle id="left-source" type="source" position={Position.Left} />
       <Handle id="right-target" type="target" position={Position.Right} />
-      <Handle id="right-source" type="source" position={Position.Right} />
+      <Handle id="right-source" type="source" position={Position.Right} /> */}
     </Box>
   );
 }

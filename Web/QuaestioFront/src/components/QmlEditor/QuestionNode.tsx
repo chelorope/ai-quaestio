@@ -8,13 +8,15 @@ import {
   updateQuestionTitle,
 } from "@/redux/slices/flowSlice";
 import { openDrawer } from "@/redux/slices/drawerSlice";
-import BaseNode from "./BaseNode";
+import BaseNode, { BaseHandle } from "./BaseNode";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 export type QuestionNode = Node<
   {
     title: string;
     description: string;
+    targetHandles: BaseHandle[];
+    sourceHandles: BaseHandle[];
   },
   "question"
 >;
@@ -77,6 +79,8 @@ function QuestionNode(props: NodeProps<QuestionNode>) {
       id={props.id}
       value={props.data?.title}
       backgroundColor="#ffffcc"
+      targetHandles={props.data?.targetHandles}
+      sourceHandles={props.data?.sourceHandles}
       toolbarButtons={[
         <Button key={0} onClick={() => handleCreateFactNode(props.id)}>
           Add Fact

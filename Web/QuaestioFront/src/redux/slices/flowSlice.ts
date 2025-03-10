@@ -5,6 +5,7 @@ import {
   applyEdgeChanges,
   Node,
   Edge,
+  Position,
 } from "@xyflow/react";
 import { isBrowser } from "@/utils";
 
@@ -46,7 +47,7 @@ const initialState: FlowState = {
 
 const persistedState = isBrowser() && localStorage.getItem("flow");
 
-const getInitialState = (initial?: boolean) =>
+export const getInitialState = (initial?: boolean) =>
   JSON.parse(
     persistedState && !initial ? persistedState : JSON.stringify(initialState)
   );
@@ -57,6 +58,9 @@ export const flow = createSlice({
   reducers: {
     resetState: () => {
       return getInitialState(true);
+    },
+    setState: (state, action) => {
+      return action.payload;
     },
     // EDGE REDUCERS
     setEdges: (state, action) => {
@@ -96,7 +100,17 @@ export const flow = createSlice({
         ...action.payload,
         id: newId,
         type: "question",
-        data: { title: "", guidelines: "" },
+        data: {
+          title: "",
+          guidelines: "",
+          sourceHandles: [
+            { id: `${newId}-bottom-source`, position: Position.Bottom },
+            { id: `${newId}-right-source`, position: Position.Right },
+          ],
+          targetHandles: [
+            { id: `${newId}-top-target`, position: Position.Top },
+          ],
+        },
       };
 
       state.questions = applyNodeChanges(
@@ -144,14 +158,27 @@ export const flow = createSlice({
         position: action.payload.position,
         id: newId,
         type: "fact",
-        data: { title: "", guidelines: "", mandatory: false, default: false },
+        data: {
+          title: "",
+          guidelines: "",
+          mandatory: false,
+          default: false,
+          sourceHandles: [
+            { id: `${newId}-bottom-source`, position: Position.Bottom },
+          ],
+          targetHandles: [
+            { id: `${newId}-top-target`, position: Position.Top },
+            { id: `${newId}-left-target`, position: Position.Left },
+          ],
+        },
       };
       state.facts = [...state.facts, newNode];
 
       const factEdge = {
-        sourceHandle: "right-source",
+        id: `${newId}-fact-${action.payload.parentId}`,
+        sourceHandle: `${action.payload.parentId}-right-source`,
         source: action.payload.parentId,
-        targetHandle: "left-target",
+        targetHandle: `${newId}-left-target`,
         target: newId,
       };
       state.edges = addEdge(factEdge, state.edges);
@@ -221,9 +248,9 @@ export const flow = createSlice({
         (sourceNode.type === "question" && targetNode.type === "fact") ||
         sourceNode.id === targetNode.id ||
         (sourceNode.type === "question" &&
-          action.payload.sourceHandle === "right-source") ||
+          action.payload.sourceHandle.endsWith("right-source")) ||
         (sourceNode.type === "question" &&
-          action.payload.targetHandle === "right-target")
+          action.payload.targetHandle.endsWith("right-target"))
       ) {
         return;
       }
@@ -256,6 +283,7 @@ export const flow = createSlice({
 });
 
 export const {
+  setState,
   resetState,
   // Flow
   onViewportChange,

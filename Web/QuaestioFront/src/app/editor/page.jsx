@@ -26,7 +26,7 @@ import {
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
-import { useCallback, useLayoutEffect } from "react";
+import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openDrawer } from "@/redux/slices/drawerSlice";
 import Legend from "@/components/QmlEditor/Legend";
@@ -44,6 +44,10 @@ const EditorLayout = () => {
   const edges = useSelector(selectEdges);
   const nodes = useSelector(selectNodes);
   const questionNodes = useSelector(selectQuestions);
+
+  console.log("nodes", nodes);
+  console.log("edges", edges);
+  console.log("questionNodes", questionNodes);
 
   const handleCreateQuestionNode = useCallback(() => {
     const newPosition = {
@@ -70,15 +74,10 @@ const EditorLayout = () => {
   const handleLayout = useCallback(
     async ({ direction } = {}) => {
       await dispatch(flowLayout(direction));
-      // window.requestAnimationFrame(() => fitView());
+      window.requestAnimationFrame(() => fitView());
     },
-    [dispatch]
+    [dispatch, fitView]
   );
-
-  // Calculate the initial layout on mount.
-  useLayoutEffect(() => {
-    handleLayout({});
-  }, [handleLayout]);
 
   return (
     <Box

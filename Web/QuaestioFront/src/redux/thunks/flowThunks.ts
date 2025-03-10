@@ -1,31 +1,28 @@
 import { getLayoutedElements } from "@/lib/elk";
 import { create } from "xmlbuilder2";
 import {
+  getInitialState,
   selectEdges,
   selectFacts,
-  selectNodes,
   selectQuestions,
   setEdges,
   setFacts,
-  setNodes,
   setQuestions,
+  setState,
 } from "../slices/flowSlice";
-// import { getInitialState, setState } from "../slices/flowSlice";
+import { Position } from "@xyflow/react";
 
-// const indexFromId = (str) => Number(str.match(/\d+/)[0]) - 1;
-// const keysFromIds = (str) => str.split(" ").map((item) => indexFromId(item));
-// const getDependenciesFromStr = (dependencyStr) =>
-//   dependencyStr
-//     ? keysFromIds(dependencyStr).reduce((accum, item) => {
-//         accum[item] = true;
-//         return accum;
-//       }, {})
-//     : {};
+const getDependenciesFromStr = (dependencyStr = "") =>
+  dependencyStr
+    ? dependencyStr
+        .split(" ")
+        .map((item) => item.replace("#", "").toUpperCase())
+    : [];
 
 function saveFile(filename, data) {
   const blob = new Blob([data], { type: "text/csv" });
   if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveBlob(blob, filename);
+    window.navigator.msSaveBlob?.(blob, filename);
   } else {
     const elem = window.document.createElement("a");
     elem.href = window.URL.createObjectURL(blob);
@@ -89,7 +86,6 @@ export const exportQMLFile = () => async (_, getState) => {
         factsMap[edge.source].fullyDepends += ` #${edge.target.toLowerCase()}`;
       }
     } else if (isSourceQuestion && !isTargetQuestion) {
-      console.log("Questions Map", questionsMap, edge.source);
       questionsMap[edge.source].facts += ` #${edge.target.toLowerCase()}`;
     }
   });
@@ -154,7 +150,7 @@ export const exportQMLFile = () => async (_, getState) => {
   };
 
   // Generate XML string from object
-  const XMLString = create(XMLObj, { encoding: "UTF-8" }).end({
+  const XMLString = create(XMLObj as object, { encoding: "UTF-8" }).end({
     prettyPrint: true,
     allowEmptyTags: false,
   });
@@ -163,39 +159,134 @@ export const exportQMLFile = () => async (_, getState) => {
   saveFile(`${fileDetails.name}.qml`, XMLString);
 };
 
-// export const loadQMLFile = (file) => async (dispatch) => {
-//   const doc = create(file);
-//   const xmlObject = doc.end({ format: "object" });
-//   const qmlObject = xmlObject["qml:QML"];
-//   const qmlEditorState = getInitialState();
+export const loadQMLFile = (file) => async (dispatch) => {
+  const doc = create(file);
+  const xmlObject = doc.end({ format: "object" });
+  const qmlObject = xmlObject["qml:QML"];
+  const qmlEditorState = getInitialState();
 
-//   qmlObject.Question.forEach((question) => {
-//     qmlEditorState.questions[indexFromId(question["@id"])] = {
-//       description: question.description,
-//       guidelines: question.guidelines,
-//       fullyDepends: getDependenciesFromStr(question["@fullyDepends"]),
-//       partiallyDepends: getDependenciesFromStr(question["@partiallyDepends"]),
-//       facts: getDependenciesFromStr(question["@mapQF"]),
-//     };
-//   });
-//   qmlObject.Fact.forEach((fact) => {
-//     qmlEditorState.facts[indexFromId(fact["@id"])] = {
-//       description: fact.description,
-//       guidelines: fact.guidelines,
-//       mandatory: Boolean(fact.mandatory),
-//       default: Boolean(fact.default),
-//       fullyDepends: getDependenciesFromStr(fact["@fullyDepends"]),
-//       partiallyDepends: getDependenciesFromStr(fact["@partiallyDepends"]),
-//     };
-//   });
-//   qmlEditorState.constraints = qmlObject.Constraints;
-//   qmlEditorState.fileDetails = {
-//     name: qmlObject["@name"],
-//     reference: qmlObject["@reference"],
-//     author: qmlObject["@author"],
-//   };
-//   dispatch(setState(qmlEditorState));
-// };
+  qmlObject.Fact.forEach((fact) => {
+    const factId = fact["@id"]?.toUpperCase();
+
+    qmlEditorState.facts.push({
+      id: factId,
+      type: "fact",
+      position: { x: 0, y: 0 },
+      data: {
+        title: fact.description,
+        guidelines: fact.guidelines,
+        mandatory: Boolean(fact.mandatory),
+        default: Boolean(fact.default),
+        targetHandles: [
+          { id: `${factId}-top-target`, position: Position.Top },
+          { id: `${factId}-left-target`, position: Position.Left },
+        ],
+        sourceHandles: [
+          { id: `${factId}-bottom-source`, position: Position.Bottom },
+        ],
+      },
+    });
+
+    getDependenciesFromStr(fact["@fullyDepends"]).forEach((dependencyId) => {
+      qmlEditorState.edges.push({
+        id: `${dependencyId}-${factId}`,
+        type: "dependency",
+        sourceHandle: `${dependencyId}-bottom-source`,
+        source: dependencyId,
+        targetHandle: `${factId}-top-target`,
+        target: factId,
+        data: { type: "full" },
+      });
+    });
+
+    getDependenciesFromStr(fact["@partiallyDepends"]).forEach(
+      (dependencyId) => {
+        qmlEditorState.edges.push({
+          id: `${dependencyId}-${factId}`,
+          type: "dependency",
+          sourceHandle: `${dependencyId}-bottom-source`,
+          source: dependencyId,
+          targetHandle: `${factId}-top-target`,
+          target: factId,
+          data: { type: "partial" },
+        });
+      }
+    );
+  });
+
+  qmlObject.Question.forEach((question) => {
+    const questionId = question["@id"]?.toUpperCase();
+    qmlEditorState.questions.push({
+      id: questionId,
+      type: "question",
+      position: { x: 0, y: 0 },
+      data: {
+        title: question.description,
+        guidelines: question.guidelines,
+        targetHandles: [
+          { id: `${questionId}-top-target`, position: Position.Top },
+        ],
+        sourceHandles: [
+          { id: `${questionId}-bottom-source`, position: Position.Bottom },
+          { id: `${questionId}-right-source`, position: Position.Right },
+        ],
+      },
+    });
+
+    getDependenciesFromStr(question["@fullyDepends"]).forEach(
+      (dependencyId) => {
+        qmlEditorState.edges.push({
+          id: `${dependencyId}-${questionId}`,
+          type: "dependency",
+          sourceHandle: `${dependencyId}-bottom-source`,
+          source: dependencyId,
+          targetHandle: `${questionId}-top-target`,
+          target: questionId,
+          data: { type: "full" },
+        });
+      }
+    );
+
+    getDependenciesFromStr(question["@partiallyDepends"]).forEach(
+      (dependencyId) => {
+        qmlEditorState.edges.push({
+          id: `${dependencyId}-${questionId}`,
+          type: "dependency",
+          sourceHandle: `${dependencyId}-bottom-source`,
+          source: dependencyId,
+          targetHandle: `${questionId}-top-target`,
+          target: questionId,
+          data: { type: "partial" },
+        });
+      }
+    );
+
+    getDependenciesFromStr(question["@mapQF"]).forEach((factId) => {
+      qmlEditorState.edges.push({
+        id: `${questionId}-${factId}`,
+        sourceHandle: `${questionId}-right-source`,
+        source: questionId,
+        targetHandle: `${factId}-left-target`,
+        target: factId,
+      });
+
+      const fact = qmlEditorState.facts.find((fact) => fact.id === factId);
+      if (fact) {
+        fact.parentId = questionId;
+      }
+    });
+  });
+
+  qmlEditorState.constraints = qmlObject.Constraints;
+  qmlEditorState.fileDetails = {
+    name: qmlObject["@name"],
+    reference: qmlObject["@reference"],
+    author: qmlObject["@author"],
+  };
+
+  console.log("LOAD: ", qmlEditorState);
+  dispatch(setState(qmlEditorState));
+};
 
 export const flowLayout =
   (direction: "DOWN" | "RIGHT") => (dispatch, getState) => {
@@ -204,17 +295,17 @@ export const flowLayout =
     const facts = selectFacts(state);
     const edges = selectEdges(state);
     const opts = { "elk.direction": direction };
-    console.log("FLOW LAYOUT", questions, facts, edges, opts);
 
     const clonedQuestions = JSON.parse(JSON.stringify(questions));
     const clonedFacts = JSON.parse(JSON.stringify(facts));
     const clonedEdges = JSON.parse(JSON.stringify(edges));
 
     getLayoutedElements(clonedQuestions, clonedFacts, clonedEdges, opts).then(
-      ({ nodes: layoutedNodes, edges: layoutedEdges }) => {
-        console.log("LAYOUTED", layoutedNodes, layoutedEdges);
-        dispatch(setNodes(layoutedNodes));
-        dispatch(setEdges(layoutedEdges));
+      (graph) => {
+        if (!graph) return;
+        dispatch(setQuestions(graph.questions));
+        dispatch(setFacts(graph.facts));
+        dispatch(setEdges(graph.edges));
 
         // window.requestAnimationFrame(() => fitView());
       }
