@@ -5,7 +5,7 @@ import {
 } from "@/redux/slices/designerSlice";
 import { Box, Paper, TextField, Typography } from "@mui/material";
 import SelectableCardList from "@/components/QmlGenerator/SelectableCardList";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const operators = [
@@ -22,6 +22,15 @@ export default function ConstraintsDrawer() {
   const dispatch = useAppDispatch();
   const constraints = useAppSelector(selectConstraints);
   const facts = useAppSelector(selectFacts);
+
+  const cardFacts = useMemo(
+    () =>
+      facts.map((fact) => ({
+        id: fact.id?.toLowerCase(),
+        description: fact.data.title,
+      })),
+    [facts]
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -58,7 +67,7 @@ export default function ConstraintsDrawer() {
             Facts
           </Typography>
           <SelectableCardList
-            items={facts}
+            items={cardFacts}
             onSelect={handleConstraintInsertFact}
           />
         </Paper>

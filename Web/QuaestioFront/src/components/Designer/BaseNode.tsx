@@ -46,6 +46,7 @@ function BaseNode(props: BaseNodeProps) {
           variant="outlined"
           aria-label="Basic button group"
           size="small"
+          sx={{ backgroundColor: "background.default" }}
         >
           {props.toolbarButtons}
         </ButtonGroup>
