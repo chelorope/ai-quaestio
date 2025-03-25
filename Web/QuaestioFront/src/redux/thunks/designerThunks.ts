@@ -164,7 +164,7 @@ export const loadQMLFile = (file: string) => async (dispatch) => {
   const xmlObject = doc.end({ format: "object" });
   const qmlObject = xmlObject["qml:QML"];
   const qmlEditorState = getInitialState(true);
-  console.log("NEW STATE", qmlEditorState);
+
   qmlObject.Fact.forEach((fact) => {
     const factId = fact["@id"]?.toUpperCase();
 
