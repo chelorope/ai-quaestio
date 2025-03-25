@@ -2,7 +2,7 @@ import {
   selectQuestion,
   updateQuestionTitle,
   updateQuestionGuidelines,
-} from "@/redux/slices/flowSlice";
+} from "@/redux/slices/designerSlice";
 import { useAppSelector } from "@/redux/hooks";
 import { useDispatch } from "react-redux";
 import DetailsDrawer from "./DetailsDrawer";

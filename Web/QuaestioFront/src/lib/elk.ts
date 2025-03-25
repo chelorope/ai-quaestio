@@ -1,4 +1,5 @@
-import { Node, Position } from "@xyflow/react";
+import { DependencyEdge, Handle, QuestionaireNode } from "@/types/Flow";
+import { Position } from "@xyflow/react";
 import ELK, { ElkNode } from "elkjs/lib/elk.bundled.js";
 
 const elk = new ELK();
@@ -24,7 +25,10 @@ const flowHandlePositionsMap = {
   [Position.Bottom]: "SOUTH",
 };
 
-const elkToFlowNodes = (flowNodes, elkNodes: ElkNode[] = []): Partial<Node> =>
+const elkToFlowNodes = (
+  flowNodes: QuestionaireNode[],
+  elkNodes: ElkNode[] = []
+): QuestionaireNode[] =>
   flowNodes.map((flowNode) => {
     const elkNode = elkNodes?.find((lgNode) => lgNode.id === flowNode.id);
     return {
@@ -33,7 +37,7 @@ const elkToFlowNodes = (flowNodes, elkNodes: ElkNode[] = []): Partial<Node> =>
     };
   });
 
-const portsFromHandles = (handles: { id: string; position: string }[] = []) =>
+const portsFromHandles = (handles: Handle[] = []) =>
   handles.map((handle) => ({
     id: handle.id,
     properties: {
@@ -41,56 +45,49 @@ const portsFromHandles = (handles: { id: string; position: string }[] = []) =>
     },
   }));
 
+const childrenFromNodes = (nodes: QuestionaireNode[], partition: number) =>
+  nodes.map((node) => ({
+    ...node,
+    id: node.id,
+    width: node.measured?.width || 245,
+    height: node.measured?.height || 53,
+    properties: {
+      "org.eclipse.elk.portConstraints": "FIXED_ORDER",
+      "partitioning.partition": partition.toString(),
+    },
+    ports: [
+      ...portsFromHandles(node.data.targetHandles),
+      ...portsFromHandles(node.data.sourceHandles),
+    ],
+  }));
+
 export async function getLayoutedElements(
-  questions,
-  facts,
-  edges,
+  questions: QuestionaireNode[],
+  facts: QuestionaireNode[],
+  edges: DependencyEdge[],
   options = {}
 ) {
   const graph = {
     id: "root",
     layoutOptions: { ...elkOptions, ...options },
     children: [
-      ...questions.map((question) => {
-        return {
-          ...question,
-          width: question.measured.width || 245,
-          height: question.measured.height || 53,
-          properties: {
-            "org.eclipse.elk.portConstraints": "FIXED_ORDER",
-            "partitioning.partition": "1",
-          },
-          ports: [
-            ...portsFromHandles(question.data.targetHandles),
-            ...portsFromHandles(question.data.sourceHandles),
-          ],
-        };
-      }),
-      ...facts.map((fact) => {
-        return {
-          ...fact,
-          width: fact.measured.width || 245,
-          height: fact.measured.height || 53,
-          properties: {
-            "org.eclipse.elk.portConstraints": "FIXED_ORDER",
-            "partitioning.partition": "2",
-          },
-          ports: [
-            ...portsFromHandles(fact.data.targetHandles),
-            ...portsFromHandles(fact.data.sourceHandles),
-          ],
-        };
-      }),
+      ...childrenFromNodes(questions, 1),
+      ...childrenFromNodes(facts, 2),
     ],
-    edges: edges,
+    edges: edges.map((edge) => ({
+      ...edge,
+      sources: [edge.source],
+      targets: [edge.target],
+    })),
   };
-  return elk
-    .layout(graph)
-    .then((layoutedGraph) => {
-      return {
-        nodes: elkToFlowNodes([...questions, ...facts], layoutedGraph.children),
-        edges: edges,
-      };
-    })
-    .catch(console.error);
+
+  try {
+    const layoutedGraph = await elk.layout(graph);
+    return {
+      nodes: elkToFlowNodes([...questions, ...facts], layoutedGraph.children),
+      edges: edges,
+    };
+  } catch (error) {
+    console.error(error);
+  }
 }

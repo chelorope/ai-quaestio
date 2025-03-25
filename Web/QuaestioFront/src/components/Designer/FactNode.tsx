@@ -1,12 +1,12 @@
 import React, { memo } from "react";
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { removeFact, updateFactTitle } from "@/redux/slices/flowSlice";
+import { removeFact, updateFactTitle } from "@/redux/slices/designerSlice";
 import BaseNode, { BaseHandle } from "./BaseNode";
 import { openDrawer } from "@/redux/slices/drawerSlice";
 import { Node } from "@xyflow/react";
 
-export type FactNode = Node<
+export type FactNodeProps = Node<
   {
     title: string;
     description: string;
@@ -18,7 +18,7 @@ export type FactNode = Node<
   "fact"
 >;
 
-function FactNode(props: FactNode) {
+function FactNode(props: FactNodeProps) {
   const dispatch = useDispatch();
   const handleChange = (value) => {
     dispatch(updateFactTitle({ id: props.id, title: value }));

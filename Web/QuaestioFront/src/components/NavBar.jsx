@@ -27,10 +27,10 @@ export default function NavBar({ colorMode, setColorMode }) {
             </Button>
             <Button
               LinkComponent={Link}
-              href="/editor"
+              href="/designer"
               sx={{ color: "grey.100" }}
             >
-              Questionaire Designer
+              Designer
             </Button>
           </Box>
           <Box>

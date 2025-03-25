@@ -1,7 +1,7 @@
 "use client";
-import FactNode from "@/components/QmlEditor/FactNode";
-import DependencyEdge from "@/components/QmlEditor/DependencyEdge";
-import QuestionNode from "@/components/QmlEditor/QuestionNode";
+import FactNode from "@/components/Designer/FactNode";
+import DependencyEdge from "@/components/Designer/DependencyEdge";
+import QuestionNode from "@/components/Designer/QuestionNode";
 import {
   addQuestion,
   onConnect,
@@ -12,7 +12,7 @@ import {
   selectNodes,
   selectQuestions,
   selectViewport,
-} from "@/redux/slices/flowSlice";
+} from "@/redux/slices/designerSlice";
 import { useTheme } from "@emotion/react";
 import { Box, Button, ButtonGroup } from "@mui/material";
 import {
@@ -27,23 +27,23 @@ import {
 
 import "@xyflow/react/dist/style.css";
 import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { openDrawer } from "@/redux/slices/drawerSlice";
-import Legend from "@/components/QmlEditor/Legend";
-import { flowLayout } from "@/redux/thunks/flowThunks";
+import Legend from "@/components/Designer/Legend";
+import { flowLayout } from "@/redux/thunks/designerThunks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const nodeTypes = { question: QuestionNode, fact: FactNode };
 const edgeTypes = { dependency: DependencyEdge };
 
 const EditorLayout = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const theme = useTheme();
-  const { setCenter, fitView } = useReactFlow();
+  const { setCenter } = useReactFlow();
 
-  const viewport = useSelector(selectViewport);
-  const edges = useSelector(selectEdges);
-  const nodes = useSelector(selectNodes);
-  const questionNodes = useSelector(selectQuestions);
+  const viewport = useAppSelector(selectViewport);
+  const edges = useAppSelector(selectEdges);
+  const nodes = useAppSelector(selectNodes);
+  const questionNodes = useAppSelector(selectQuestions);
 
   const handleCreateQuestionNode = useCallback(() => {
     const newPosition = {
@@ -70,9 +70,8 @@ const EditorLayout = () => {
   const handleLayout = useCallback(
     async ({ direction } = {}) => {
       await dispatch(flowLayout(direction));
-      window.requestAnimationFrame(() => fitView());
     },
-    [dispatch, fitView]
+    [dispatch]
   );
 
   return (
@@ -83,6 +82,7 @@ const EditorLayout = () => {
         height: 1,
         width: 1,
         backgroundColor: "background.default",
+        overflow: "auto",
       }}
     >
       <ReactFlow
@@ -98,6 +98,7 @@ const EditorLayout = () => {
         onViewportChange={(e) => dispatch(onViewportChange(e))}
         fitView
         snapToGrid={true}
+        minZoom={0}
       >
         <Panel position="top-left">
           <ButtonGroup variant="contained" aria-label="Basic button group">

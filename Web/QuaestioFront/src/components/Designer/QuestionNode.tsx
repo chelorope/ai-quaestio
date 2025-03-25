@@ -6,12 +6,12 @@ import {
   removeQuestion,
   selectQuestionFacts,
   updateQuestionTitle,
-} from "@/redux/slices/flowSlice";
+} from "@/redux/slices/designerSlice";
 import { openDrawer } from "@/redux/slices/drawerSlice";
 import BaseNode, { BaseHandle } from "./BaseNode";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
-export type QuestionNode = Node<
+export type QuestionNodeProps = Node<
   {
     title: string;
     description: string;
@@ -21,7 +21,7 @@ export type QuestionNode = Node<
   "question"
 >;
 
-function QuestionNode(props: NodeProps<QuestionNode>) {
+function QuestionNode(props: NodeProps<QuestionNodeProps>) {
   const inputRef = useRef<HTMLInputElement>();
   const dispatch = useAppDispatch();
   const questionFacts = useAppSelector(selectQuestionFacts(props.id));

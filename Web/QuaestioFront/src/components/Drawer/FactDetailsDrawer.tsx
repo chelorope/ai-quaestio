@@ -4,7 +4,7 @@ import {
   updateFactGuidelines,
   updateFactDefault,
   updateFactMandatory,
-} from "@/redux/slices/flowSlice";
+} from "@/redux/slices/designerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import DetailsDrawer from "./DetailsDrawer";
 

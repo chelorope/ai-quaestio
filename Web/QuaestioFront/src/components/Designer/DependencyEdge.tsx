@@ -1,5 +1,5 @@
 import { useAppDispatch } from "@/redux/hooks";
-import { updateDependencyEdgeType } from "@/redux/slices/flowSlice";
+import { updateDependencyEdgeType } from "@/redux/slices/designerSlice";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import {
   BaseEdge,

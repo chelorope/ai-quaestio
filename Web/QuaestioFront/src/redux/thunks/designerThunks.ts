@@ -1,6 +1,7 @@
 import { getLayoutedElements } from "@/lib/elk";
 import { create } from "xmlbuilder2";
 import {
+  centerView,
   getInitialState,
   selectEdges,
   selectFacts,
@@ -8,8 +9,10 @@ import {
   setEdges,
   setNodes,
   setState,
-} from "../slices/flowSlice";
+} from "../slices/designerSlice";
 import { Position } from "@xyflow/react";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { deepClone } from "@/utils";
 
 const getDependenciesFromStr = (dependencyStr = "") =>
   dependencyStr
@@ -39,7 +42,7 @@ export const exportQMLFile = () => async (_, getState) => {
     edges = [],
     fileDetails = {},
     constraints = {},
-  } = getState()?.flow || {};
+  } = getState()?.designer || {};
   const questionsMap =
     questions.reduce(
       (accum, question) => ({
@@ -156,12 +159,12 @@ export const exportQMLFile = () => async (_, getState) => {
   saveFile(`${fileDetails.name}.qml`, XMLString);
 };
 
-export const loadQMLFile = (file) => async (dispatch) => {
+export const loadQMLFile = (file: string) => async (dispatch) => {
   const doc = create(file);
   const xmlObject = doc.end({ format: "object" });
   const qmlObject = xmlObject["qml:QML"];
-  const qmlEditorState = getInitialState();
-
+  const qmlEditorState = getInitialState(true);
+  console.log("NEW STATE", qmlEditorState);
   qmlObject.Fact.forEach((fact) => {
     const factId = fact["@id"]?.toUpperCase();
 
@@ -280,30 +283,33 @@ export const loadQMLFile = (file) => async (dispatch) => {
     reference: qmlObject["@reference"],
     author: qmlObject["@author"],
   };
+
   dispatch(setState(qmlEditorState));
 };
 
-export const flowLayout =
-  (direction: "DOWN" | "RIGHT") => (dispatch, getState) => {
+export const flowLayout = createAsyncThunk(
+  "flow/layout",
+  async (direction: "DOWN" | "RIGHT", { dispatch, getState }) => {
     const state = getState();
     const questions = selectQuestions(state);
     const facts = selectFacts(state);
     const edges = selectEdges(state);
     const opts = { "elk.direction": direction };
 
-    const clonedQuestions = JSON.parse(JSON.stringify(questions));
-    const clonedFacts = JSON.parse(JSON.stringify(facts));
-    const clonedEdges = JSON.parse(JSON.stringify(edges));
+    const clonedQuestions = deepClone(questions);
+    const clonedFacts = deepClone(facts);
+    const clonedEdges = deepClone(edges);
 
-    getLayoutedElements(clonedQuestions, clonedFacts, clonedEdges, opts).then(
-      (graph) => {
-        if (!graph) return;
-        dispatch(setNodes(graph.nodes));
-        // dispatch(setQuestions(graph.questions));
-        // dispatch(setFacts(graph.facts));
-        dispatch(setEdges(graph.edges));
-
-        // window.requestAnimationFrame(() => fitView());
-      }
+    const graph = await getLayoutedElements(
+      clonedQuestions,
+      clonedFacts,
+      clonedEdges,
+      opts
     );
-  };
+
+    if (!graph) return;
+    dispatch(setNodes(graph.nodes));
+    dispatch(setEdges(graph.edges));
+    dispatch(centerView());
+  }
+);

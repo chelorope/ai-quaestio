@@ -2,11 +2,11 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import questionnaireReducer from "./slices/questionnaireSlice";
 import modalReducer from "./slices/modalSlice";
-import flowReducer from "./slices/flowSlice";
+import designerReducer from "./slices/designerSlice";
 import drawerReducer from "./slices/drawerSlice";
 import qmlGeneratorReducer from "./slices/qmlGeneratorSlice";
 import qmlGeneratorPersistanceMiddleware from "./middlewares/qmlGeneratorPersistanceMiddleware";
-import flowPersistanceMiddleware from "./middlewares/flowPersistanceMiddleware";
+import designerPersistanceMiddleware from "./middlewares/designerPersistanceMiddleware";
 
 export const makeStore = () => {
   return configureStore({
@@ -14,13 +14,13 @@ export const makeStore = () => {
       questionnaire: questionnaireReducer,
       modal: modalReducer,
       qmlGenerator: qmlGeneratorReducer,
-      flow: flowReducer,
+      designer: designerReducer,
       drawer: drawerReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware()
         .prepend(qmlGeneratorPersistanceMiddleware.middleware)
-        .prepend(flowPersistanceMiddleware.middleware),
+        .prepend(designerPersistanceMiddleware.middleware),
   });
 };
 

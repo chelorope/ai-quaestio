@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { updateFileDetails } from "@/redux/slices/flowSlice";
-import { exportQMLFile } from "@/redux/thunks/flowThunks";
+import { updateFileDetails } from "@/redux/slices/designerSlice";
+import { exportQMLFile } from "@/redux/thunks/designerThunks";
 import { Box, Button, TextField } from "@mui/material";
 
 export default function QmlGenExportTab() {
   const dispatch = useAppDispatch();
-  const fileDetails = useAppSelector((state) => state.flow.fileDetails);
+  const fileDetails = useAppSelector((state) => state.designer.fileDetails);
   return (
     <Box style={{ width: "40vw" }}>
       <Box display="flex" flexDirection="column" sx={{ maxWidth: "sm" }}>

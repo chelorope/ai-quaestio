@@ -8,7 +8,7 @@ import { IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { openModal } from "@/redux/slices/modalSlice";
-import { resetState } from "@/redux/slices/flowSlice";
+import { resetState } from "@/redux/slices/designerSlice";
 
 export default function NavMenu() {
   const dispatch = useDispatch();

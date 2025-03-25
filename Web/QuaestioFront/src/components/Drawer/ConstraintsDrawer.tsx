@@ -2,7 +2,7 @@ import {
   selectConstraints,
   selectFacts,
   updateConstraints,
-} from "@/redux/slices/flowSlice";
+} from "@/redux/slices/designerSlice";
 import { Box, Paper, TextField, Typography } from "@mui/material";
 import SelectableCardList from "@/components/QmlGenerator/SelectableCardList";
 import { useRef } from "react";
