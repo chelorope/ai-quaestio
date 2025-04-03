@@ -9,7 +9,6 @@ import { Node } from "@xyflow/react";
 export type FactNodeProps = Node<
   {
     title: string;
-    description: string;
     default: boolean;
     mandatory: boolean;
     targetHandles: BaseHandle[];

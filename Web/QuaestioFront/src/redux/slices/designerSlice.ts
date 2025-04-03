@@ -18,7 +18,7 @@ interface DesignerState {
   questions: Node[];
   facts: Node[];
   edges: Edge[];
-  constraints: string;
+  constraints: string[];
   fileDetails: {
     author: string;
     name: string;
@@ -31,7 +31,7 @@ const initialState: DesignerState = {
   questions: [],
   facts: [],
   edges: [],
-  constraints: "",
+  constraints: [],
   fileDetails: {
     author: "",
     name: "",
@@ -286,9 +286,21 @@ export const designer = createSlice({
     },
 
     // QUESTIONAIRE REDUCERS
-
+    addConstraint: (state, action) => {
+      const index = action.payload;
+      state.constraints = [
+        ...state.constraints.slice(0, index),
+        "",
+        ...state.constraints.slice(index),
+      ];
+    },
     updateConstraints: (state, action) => {
-      state.constraints = action.payload;
+      state.constraints[action.payload.index] = action.payload.value;
+    },
+    removeConstraint: (state, action) => {
+      state.constraints = state.constraints.filter(
+        (_, index) => index !== action.payload
+      );
     },
     updateFileDetails: (state, action) => {
       state.fileDetails = action.payload;
@@ -326,7 +338,9 @@ export const {
   updateFactDefault,
   removeFact,
   // Questionaire
+  addConstraint,
   updateConstraints,
+  removeConstraint,
   updateFileDetails,
 } = designer.actions;
 

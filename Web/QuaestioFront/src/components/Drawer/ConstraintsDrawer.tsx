@@ -1,12 +1,22 @@
 import {
+  addConstraint,
+  removeConstraint,
   selectConstraints,
   selectFacts,
   updateConstraints,
 } from "@/redux/slices/designerSlice";
-import { Box, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import SelectableCardList from "@/components/QmlGenerator/SelectableCardList";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { Close as CloseIcon } from "@mui/icons-material";
 
 const operators = [
   { id: ".", description: "AND" },
@@ -14,14 +24,18 @@ const operators = [
   { id: "-", description: "NOT" },
   { id: "xor(", description: "XOR" },
   { id: "nor(", description: "NOR" },
-  { id: "=>", description: "Implies" },
-  { id: "=", description: "Iff" },
+  { id: "=>", description: "THEN" },
+  { id: "=", description: "IFONLY" },
 ];
 
 export default function ConstraintsDrawer() {
   const dispatch = useAppDispatch();
   const constraints = useAppSelector(selectConstraints);
   const facts = useAppSelector(selectFacts);
+
+  const [selectedConstraintIndex, setSelectedConstraintIndex] = useState<
+    number | null
+  >(null);
 
   const cardFacts = useMemo(
     () =>
@@ -34,31 +48,77 @@ export default function ConstraintsDrawer() {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleConstraintInsertFact = (item) => {
-    const newConstraints = constraints + item;
-    dispatch(updateConstraints(newConstraints));
-    inputRef.current?.focus();
-  };
-
-  const handleConstraintInsertOperator = (item) => {
-    const newConstraints = constraints + item;
-    dispatch(updateConstraints(newConstraints));
+  const handleConstraintUpdate = (item) => {
+    if (selectedConstraintIndex === null) {
+      return;
+    }
+    if (item === ".") {
+      // Hack to add new constraint when AND is selected
+      dispatch(addConstraint(selectedConstraintIndex + 1));
+      return;
+    }
+    const newConstraints = constraints[selectedConstraintIndex] + item;
+    dispatch(
+      updateConstraints({
+        index: selectedConstraintIndex,
+        value: newConstraints,
+      })
+    );
     inputRef.current?.focus();
   };
 
   return (
     <Box sx={{ width: "80vw" }}>
-      <TextField
-        inputRef={inputRef}
-        sx={{ mb: 2 }}
-        label="Constraints"
-        size="small"
-        value={constraints}
-        fullWidth
-        onChange={(event) => dispatch(updateConstraints(event.target.value))}
-        autoFocus
-      />
-      <Box display="flex" sx={{ flexWrap: { xs: "wrap", md: "nowrap" } }}>
+      <Box
+        display="flex"
+        flexDirection="row"
+        flexWrap="wrap"
+        gap={2}
+        justifyContent="space-between"
+      >
+        {constraints.map((constraint, index) => (
+          <Box
+            key={index}
+            display="flex"
+            alignItems="center"
+            sx={{ width: "48%" }}
+            position="relative"
+          >
+            <TextField
+              inputRef={inputRef}
+              label={`Constraint ${index + 1}`}
+              size="small"
+              value={constraint}
+              fullWidth
+              autoFocus={index === 0}
+              onChange={(event) =>
+                dispatch(
+                  updateConstraints({ index: index, value: event.target.value })
+                )
+              }
+              onFocus={() => setSelectedConstraintIndex(index)}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => dispatch(removeConstraint(index))}
+                        edge="end"
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          </Box>
+        ))}
+      </Box>
+      <Box
+        display="flex"
+        sx={{ flexWrap: { xs: "wrap", md: "nowrap" }, mt: 2 }}
+      >
         <Paper
           sx={{ mr: { md: 2 }, mb: { xs: 2, md: 0 }, p: 3, width: 1 }}
           variant="outlined"
@@ -68,7 +128,7 @@ export default function ConstraintsDrawer() {
           </Typography>
           <SelectableCardList
             items={cardFacts}
-            onSelect={handleConstraintInsertFact}
+            onSelect={handleConstraintUpdate}
           />
         </Paper>
         <Paper sx={{ p: 3, width: 1 }} variant="outlined">
@@ -78,7 +138,7 @@ export default function ConstraintsDrawer() {
           <SelectableCardList
             showIcon={false}
             items={operators}
-            onSelect={handleConstraintInsertOperator}
+            onSelect={handleConstraintUpdate}
           />
         </Paper>
       </Box>

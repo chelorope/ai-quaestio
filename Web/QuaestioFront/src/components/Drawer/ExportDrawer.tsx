@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { updateFileDetails } from "@/redux/slices/designerSlice";
-import { exportQMLFile } from "@/redux/thunks/designerThunks";
+import { exportQMLFile, exportXMIFile } from "@/redux/thunks/designerThunks";
 import { Box, Button, TextField } from "@mui/material";
 
 export default function QmlGenExportTab() {
@@ -40,7 +40,7 @@ export default function QmlGenExportTab() {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => dispatch(exportQMLFile())}
+        onClick={() => dispatch(exportXMIFile())}
       >
         Export
       </Button>

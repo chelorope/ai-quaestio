@@ -6,7 +6,11 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { useDispatch } from "react-redux";
 import { closeModal } from "@/redux/slices/modalSlice";
 import { openQuestionnaire } from "@/redux/thunks/questionnaireThunks";
-import { flowLayout, loadQMLFile } from "@/redux/thunks/designerThunks";
+import {
+  flowLayout,
+  loadQMLFile,
+  loadXMIFile,
+} from "@/redux/thunks/designerThunks";
 
 const readFile = (file) =>
   new Promise((resolve, reject) => {
@@ -30,9 +34,26 @@ export default function FileModal() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log("File selected", file);
     // Load the file into QML Editor
-    const qmlText = await readFile(inputRef.current.files[0]);
-    dispatch(loadQMLFile(qmlText));
+    const fileExtension = file?.name.split(".")[1];
+    const fileText = await readFile(inputRef.current.files[0]);
+    console.log("fileExtension", fileExtension);
+    let loader;
+    switch (fileExtension) {
+      case "qml":
+        loader = loadQMLFile;
+        break;
+      case "xmi":
+        loader = loadXMIFile;
+        break;
+      default:
+        loader = loadQMLFile;
+        break;
+    }
+    console.log("File text", fileText);
+    dispatch(loader(fileText));
+    // Close the modal
     dispatch(flowLayout());
 
     // Send the file to the server
@@ -50,7 +71,7 @@ export default function FileModal() {
           style={{ opacity: 0, position: "absolute", cursor: "pointer" }}
           type="file"
           name="uploaded_file"
-          accept=".qml"
+          accept=".qml,.xmi"
           onChange={handleFileSelect}
         />
         <AttachFileIcon />
