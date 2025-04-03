@@ -56,6 +56,7 @@ export default function ConstraintsDrawer() {
     if (item === "x") {
       // Hack to add new constraint when ADD CONSTRAINT is selected
       dispatch(addConstraint(selectedConstraintIndex + 1));
+      setSelectedConstraintIndex(selectedConstraintIndex + 1);
       return;
     }
     const newConstraints = constraints[selectedConstraintIndex] + item;
@@ -86,12 +87,12 @@ export default function ConstraintsDrawer() {
             position="relative"
           >
             <TextField
-              inputRef={inputRef}
+              inputRef={index === selectedConstraintIndex ? inputRef : null}
               label={`Constraint ${index + 1}`}
               size="small"
               value={constraint}
               fullWidth
-              autoFocus={index === 0}
+              autoFocus={index === selectedConstraintIndex}
               onChange={(event) =>
                 dispatch(
                   updateConstraints({ index: index, value: event.target.value })
