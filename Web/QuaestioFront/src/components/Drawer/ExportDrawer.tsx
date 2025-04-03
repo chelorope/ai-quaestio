@@ -40,7 +40,10 @@ export default function QmlGenExportTab() {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => dispatch(exportXMIFile())}
+        onClick={() => {
+          dispatch(exportQMLFile());
+          dispatch(exportXMIFile());
+        }}
       >
         Export
       </Button>
