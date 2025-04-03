@@ -65,7 +65,7 @@ export default function DetailsDrawer({
         value={title}
         onChange={handleTitleChange}
         size="small"
-        sx={{ mt: 2, width: 300 }}
+        sx={{ mt: 2, mb: 3, width: 300 }}
       />
       <TextField
         label="Guidelines"

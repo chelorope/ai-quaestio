@@ -575,8 +575,9 @@ export const loadQMLFile = (file: string) => async (dispatch) => {
       }
     });
   });
-
-  designerState.constraints = qmlObject.Constraints.split(" . ");
+  const constraints =
+    typeof qmlObject.Constraints === "string" ? qmlObject.Constraints : "";
+  designerState.constraints = constraints.replaceAll("&gt;", ">").split(".");
   designerState.fileDetails = {
     name: qmlObject["@name"],
     reference: qmlObject["@reference"],
@@ -737,7 +738,8 @@ export const loadXMIFile = (file: string) => async (dispatch) => {
       ? qmlObject.constraint
       : [qmlObject.constraint];
     designerState.constraints = constraintsArray.map(
-      (constraint) => constraint["@expressionText"]
+      (constraint) =>
+        constraint["@expressionText"]?.replaceAll("&gt;", ">") || ""
     );
   }
 
