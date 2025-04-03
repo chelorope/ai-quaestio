@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Close as CloseIcon } from "@mui/icons-material";
 
 const operators = [
+  { id: "x", description: "ADD CONSTRAINT" },
   { id: ".", description: "AND" },
   { id: "+", description: "OR" },
   { id: "-", description: "NOT" },
@@ -52,8 +53,8 @@ export default function ConstraintsDrawer() {
     if (selectedConstraintIndex === null) {
       return;
     }
-    if (item === ".") {
-      // Hack to add new constraint when AND is selected
+    if (item === "x") {
+      // Hack to add new constraint when ADD CONSTRAINT is selected
       dispatch(addConstraint(selectedConstraintIndex + 1));
       return;
     }
