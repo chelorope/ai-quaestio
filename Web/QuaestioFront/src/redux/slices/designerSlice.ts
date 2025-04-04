@@ -8,6 +8,7 @@ import {
   Position,
   getNodesBounds,
   getViewportForBounds,
+  Connection,
 } from "@xyflow/react";
 import { isBrowser } from "@/utils";
 import { flowLayout } from "../thunks/designerThunks";
@@ -253,8 +254,8 @@ export const designer = createSlice({
     onEdgesChange: (state, action) => {
       state.edges = applyEdgeChanges(action.payload, state.edges);
     },
-    onConnect: (state, action) => {
-      const nodes = selectNodes({ flow: state });
+    onConnect: (state, action: PayloadAction<Connection>) => {
+      const nodes = selectNodes({ designer: state });
       const sourceNode = nodes.find(
         (node) => action.payload.source === node.id
       );
@@ -263,13 +264,13 @@ export const designer = createSlice({
       );
       // Connections rules
       if (
-        (sourceNode.type === "fact" && targetNode.type === "question") ||
-        (sourceNode.type === "question" && targetNode.type === "fact") ||
         sourceNode.id === targetNode.id ||
         (sourceNode.type === "question" &&
-          action.payload.sourceHandle.endsWith("right-source")) ||
+          action.payload.sourceHandle?.endsWith("right-source")) ||
         (sourceNode.type === "question" &&
-          action.payload.targetHandle.endsWith("right-target"))
+          action.payload.targetHandle?.endsWith("right-target")) ||
+        (sourceNode.type === "fact" &&
+          action.payload.targetHandle?.endsWith("left-target"))
       ) {
         return;
       }
@@ -278,11 +279,15 @@ export const designer = createSlice({
         (sourceNode.type === "question" && targetNode.type === "question") ||
         (sourceNode.type === "fact" && targetNode.type === "fact")
       ) {
-        action.payload.type = "dependency";
-        action.payload.selected = true;
-        action.payload.data = { type: "full" };
+        const newEdge: DependencyEdge = {
+          id: `${action.payload.source}-${action.payload.target}`,
+          ...action.payload,
+          type: "dependency",
+          selected: true,
+          data: { type: "full" },
+        };
+        state.edges = addEdge(newEdge, state.edges);
       }
-      state.edges = addEdge(action.payload, state.edges);
     },
 
     // QUESTIONAIRE REDUCERS
