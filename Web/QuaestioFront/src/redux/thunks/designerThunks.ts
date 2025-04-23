@@ -14,6 +14,13 @@ import { Position } from "@xyflow/react";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { deepClone } from "@/utils";
 
+const replaceScapedCharacters = (str: string) =>
+  str
+    .replaceAll("&gt;", ">")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&amp;", "&")
+    .replaceAll("&apos;", "'");
+
 const getDependenciesFromStr = (dependencyStr = "") =>
   dependencyStr
     ? dependencyStr
@@ -447,12 +454,12 @@ export const exportXMIFile = () => async (_, getState) => {
   };
 
   // Generate the XML string using an XML builder (e.g. xmlbuilder2)
-  const XMLString = create(XMLObj as object, { encoding: "UTF-8" })
-    .end({
+  const XMLString = replaceScapedCharacters(
+    create(XMLObj as object, { encoding: "UTF-8" }).end({
       prettyPrint: true,
       allowEmptyTags: false,
     })
-    .replaceAll("&gt;", ">");
+  );
 
   // Export the file with a .xmi extension
   saveFile(`${fileDetails.name}.xmi`, XMLString);
@@ -578,7 +585,7 @@ export const loadQMLFile = (file: string) => async (dispatch) => {
   const constraints =
     typeof qmlObject.Constraints === "string" ? qmlObject.Constraints : "";
   designerState.constraints = splitTopLevel(
-    constraints.replaceAll("&gt;", ">"),
+    replaceScapedCharacters(constraints),
     ["."]
   );
   designerState.fileDetails = {
