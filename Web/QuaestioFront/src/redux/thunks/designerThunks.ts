@@ -310,30 +310,34 @@ export const exportXMIFile = () => async (_, getState) => {
   } = getState()?.designer || {};
 
   // Build arrays with additional dependency properties
-  const questionsArr = questions.map((q) => ({
+  const questionsArr = questions.map((q, i) => ({
     ...q.data,
-    id: q.id,
+    id: `q${i}`,
     fullyDepends: "",
     partiallyDepends: "",
     facts: "",
   }));
 
-  const factsArr = facts.map((f) => ({
+  const factsArr = facts.map((f, i) => ({
     ...f.data,
-    id: f.id,
+    id: `f${i}`,
     fullyDepends: "",
     partiallyDepends: "",
   }));
 
-  // Create lookup maps so we can generate references based on order
-  const questionIndexMap = questionsArr.reduce((acc, q, i) => {
-    acc[q.id] = i;
-    return acc;
-  }, {} as Record<string, number>);
+  const questionIndexMap = questions.reduce(
+    (acc, q, i) => ({
+      ...acc,
+      [q.id]: i,
+    }),
+    {} as Record<string, number>
+  );
 
-  const factIndexMap = factsArr.reduce((acc, f, i) => {
-    acc[f.id] = i;
-    return acc;
+  const factIndexMap = facts.reduce((acc, f, i) => {
+    return {
+      ...acc,
+      [f.id]: i,
+    };
   }, {} as Record<string, number>);
 
   // Process each edge to update dependency properties
@@ -370,6 +374,19 @@ export const exportXMIFile = () => async (_, getState) => {
       }`;
     }
   });
+
+  let positionalConstraints = constraints;
+  facts.forEach((fact, fidx) => {
+    console.log("fact", fact, fidx);
+    positionalConstraints = positionalConstraints.map((constraint) =>
+      constraint.replaceAll(
+        new RegExp(`${fact.id.toLowerCase()}([^0-9])`, "g"),
+        `f${fidx}$1`
+      )
+    );
+  });
+  console.log("positionalConstraints", [...positionalConstraints]);
+  console.log("constraints", [...constraints]);
 
   // Build the XML object following the XMI format
   const XMLObj = {
@@ -422,7 +439,7 @@ export const exportXMIFile = () => async (_, getState) => {
         }
         return attrs;
       }),
-      constraint: constraints.map((constraint) => ({
+      constraint: positionalConstraints.map((constraint) => ({
         "@expressionText": constraint,
         expression: parseConstraintExpression(constraint, factIndexMap),
       })),
@@ -430,10 +447,12 @@ export const exportXMIFile = () => async (_, getState) => {
   };
 
   // Generate the XML string using an XML builder (e.g. xmlbuilder2)
-  const XMLString = create(XMLObj as object, { encoding: "UTF-8" }).end({
-    prettyPrint: true,
-    allowEmptyTags: false,
-  });
+  const XMLString = create(XMLObj as object, { encoding: "UTF-8" })
+    .end({
+      prettyPrint: true,
+      allowEmptyTags: false,
+    })
+    .replaceAll("&gt;", ">");
 
   // Export the file with a .xmi extension
   saveFile(`${fileDetails.name}.xmi`, XMLString);
