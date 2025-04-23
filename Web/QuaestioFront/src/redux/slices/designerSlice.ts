@@ -85,11 +85,12 @@ export const designer = createSlice({
     },
 
     // QUESTION REDUCERS
-    addQuestion: (state, action: PayloadAction<QuestionNode>) => {
+    addQuestion: (state, action: PayloadAction<Partial<QuestionNode>>) => {
       const lastId = state.questions[state.questions.length - 1]?.id || "Q0";
       const newId = `Q${Number(lastId.replace("Q", "")) + 1}`;
-      const newNode = {
+      const newNode: QuestionNode = {
         ...action.payload,
+        position: action.payload.position || { x: 0, y: 0 },
         id: newId,
         type: "question",
         data: {
@@ -143,13 +144,13 @@ export const designer = createSlice({
     },
 
     // FACTS REDUCERS
-    addFact: (state, action: PayloadAction<FactNode>) => {
+    addFact: (state, action: PayloadAction<Partial<FactNode>>) => {
       const lastId = state.facts[state.facts.length - 1]?.id || "F0";
       const newId = `F${Number(lastId.replace("F", "")) + 1}`;
 
       const newNode: FactNode = {
         ...action.payload,
-        position: action.payload.position,
+        position: action.payload.position || { x: 0, y: 0 },
         id: newId,
         type: "fact",
         data: {

@@ -23,6 +23,10 @@ export default function Drawer() {
   const { component, title } = useMemo(() => {
     switch (drawer.type) {
       case "question-details":
+        if (!drawer.data?.questionId) {
+          console.error("No questionId provided");
+          return { component: <Box />, title: "" };
+        }
         return {
           title: "Question Details",
           component: (
@@ -33,6 +37,10 @@ export default function Drawer() {
           ),
         };
       case "fact-details":
+        if (!drawer.data?.factId) {
+          console.error("No factId provided");
+          return { component: <Box />, title: "" };
+        }
         return {
           title: "Fact Details",
           component: <FactDetailsDrawer factId={drawer.data?.factId} />,
