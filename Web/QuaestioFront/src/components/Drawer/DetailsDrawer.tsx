@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
 export default function DetailsDrawer({
+  id,
   isDefault,
   onDefaultChange,
   isMandatory,
@@ -12,6 +13,7 @@ export default function DetailsDrawer({
   guidelines,
   onGuidelinesChange,
 }: {
+  id: string;
   isDefault?: boolean;
   onDefaultChange?: (value: boolean) => void;
   isMandatory?: boolean;
@@ -38,6 +40,13 @@ export default function DetailsDrawer({
         alignItems: "flex-start",
       }}
     >
+      <TextField
+        label="ID"
+        value={id}
+        size="small"
+        sx={{ mt: 2, mb: 3, width: 300 }}
+        disabled
+      />
       {isMandatory !== undefined && onMandatoryChange ? (
         <FormControlLabel
           sx={{ mb: 1 }}
@@ -65,7 +74,7 @@ export default function DetailsDrawer({
         value={title}
         onChange={handleTitleChange}
         size="small"
-        sx={{ mt: 2, mb: 3, width: 300 }}
+        sx={{ mb: 3, width: 300 }}
       />
       <TextField
         label="Guidelines"

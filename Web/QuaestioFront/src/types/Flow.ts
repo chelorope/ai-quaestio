@@ -10,18 +10,20 @@ export type QuestionaireNodeData = {
   sourceHandles: Handle[];
 };
 
-export interface QuestionNodeData extends QuestionaireNodeData {
-  description: string;
+export type QuestionNodeData = {
+  title: string;
   guidelines: string;
-}
+} & QuestionaireNodeData;
 
-export interface FactNodeData extends QuestionaireNodeData {
-  description: string;
+export type FactNodeData = {
+  title: string;
   guidelines: string;
   mandatory: boolean;
   default: boolean;
-}
+} & QuestionaireNodeData;
 
-export type QuestionaireNode = Node<QuestionaireNodeData>;
+export type QuestionNode = Node<QuestionNodeData, "question">;
 
-export type DependencyEdge = Edge<{ type?: "full" | "partial" }>;
+export type FactNode = Node<FactNodeData, "fact">;
+
+export type DependencyEdge = Edge<{ type?: "full" | "partial" }, "dependency">;

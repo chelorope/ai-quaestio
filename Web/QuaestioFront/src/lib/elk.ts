@@ -1,4 +1,4 @@
-import { DependencyEdge, Handle, QuestionaireNode } from "@/types/Flow";
+import { DependencyEdge, FactNode, Handle, QuestionNode } from "@/types/Flow";
 import { Position } from "@xyflow/react";
 import ELK, { ElkNode } from "elkjs/lib/elk.bundled.js";
 
@@ -26,9 +26,9 @@ const flowHandlePositionsMap = {
 };
 
 const elkToFlowNodes = (
-  flowNodes: QuestionaireNode[],
+  flowNodes: (QuestionNode | FactNode)[],
   elkNodes: ElkNode[] = []
-): QuestionaireNode[] =>
+): (QuestionNode | FactNode)[] =>
   flowNodes.map((flowNode) => {
     const elkNode = elkNodes?.find((lgNode) => lgNode.id === flowNode.id);
     return {
@@ -45,7 +45,10 @@ const portsFromHandles = (handles: Handle[] = []) =>
     },
   }));
 
-const childrenFromNodes = (nodes: QuestionaireNode[], partition: number) =>
+const childrenFromNodes = (
+  nodes: (QuestionNode | FactNode)[],
+  partition: number
+) =>
   nodes.map((node) => ({
     ...node,
     id: node.id,
@@ -62,8 +65,8 @@ const childrenFromNodes = (nodes: QuestionaireNode[], partition: number) =>
   }));
 
 export async function getLayoutedElements(
-  questions: QuestionaireNode[],
-  facts: QuestionaireNode[],
+  questions: QuestionNode[],
+  facts: FactNode[],
   edges: DependencyEdge[],
   options = {}
 ) {

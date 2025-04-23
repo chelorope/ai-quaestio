@@ -8,7 +8,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import DetailsDrawer from "./DetailsDrawer";
 
-export default function FactDetailsDrawer({ factId }: { factId?: string }) {
+export default function FactDetailsDrawer({ factId }: { factId: string }) {
   const dispatch = useAppDispatch();
   const fact = useAppSelector(selectFact(factId));
 
@@ -35,6 +35,7 @@ export default function FactDetailsDrawer({ factId }: { factId?: string }) {
 
   return (
     <DetailsDrawer
+      id={factId}
       title={fact?.data?.title}
       onTitleChange={handleTitleChange}
       guidelines={fact?.data?.guidelines}

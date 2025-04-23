@@ -10,7 +10,7 @@ import DetailsDrawer from "./DetailsDrawer";
 export default function QuestionDetailsDrawer({
   questionId,
 }: {
-  questionId?: string;
+  questionId: string;
   onClose: () => void;
 }) {
   const dispatch = useDispatch();
@@ -33,6 +33,7 @@ export default function QuestionDetailsDrawer({
 
   return (
     <DetailsDrawer
+      id={questionId}
       onTitleChange={handleTitleChange}
       onGuidelinesChange={handleGuidelinesChange}
       title={question?.data?.title}

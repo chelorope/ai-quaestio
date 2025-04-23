@@ -3,21 +3,21 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
-  Node,
   Edge,
   Position,
   getNodesBounds,
   getViewportForBounds,
   Connection,
+  Viewport,
 } from "@xyflow/react";
 import { isBrowser } from "@/utils";
 import { flowLayout } from "../thunks/designerThunks";
-import { DependencyEdge, QuestionaireNode } from "@/types/Flow";
+import { DependencyEdge, FactNode, QuestionNode } from "@/types/Flow";
 
 interface DesignerState {
-  viewport: { x: number; y: number; zoom: number };
-  questions: Node[];
-  facts: Node[];
+  viewport: Viewport;
+  questions: QuestionNode[];
+  facts: FactNode[];
   edges: Edge[];
   constraints: string[];
   fileDetails: {
@@ -32,23 +32,13 @@ const initialState: DesignerState = {
   questions: [],
   facts: [],
   edges: [],
-  constraints: [],
+  constraints: [""],
   fileDetails: {
     author: "",
     name: "",
     reference: "",
   },
 };
-
-// interface AddEdgePayload {
-//   source: string;
-//   target: string;
-// }
-
-// const getInitialQuestion = ({ id, ...designerProps }: Node): Node => ({
-//   id,
-//   ...designerProps,
-// });
 
 const persistedState = isBrowser() && localStorage.getItem("flow");
 
@@ -80,13 +70,13 @@ export const designer = createSlice({
       });
     },
 
-    setNodes: (state, action: PayloadAction<QuestionaireNode[]>) => {
-      const questions = [] as QuestionaireNode[];
-      const facts = [] as QuestionaireNode[];
+    setNodes: (state, action: PayloadAction<(QuestionNode | FactNode)[]>) => {
+      const questions = [] as QuestionNode[];
+      const facts = [] as FactNode[];
       action.payload.forEach((node) => {
         if (node.type === "question") {
           questions.push(node);
-        } else {
+        } else if (node.type === "fact") {
           facts.push(node);
         }
       });
@@ -95,10 +85,7 @@ export const designer = createSlice({
     },
 
     // QUESTION REDUCERS
-    setQuestions: (state, action) => {
-      state.questions = action.payload;
-    },
-    addQuestion: (state, action) => {
+    addQuestion: (state, action: PayloadAction<QuestionNode>) => {
       const lastId = state.questions[state.questions.length - 1]?.id || "Q0";
       const newId = `Q${Number(lastId.replace("Q", "")) + 1}`;
       const newNode = {
@@ -123,7 +110,10 @@ export const designer = createSlice({
         state.questions
       );
     },
-    updateQuestionTitle: (state, action) => {
+    updateQuestionTitle: (
+      state,
+      action: PayloadAction<{ id: string; title: string }>
+    ) => {
       state.questions = state.questions.map((question) => {
         if (question.id === action.payload.id) {
           question.data = { ...question.data, title: action.payload.title };
@@ -131,7 +121,10 @@ export const designer = createSlice({
         return question;
       });
     },
-    updateQuestionGuidelines: (state, action) => {
+    updateQuestionGuidelines: (
+      state,
+      action: PayloadAction<{ id: string; guidelines: string }>
+    ) => {
       state.questions = state.questions.map((question) => {
         if (question.id === action.payload.id) {
           question.data = {
@@ -142,7 +135,7 @@ export const designer = createSlice({
         return question;
       });
     },
-    removeQuestion: (state, action) => {
+    removeQuestion: (state, action: PayloadAction<string>) => {
       state.questions = applyNodeChanges(
         [{ type: "remove", id: action.payload }],
         state.questions
@@ -150,14 +143,11 @@ export const designer = createSlice({
     },
 
     // FACTS REDUCERS
-    setFacts: (state, action) => {
-      state.facts = action.payload;
-    },
-    addFact: (state, action) => {
+    addFact: (state, action: PayloadAction<FactNode>) => {
       const lastId = state.facts[state.facts.length - 1]?.id || "F0";
       const newId = `F${Number(lastId.replace("F", "")) + 1}`;
 
-      const newNode = {
+      const newNode: FactNode = {
         ...action.payload,
         position: action.payload.position,
         id: newId,
@@ -178,10 +168,10 @@ export const designer = createSlice({
       };
       state.facts = [...state.facts, newNode];
 
-      const factEdge = {
+      const factEdge: Edge = {
         id: `${newId}-fact-${action.payload.parentId}`,
         sourceHandle: `${action.payload.parentId}-right-source`,
-        source: action.payload.parentId,
+        source: action.payload.parentId || "",
         targetHandle: `${newId}-left-target`,
         target: newId,
       };
@@ -329,13 +319,11 @@ export const {
   updateDependencyEdgeType,
   centerView,
   // Questions,
-  setQuestions,
   addQuestion,
   updateQuestionTitle,
   updateQuestionGuidelines,
   removeQuestion,
   // Facts
-  setFacts,
   addFact,
   updateFactTitle,
   updateFactGuidelines,

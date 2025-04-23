@@ -89,7 +89,7 @@ function parseConstraintExpression(
   }
 
   // Check for top-level binary operators: '=>' and '=' (order matters)
-  const binaryOps = ["=>", "="];
+  const binaryOps = ["=>", "=", "+", "."];
   const opFound = findTopLevelOperator(expr, binaryOps);
   if (opFound) {
     const { index, op } = opFound;
@@ -99,6 +99,8 @@ function parseConstraintExpression(
     const operatorMap: Record<string, string> = {
       "=": "IFONLY",
       "=>": "THEN",
+      "+": "OR",
+      ".": "AND",
     };
     return {
       "@xsi:type": "qml:Op",
@@ -133,27 +135,6 @@ function parseConstraintExpression(
       expression: args.map((arg) =>
         parseConstraintExpression(arg, factIndexMap)
       ),
-    };
-  }
-
-  // Look for operators '+' (OR) and '.' (AND)
-  const infixOps = ["+", "."];
-  const opFound2 = findTopLevelOperator(expr, infixOps);
-  if (opFound2) {
-    const { index, op } = opFound2;
-    const left = expr.substring(0, index).trim();
-    const right = expr.substring(index + op.length).trim();
-    const operatorMap2: Record<string, string> = {
-      "+": "OR",
-      ".": "AND",
-    };
-    return {
-      "@xsi:type": "qml:Op",
-      "@operator": operatorMap2[op],
-      expression: [
-        parseConstraintExpression(left, factIndexMap),
-        parseConstraintExpression(right, factIndexMap),
-      ],
     };
   }
 
@@ -577,7 +558,10 @@ export const loadQMLFile = (file: string) => async (dispatch) => {
   });
   const constraints =
     typeof qmlObject.Constraints === "string" ? qmlObject.Constraints : "";
-  designerState.constraints = constraints.replaceAll("&gt;", ">").split(".");
+  designerState.constraints = splitTopLevel(
+    constraints.replaceAll("&gt;", ">"),
+    ["."]
+  );
   designerState.fileDetails = {
     name: qmlObject["@name"],
     reference: qmlObject["@reference"],
@@ -588,12 +572,11 @@ export const loadQMLFile = (file: string) => async (dispatch) => {
 };
 
 export const loadXMIFile = (file: string) => async (dispatch) => {
-  console.log("LOAD XMI");
   const doc = create(file);
   const xmlObject = doc.end({ format: "object" });
   const qmlObject = xmlObject["qml:QML"];
   const designerState = getInitialState(true);
-  console.log("XMI file loaded", qmlObject);
+
   // Normalize fact and question elements to arrays
   const factElements = Array.isArray(qmlObject.fact)
     ? qmlObject.fact
