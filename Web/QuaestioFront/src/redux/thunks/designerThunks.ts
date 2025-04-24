@@ -297,10 +297,12 @@ export const exportQMLFile = () => async (_, getState) => {
   };
 
   // Generate XML string from object
-  const XMLString = create(XMLObj as object, { encoding: "UTF-8" }).end({
-    prettyPrint: true,
-    allowEmptyTags: false,
-  });
+  const XMLString = replaceScapedCharacters(
+    create(XMLObj as object, { encoding: "UTF-8" }).end({
+      prettyPrint: true,
+      allowEmptyTags: false,
+    })
+  );
 
   // Export QML file
   saveFile(`${fileDetails.name}.qml`, XMLString);
