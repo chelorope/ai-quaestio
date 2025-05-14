@@ -55,7 +55,7 @@ export default function ConstraintsDrawer() {
     dispatch(
       updateConstraint({
         index: selectedConstraintIndex,
-        value: currentValue + ` #${id}`,
+        value: currentValue + `${id}`,
       })
     );
     inputRef.current?.focus();

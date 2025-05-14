@@ -17,6 +17,7 @@ import {
   DesignerState,
   DesignerEdge,
   DependencyEdgeData,
+  QuestionFactEdge,
 } from "@/types/designer/Designer";
 import { RootState } from "../store";
 
@@ -165,7 +166,7 @@ export const designer = createSlice({
       };
       state.facts = [...state.facts, newNode];
 
-      const factEdge: DesignerEdge = {
+      const factEdge: QuestionFactEdge = {
         id: `${newId}-fact-${action.payload.parentId}`,
         sourceHandle: `${action.payload.parentId}-right-source`,
         source: action.payload.parentId || "",

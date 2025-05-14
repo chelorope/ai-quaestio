@@ -67,7 +67,6 @@ export const createQuestionFactEdge = (
   factId: string
 ): QuestionFactEdge => ({
   id: `${questionId}-${factId}`,
-  type: "question-fact",
   sourceHandle: `${questionId}-right-source`,
   source: questionId,
   targetHandle: `${factId}-left-target`,
