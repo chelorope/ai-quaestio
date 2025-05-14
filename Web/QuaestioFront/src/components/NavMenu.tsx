@@ -5,17 +5,23 @@ import {
   Save as SaveIcon,
 } from "@mui/icons-material";
 import { IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import { useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useMemo, useState, MouseEvent } from "react";
+import { useAppDispatch } from "@/redux/hooks";
 import { openModal } from "@/redux/slices/modalSlice";
 import { resetState } from "@/redux/slices/designerSlice";
 
-export default function NavMenu() {
-  const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(1);
+interface MenuOption {
+  title: string;
+  action: () => void;
+  icon: JSX.Element;
+}
 
-  const options = useMemo(
+export default function NavMenu(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(1);
+
+  const options: MenuOption[] = useMemo(
     () => [
       {
         title: "Open File",
@@ -36,19 +42,21 @@ export default function NavMenu() {
   );
 
   const open = Boolean(anchorEl);
-  const handleClickListItem = (event) => {
+
+  const handleClickListItem = (event: MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuItemClick = (action, index) => {
+  const handleMenuItemClick = (action: () => void, index: number): void => {
     action();
     setSelectedIndex(index);
     handleClose();
   };
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setAnchorEl(null);
   };
+
   return (
     <>
       <IconButton onClick={handleClickListItem}>

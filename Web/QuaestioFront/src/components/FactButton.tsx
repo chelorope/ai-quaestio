@@ -1,17 +1,24 @@
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useDispatch, useSelector } from "react-redux";
+import { SxProps, Theme } from "@mui/material/styles";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 import { setFactInspectorOpen } from "@/redux/slices/questionnaireSlice";
 
-export default function FactButton({ sx }) {
-  const dispatch = useDispatch();
-  const selectedFact = useSelector((state) => state.questionnaire.selectedFact);
-  const factInspectorOpen = useSelector(
+interface FactButtonProps {
+  sx?: SxProps<Theme>;
+}
+
+export default function FactButton({ sx }: FactButtonProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const selectedFact = useAppSelector(
+    (state) => state.questionnaire.selectedFact
+  );
+  const factInspectorOpen = useAppSelector(
     (state) => state.questionnaire.factInspectorOpen
   );
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     dispatch(setFactInspectorOpen(true));
   };
 

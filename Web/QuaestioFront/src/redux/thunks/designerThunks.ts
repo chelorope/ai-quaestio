@@ -34,6 +34,7 @@ import {
   XMIQuestion,
   XMIFact,
 } from "@/types/designer/Designer";
+import { RootState } from "../store";
 
 export const exportQMLFile =
   () => async (_: unknown, getState: () => { designer: DesignerState }) => {
@@ -169,7 +170,7 @@ export const exportQMLFile =
             }),
           };
         }),
-        Constraints: `(${constraints.join(" . ")})`,
+        Constraints: constraints.join(" . "),
       },
     };
 
@@ -503,13 +504,13 @@ export const loadXMIFile =
   };
 
 export const flowLayout = createAsyncThunk(
-  "flow/layout",
-  async (direction: "DOWN" | "RIGHT", { dispatch, getState }) => {
-    const state = getState() as { designer: DesignerState };
+  "designer/flowLayout",
+  async (_, { getState, dispatch }) => {
+    const state = getState() as RootState;
     const questions = selectQuestions(state);
     const facts = selectFacts(state);
     const edges = selectEdges(state);
-    const opts = { "elk.direction": direction };
+    const opts = { "elk.direction": "DOWN" };
 
     const clonedQuestions = deepClone(questions);
     const clonedFacts = deepClone(facts);

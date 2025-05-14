@@ -19,7 +19,7 @@ export type FactNodeProps = Node<
 
 function FactNode(props: FactNodeProps) {
   const dispatch = useDispatch();
-  const handleChange = (value) => {
+  const handleChange = (value: string) => {
     dispatch(updateFactTitle({ id: props.id, title: value }));
   };
 

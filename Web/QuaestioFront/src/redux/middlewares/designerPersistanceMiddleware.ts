@@ -19,7 +19,7 @@ import {
   updateFactDefault,
   removeFact,
   // Questionaire
-  updateConstraints,
+  updateConstraint,
 } from "../slices/designerSlice";
 import { AppDispatch, RootState } from "../store";
 
@@ -56,7 +56,7 @@ startAppListening({
     updateFactDefault,
     removeFact,
     // Questionaire
-    updateConstraints
+    updateConstraint
   ),
   effect: async (_action, listenerApi) => {
     const state = listenerApi.getState();

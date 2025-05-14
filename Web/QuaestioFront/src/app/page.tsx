@@ -8,24 +8,32 @@ import FactList from "@/components/FactList";
 import QuestionButton from "@/components/QuestionButton";
 import FactButton from "@/components/FactButton";
 import FactInspector from "@/components/FactInspector";
-import { useDispatch } from "react-redux";
-import { openModal } from "@/redux/slices/modalSlice";
 import { useEffect } from "react";
+import { openModal } from "@/redux/slices/modalSlice";
 import { loadQuestionarie } from "@/redux/thunks/questionnaireThunks";
+import { useAppDispatch } from "@/redux/hooks";
 
-export default function Home() {
-  const dispatch = useDispatch();
+interface RequestError {
+  code?: string;
+  message: string;
+}
+
+export default function Home(): JSX.Element {
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     (async () => {
       try {
         await dispatch(loadQuestionarie()).unwrap();
-      } catch (e) {
-        if (e.code === "ERR_BAD_REQUEST") {
+      } catch (e: unknown) {
+        const error = e as RequestError;
+        if (error.code === "ERR_BAD_REQUEST") {
           dispatch(openModal("file"));
         }
       }
     })();
   }, [dispatch]);
+
   return (
     <Container sx={{ my: "auto", height: "100%" }}>
       <QuestionnaireDetails sx={{ my: 3 }} />
@@ -41,7 +49,7 @@ export default function Home() {
           flexWrap: { xs: "nowrap", md: "wrap", lg: "nowrap" },
         }}
       >
-        <QuestionList type="valid" />
+        <QuestionList type="valid" sx={{}} />
         <Box
           sx={{
             display: "flex",
@@ -55,7 +63,7 @@ export default function Home() {
             width: { xs: 1, md: "49%", lg: "100%" },
           }}
         >
-          <QuestionButton />
+          <QuestionButton sx={{}} />
           <FactList sx={{ mt: { xs: 2 } }} />
           <FactButton sx={{ mt: 2 }} />
           <QuestionDetails sx={{ mt: 2 }} />

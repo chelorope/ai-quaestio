@@ -18,7 +18,7 @@ interface SelectableCardListProps {
     mandatory?: boolean;
     default?: boolean;
   }[];
-  selected?: boolean[];
+  selected?: Record<string, boolean>;
   onSelect: (id: string) => void;
   itemPrefix?: string;
   showIcon?: boolean;
@@ -26,13 +26,13 @@ interface SelectableCardListProps {
 
 export default function SelectableCardList({
   items = [],
-  selected = [],
+  selected = {},
   onSelect = () => {},
   itemPrefix = "F",
   showIcon = true,
 }: SelectableCardListProps) {
   return items.map((item) => {
-    const isSelected = selected[item.id];
+    const isSelected = Boolean(selected[item.id]);
     return (
       <Card
         sx={{

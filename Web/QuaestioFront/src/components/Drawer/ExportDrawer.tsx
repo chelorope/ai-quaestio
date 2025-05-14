@@ -1,52 +1,58 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { updateFileDetails } from "@/redux/slices/designerSlice";
+import { setFileDetails } from "@/redux/slices/designerSlice";
 import { exportQMLFile, exportXMIFile } from "@/redux/thunks/designerThunks";
 import { Box, Button, TextField } from "@mui/material";
 
-export default function QmlGenExportTab() {
+export const ExportDrawer = () => {
   const dispatch = useAppDispatch();
   const fileDetails = useAppSelector((state) => state.designer.fileDetails);
+
+  const handleExport = () => {
+    if (!fileDetails.name) {
+      return;
+    }
+    dispatch(exportQMLFile());
+    dispatch(exportXMIFile());
+  };
+
   return (
     <Box style={{ width: "40vw" }}>
-      <Box display="flex" flexDirection="column" sx={{ maxWidth: "sm" }}>
-        <TextField
-          sx={{ mb: 2 }}
-          label="Author"
-          size="small"
-          value={fileDetails.author}
-          onChange={(event) =>
-            dispatch(updateFileDetails({ author: event.target.value }))
-          }
-        />
-        <TextField
-          sx={{ mb: 2 }}
-          label="Name"
-          size="small"
-          value={fileDetails.name}
-          onChange={(event) =>
-            dispatch(updateFileDetails({ name: event.target.value }))
-          }
-        />
-        <TextField
-          sx={{ mb: 2 }}
-          label="Reference"
-          size="small"
-          value={fileDetails.reference}
-          onChange={(event) =>
-            dispatch(updateFileDetails({ reference: event.target.value }))
-          }
-        />
-      </Box>
+      <TextField
+        fullWidth
+        margin="normal"
+        label="Author"
+        value={fileDetails.author}
+        onChange={(event) =>
+          dispatch(setFileDetails({ author: event.target.value }))
+        }
+      />
+      <TextField
+        fullWidth
+        margin="normal"
+        label="File Name"
+        value={fileDetails.name}
+        onChange={(event) =>
+          dispatch(setFileDetails({ name: event.target.value }))
+        }
+      />
+      <TextField
+        fullWidth
+        margin="normal"
+        label="Reference"
+        value={fileDetails.reference}
+        onChange={(event) =>
+          dispatch(setFileDetails({ reference: event.target.value }))
+        }
+      />
       <Button
+        style={{ marginTop: "2rem" }}
+        fullWidth
         variant="contained"
         color="primary"
-        onClick={() => {
-          dispatch(exportQMLFile());
-          dispatch(exportXMIFile());
-        }}
+        onClick={handleExport}
       >
         Export
       </Button>
     </Box>
   );
-}
+};

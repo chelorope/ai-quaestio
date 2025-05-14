@@ -1,10 +1,27 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { openModal } from "../slices/modalSlice";
 import * as Service from "@/service";
+import { RootState } from "../store";
+
+interface AnswerQuestionRequest {
+  questionId: string;
+  answeredFacts: Array<{ id: string; value: boolean }>;
+}
+
+interface Question {
+  answered?: boolean;
+}
+
+interface QuestionnaireResponse {
+  data: {
+    questions: Record<string, Question>;
+    mandatoryFactsAnswered: boolean;
+  };
+}
 
 export const openQuestionnaire = createAsyncThunk(
   "questionnaire/openQuestionnaire",
-  async (formData) => {
+  async (formData: FormData) => {
     let response = { data: {} };
     try {
       response = await Service.openQuestionnaire(formData);
@@ -45,9 +62,10 @@ export const exportQuestionnaire = createAsyncThunk(
   async (_, { getState }) => {
     try {
       const response = await Service.exportQuestionnaire();
+      const state = getState() as RootState;
 
       const aElement = document.createElement("a");
-      aElement.setAttribute("download", `${getState().questionnaire.name}.dcl`);
+      aElement.setAttribute("download", `${state.questionnaire.name}.dcl`);
       const href = URL.createObjectURL(response.data);
       aElement.href = href;
       aElement.setAttribute("target", "_blank");
@@ -61,11 +79,13 @@ export const exportQuestionnaire = createAsyncThunk(
 
 export const answerQuestion = createAsyncThunk(
   "questionnaire/answerQuestion",
-  async (body, { dispatch }) => {
-    const response = await Service.answerQuestion(body);
+  async (body: AnswerQuestionRequest, { dispatch }) => {
+    const response = (await Service.answerQuestion(
+      body
+    )) as QuestionnaireResponse;
     const data = response.data;
     const areAllAnswered = Object.values(data.questions).every(
-      (q) => q.answered
+      (q) => q.answered === true
     );
     if (areAllAnswered) {
       dispatch(openModal("export"));
@@ -78,7 +98,7 @@ export const answerQuestion = createAsyncThunk(
 
 export const rollbackQuestion = createAsyncThunk(
   "questionnaire/rollbackQuestion",
-  async (questionId) => {
+  async (questionId: string) => {
     const response = await Service.rollbackQuestion(questionId);
     return response.data;
   }

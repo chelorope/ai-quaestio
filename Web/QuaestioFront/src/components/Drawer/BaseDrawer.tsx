@@ -11,24 +11,24 @@ import { DrawerPosition } from "@/redux/slices/drawerSlice";
 interface DrawerProps {
   open: boolean;
   position: DrawerPosition;
-  header: string;
+  title: string;
   sx?: object;
   children: React.ReactNode;
-  onClose: () => void;
+  handleClose: () => void;
 }
 
 const Drawer = ({
   open,
   position,
-  onClose,
+  handleClose,
   children,
-  header,
+  title,
   sx,
 }: DrawerProps) => (
   <MuiDrawer
     anchor={position}
     open={open}
-    onClose={onClose}
+    onClose={handleClose}
     PaperProps={{ sx: { maxWidth: "100vw" } }}
   >
     <Toolbar
@@ -40,10 +40,10 @@ const Drawer = ({
         px: [1],
       }}
     >
-      <IconButton onClick={onClose}>
+      <IconButton onClick={handleClose}>
         {position === "left" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
       </IconButton>
-      <Typography variant="h6">{header}</Typography>
+      <Typography variant="h6">{title}</Typography>
     </Toolbar>
     <Divider />
     <Box sx={{ m: 2 }}>{children}</Box>

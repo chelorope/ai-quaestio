@@ -7,55 +7,83 @@ import Checkbox from "@mui/material/Checkbox";
 import Tooltip from "@mui/material/Tooltip";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import DoneIcon from "@mui/icons-material/Done";
+import { SxProps, Theme } from "@mui/material/styles";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   setSelectedFact,
   toggleAnsweredFact,
 } from "@/redux/slices/questionnaireSlice";
 
-export default function FactList({ sx }) {
-  const dispatch = useDispatch();
-  const questions = useSelector((state) => state.questionnaire.questions);
-  const facts = useSelector((state) => state.questionnaire.facts);
-  const selectedQuestion = useSelector(
+interface FactListProps {
+  sx?: SxProps<Theme>;
+}
+
+// Extend Fact type to include properties we know exist in the application
+interface ExtendedFact {
+  description: string;
+  value: boolean;
+  default?: boolean;
+  mandatory?: boolean;
+}
+
+// Extend Question type with answered property
+interface ExtendedQuestion {
+  facts: string[];
+  description: string;
+  answered?: boolean;
+}
+
+export default function FactList({ sx }: FactListProps): JSX.Element | null {
+  const dispatch = useAppDispatch();
+  const questions = useAppSelector((state) => state.questionnaire.questions);
+  const facts = useAppSelector((state) => state.questionnaire.facts);
+  const selectedQuestion = useAppSelector(
     (state) => state.questionnaire.selectedQuestion
   );
-  const selectedFact = useSelector((state) => state.questionnaire.selectedFact);
-  const answeredFacts = useSelector(
+  const selectedFact = useAppSelector(
+    (state) => state.questionnaire.selectedFact
+  );
+  const answeredFacts = useAppSelector(
     (state) => state.questionnaire.answeredFacts
   );
 
-  const question = questions[selectedQuestion];
+  const question = questions[selectedQuestion] as ExtendedQuestion | undefined;
   const disabled = question?.answered;
 
-  const handleListItemClick = (id) => {
+  // Return null if no question is selected
+  if (!question) {
+    return null;
+  }
+
+  const handleListItemClick = (id: string): void => {
     dispatch(setSelectedFact(id));
   };
 
-  const handleToggle = (id) => () => {
+  const handleToggle = (id: string) => (): void => {
     dispatch(toggleAnsweredFact(id));
   };
 
   return (
-    question && (
-      <Paper sx={{ ...sx, width: "100%" }} elevation={2}>
-        <List component="nav" aria-label="main mailbox folders">
-          {question?.facts?.map((factId) => (
+    <Paper sx={{ ...sx, width: "100%" }} elevation={2}>
+      <List component="nav" aria-label="facts list">
+        {question.facts?.map((factId) => {
+          const fact = facts[factId] as ExtendedFact;
+          return (
             <ListItemButton
               selected={selectedFact === factId}
               key={factId}
               onClick={() => handleListItemClick(factId)}
             >
-              <ListItemText primary={facts[factId].description} />
-              {facts[factId].mandatory && (
+              <ListItemText primary={fact.description} />
+              {fact.mandatory && (
                 <ListItemIcon>
                   <Tooltip title="Mandatory Fact">
                     <ErrorOutlineIcon />
                   </Tooltip>
                 </ListItemIcon>
               )}
-              {facts[factId].default && (
+              {fact.default && (
                 <ListItemIcon>
                   <Tooltip title="True by default">
                     <DoneIcon />
@@ -64,7 +92,7 @@ export default function FactList({ sx }) {
               )}
               <ListItemIcon sx={{ minWidth: 0, ml: 1 }}>
                 <Checkbox
-                  disabled={disabled}
+                  disabled={!!disabled}
                   edge="start"
                   checked={!!answeredFacts[factId]}
                   tabIndex={-1}
@@ -73,9 +101,9 @@ export default function FactList({ sx }) {
                 />
               </ListItemIcon>
             </ListItemButton>
-          ))}
-        </List>
-      </Paper>
-    )
+          );
+        })}
+      </List>
+    </Paper>
   );
 }

@@ -1,6 +1,15 @@
 import { SvgIcon } from "@mui/material";
+import { SxProps, Theme } from "@mui/material/styles";
 
-export default function SVGLogo({ sx, fill = "#FFFFFF" }) {
+interface SVGLogoProps {
+  sx?: SxProps<Theme>;
+  fill?: string;
+}
+
+export default function SVGLogo({
+  sx,
+  fill = "#FFFFFF",
+}: SVGLogoProps): JSX.Element {
   return (
     <SvgIcon
       viewBox="497.387 328.592 582.922 580.947"

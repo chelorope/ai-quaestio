@@ -11,21 +11,18 @@ export default function QuestionDetailsDrawer({
   questionId,
 }: {
   questionId: string;
-  onClose: () => void;
 }) {
   const dispatch = useDispatch();
   const question = useAppSelector(selectQuestion(questionId));
 
-  const handleTitleChange = (event) => {
-    dispatch(
-      updateQuestionTitle({ title: event.target.value, id: questionId })
-    );
+  const handleTitleChange = (value: string) => {
+    dispatch(updateQuestionTitle({ title: value, id: questionId }));
   };
 
-  const handleGuidelinesChange = (event) => {
+  const handleGuidelinesChange = (value: string) => {
     dispatch(
       updateQuestionGuidelines({
-        guidelines: event.target.value,
+        guidelines: value,
         id: questionId,
       })
     );
@@ -36,8 +33,8 @@ export default function QuestionDetailsDrawer({
       id={questionId}
       onTitleChange={handleTitleChange}
       onGuidelinesChange={handleGuidelinesChange}
-      title={question?.data?.title}
-      guidelines={question?.data?.guidelines}
+      title={question?.data?.title || ""}
+      guidelines={question?.data?.guidelines || ""}
     />
   );
 }

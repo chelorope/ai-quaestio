@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { QuestionnaireState, Question, Fact } from "@/types/common";
 
 import {
   loadQuestionarie,
@@ -9,30 +10,17 @@ import {
   completeQuestionnaire,
 } from "../thunks/questionnaireThunks";
 
-interface QuestionaireState {
+// Used for API responses - add partial to handle potential data
+interface QuestionnaireData extends Partial<QuestionnaireState> {
   name: string;
   author: string;
   reference: string;
-  questions: Record<string, Question>;
-  selectedQuestion: string;
-  facts: Record<string, Fact>;
-  selectedFact: string;
-  answeredFacts: Record<string, boolean>;
   mandatoryFactsAnswered: boolean;
-  factInspectorOpen: boolean;
+  facts: Record<string, Fact>;
+  questions: Record<string, Question>;
 }
 
-interface Question {
-  description: string;
-  facts: string[];
-}
-
-interface Fact {
-  value: boolean;
-  description: string;
-}
-
-const initialState: QuestionaireState = {
+const initialState: QuestionnaireState = {
   name: "",
   author: "",
   reference: "",
@@ -45,7 +33,7 @@ const initialState: QuestionaireState = {
   factInspectorOpen: false,
 };
 
-const setInitialState = (state: QuestionaireState) => {
+const setInitialState = (state: QuestionnaireState): void => {
   state.name = initialState.name;
   state.author = initialState.author;
   state.reference = initialState.reference;
@@ -57,7 +45,10 @@ const setInitialState = (state: QuestionaireState) => {
   state.mandatoryFactsAnswered = initialState.mandatoryFactsAnswered;
 };
 
-const replaceStateData = (state: QuestionaireState, data) => {
+const replaceStateData = (
+  state: QuestionnaireState,
+  data: QuestionnaireData
+): void => {
   const { name, author, reference, mandatoryFactsAnswered, facts, questions } =
     data;
   state.name = name;
@@ -72,56 +63,62 @@ const replaceStateData = (state: QuestionaireState, data) => {
   }
 };
 
-const setAnsweredFacts = (state: QuestionaireState, question) => {
-  state.answeredFacts = question.facts.reduce((acc, fact) => {
-    acc[fact] = state.facts[fact].value;
-    return acc;
-  }, {});
+const setAnsweredFacts = (
+  state: QuestionnaireState,
+  question: Question
+): void => {
+  state.answeredFacts = question.facts.reduce<Record<string, boolean>>(
+    (acc, fact) => {
+      acc[fact] = state.facts[fact].value;
+      return acc;
+    },
+    {}
+  );
 };
 
 export const questionnaireSlice = createSlice({
   name: "questionnaire",
   initialState,
   reducers: {
-    setSelectedQuestion: (state, action) => {
+    setSelectedQuestion: (state, action: PayloadAction<string>) => {
       state.selectedQuestion = action.payload;
       state.selectedFact = "";
       state.factInspectorOpen = false;
       setAnsweredFacts(state, state.questions[action.payload]);
     },
-    setSelectedFact: (state, action) => {
+    setSelectedFact: (state, action: PayloadAction<string>) => {
       state.selectedFact = action.payload;
     },
-    toggleAnsweredFact: (state, action) => {
+    toggleAnsweredFact: (state, action: PayloadAction<string>) => {
       state.answeredFacts[action.payload] =
         !state.answeredFacts[action.payload];
     },
-    setFactInspectorOpen: (state, action) => {
+    setFactInspectorOpen: (state, action: PayloadAction<boolean>) => {
       state.factInspectorOpen = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(openQuestionnaire.fulfilled, (state, action) => {
       setInitialState(state);
-      replaceStateData(state, action.payload);
+      replaceStateData(state, action.payload as QuestionnaireData);
     });
 
     builder.addCase(loadQuestionarie.fulfilled, (state, action) => {
-      replaceStateData(state, action.payload);
+      replaceStateData(state, action.payload as QuestionnaireData);
     });
 
     builder.addCase(answerQuestion.fulfilled, (state, action) => {
-      replaceStateData(state, action.payload);
+      replaceStateData(state, action.payload as QuestionnaireData);
     });
 
     builder.addCase(rollbackQuestion.fulfilled, (state, action) => {
-      replaceStateData(state, action.payload);
+      replaceStateData(state, action.payload as QuestionnaireData);
     });
 
     builder.addCase(continueQuestionnaire.fulfilled, () => {});
 
     builder.addCase(completeQuestionnaire.fulfilled, (state, action) => {
-      replaceStateData(state, action.payload);
+      replaceStateData(state, action.payload as QuestionnaireData);
     });
   },
 });

@@ -1,9 +1,9 @@
 import {
   addConstraint,
   removeConstraint,
+  updateConstraint,
   selectConstraints,
   selectFacts,
-  updateConstraints,
 } from "@/redux/slices/designerSlice";
 import {
   Box,
@@ -49,21 +49,33 @@ export default function ConstraintsDrawer() {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleConstraintUpdate = (item) => {
-    if (selectedConstraintIndex === null) {
-      return;
-    }
-    if (item === "x") {
-      // Hack to add new constraint when ADD CONSTRAINT is selected
-      dispatch(addConstraint(selectedConstraintIndex + 1));
-      setSelectedConstraintIndex(selectedConstraintIndex + 1);
-      return;
-    }
-    const newConstraints = constraints[selectedConstraintIndex] + item;
+  const handleFactSelect = (id: string) => {
+    if (selectedConstraintIndex === null) return;
+    const currentValue = constraints[selectedConstraintIndex];
     dispatch(
-      updateConstraints({
+      updateConstraint({
         index: selectedConstraintIndex,
-        value: newConstraints,
+        value: currentValue + ` #${id}`,
+      })
+    );
+    inputRef.current?.focus();
+  };
+
+  const handleOperatorSelect = (id: string) => {
+    if (selectedConstraintIndex === null) return;
+
+    // Special case for ADD CONSTRAINT
+    if (id === "x") {
+      dispatch(addConstraint());
+      setSelectedConstraintIndex(constraints.length);
+      return;
+    }
+
+    const currentValue = constraints[selectedConstraintIndex];
+    dispatch(
+      updateConstraint({
+        index: selectedConstraintIndex,
+        value: currentValue + ` ${id}`,
       })
     );
     inputRef.current?.focus();
@@ -95,7 +107,7 @@ export default function ConstraintsDrawer() {
               autoFocus={index === selectedConstraintIndex}
               onChange={(event) =>
                 dispatch(
-                  updateConstraints({ index: index, value: event.target.value })
+                  updateConstraint({ index: index, value: event.target.value })
                 )
               }
               onFocus={() => setSelectedConstraintIndex(index)}
@@ -128,10 +140,7 @@ export default function ConstraintsDrawer() {
           <Typography variant="h6" sx={{ mb: 2 }}>
             Facts
           </Typography>
-          <SelectableCardList
-            items={cardFacts}
-            onSelect={handleConstraintUpdate}
-          />
+          <SelectableCardList items={cardFacts} onSelect={handleFactSelect} />
         </Paper>
         <Paper sx={{ p: 3, width: 1 }} variant="outlined">
           <Typography variant="h6" sx={{ mb: 2 }}>
@@ -140,7 +149,7 @@ export default function ConstraintsDrawer() {
           <SelectableCardList
             showIcon={false}
             items={operators}
-            onSelect={handleConstraintUpdate}
+            onSelect={handleOperatorSelect}
           />
         </Paper>
       </Box>

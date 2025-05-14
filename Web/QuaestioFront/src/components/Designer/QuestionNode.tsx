@@ -41,7 +41,7 @@ function QuestionNode(props: NodeProps<QuestionNodeProps>) {
   }, []);
 
   const handleCreateFactNode = useCallback(
-    (questionId) => {
+    (questionId: string) => {
       const lastSibling = questionFacts[questionFacts.length - 1];
 
       const newPosition = lastSibling

@@ -1,4 +1,10 @@
 import { Position } from "@xyflow/react";
+import {
+  FactNode,
+  QuestionNode,
+  DependencyEdge,
+  QuestionFactEdge,
+} from "@/types/designer/Designer";
 
 export const createFactNode = (
   id: string,
@@ -6,7 +12,7 @@ export const createFactNode = (
   guidelines?: string,
   isMandatory = false,
   isDefault = false
-) => ({
+): FactNode => ({
   id,
   type: "fact",
   position: { x: 0, y: 0 },
@@ -27,7 +33,7 @@ export const createQuestionNode = (
   id: string,
   title: string,
   guidelines?: string
-) => ({
+): QuestionNode => ({
   id,
   type: "question",
   position: { x: 0, y: 0 },
@@ -46,7 +52,7 @@ export const createDependencyEdge = (
   source: string,
   target: string,
   type: "full" | "partial"
-) => ({
+): DependencyEdge => ({
   id: `${source}-${target}`,
   type: "dependency",
   sourceHandle: `${source}-bottom-source`,
@@ -56,10 +62,15 @@ export const createDependencyEdge = (
   data: { type },
 });
 
-export const createQuestionFactEdge = (questionId: string, factId: string) => ({
+export const createQuestionFactEdge = (
+  questionId: string,
+  factId: string
+): QuestionFactEdge => ({
   id: `${questionId}-${factId}`,
+  type: "question-fact",
   sourceHandle: `${questionId}-right-source`,
   source: questionId,
   targetHandle: `${factId}-left-target`,
   target: factId,
+  data: {},
 });

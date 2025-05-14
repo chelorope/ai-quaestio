@@ -1,6 +1,7 @@
 import { FormControlLabel, Switch } from "@mui/material";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import { ChangeEvent, SyntheticEvent } from "react";
 
 export default function DetailsDrawer({
   id,
@@ -23,12 +24,18 @@ export default function DetailsDrawer({
   guidelines: string;
   onGuidelinesChange: (value: string) => void;
 }) {
-  const handleTitleChange = (event) => {
+  const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onTitleChange(event.target.value);
   };
 
-  const handleGuidelinesChange = (event) => {
+  const handleGuidelinesChange = (event: ChangeEvent<HTMLInputElement>) => {
     onGuidelinesChange(event.target.value);
+  };
+
+  const handleSwitchChange = (handler: (checked: boolean) => void) => {
+    return (_event: SyntheticEvent<Element, Event>, checked: boolean) => {
+      handler(checked);
+    };
   };
 
   return (
@@ -53,9 +60,7 @@ export default function DetailsDrawer({
           control={<Switch />}
           label="Mandatory"
           checked={isMandatory}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            onMandatoryChange(event.target.checked)
-          }
+          onChange={handleSwitchChange(onMandatoryChange)}
         />
       ) : null}
       {isDefault !== undefined && onDefaultChange ? (
@@ -64,9 +69,7 @@ export default function DetailsDrawer({
           control={<Switch />}
           label="Default"
           checked={isDefault}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            onDefaultChange(event.target.checked)
-          }
+          onChange={handleSwitchChange(onDefaultChange)}
         />
       ) : null}
       <TextField

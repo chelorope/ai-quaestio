@@ -3,20 +3,22 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
-  Edge,
   Position,
   getNodesBounds,
   getViewportForBounds,
   Connection,
+  Viewport as XYFlowViewport,
 } from "@xyflow/react";
 import { isBrowser } from "@/utils";
 import { flowLayout } from "../thunks/designerThunks";
 import {
-  DependencyEdge,
   FactNode,
   QuestionNode,
   DesignerState,
+  DesignerEdge,
+  DependencyEdgeData,
 } from "@/types/designer/Designer";
+import { RootState } from "../store";
 
 const initialState: DesignerState = {
   viewport: { x: 0, y: 0, zoom: 1 },
@@ -33,26 +35,29 @@ const initialState: DesignerState = {
 
 const persistedState = isBrowser() && localStorage.getItem("flow");
 
-export const getInitialState = (initial?: boolean) =>
+export const getInitialState = (initial?: boolean): DesignerState =>
   JSON.parse(
     persistedState && !initial ? persistedState : JSON.stringify(initialState)
   );
 
 export const designer = createSlice({
   name: "designer",
-  initialState: getInitialState(),
+  initialState: getInitialState,
   reducers: {
     resetState: () => {
       return getInitialState(true);
     },
-    setState: (state, action) => {
+    setState: (state, action: PayloadAction<DesignerState>) => {
       return action.payload;
     },
     // EDGE REDUCERS
-    setEdges: (state, action: PayloadAction<DependencyEdge[]>) => {
+    setEdges: (state, action: PayloadAction<DesignerEdge[]>) => {
       state.edges = action.payload;
     },
-    updateDependencyEdgeType: (state, action) => {
+    updateDependencyEdgeType: (
+      state,
+      action: PayloadAction<{ id: string; type: DependencyEdgeData["type"] }>
+    ) => {
       state.edges = state.edges.map((edge) => {
         if (edge.id === action.payload.id) {
           edge.data = { ...edge.data, type: action.payload.type };
@@ -66,9 +71,9 @@ export const designer = createSlice({
       const facts = [] as FactNode[];
       action.payload.forEach((node) => {
         if (node.type === "question") {
-          questions.push(node);
+          questions.push(node as QuestionNode);
         } else if (node.type === "fact") {
-          facts.push(node);
+          facts.push(node as FactNode);
         }
       });
       state.questions = questions;
@@ -160,16 +165,21 @@ export const designer = createSlice({
       };
       state.facts = [...state.facts, newNode];
 
-      const factEdge: Edge = {
+      const factEdge: DesignerEdge = {
         id: `${newId}-fact-${action.payload.parentId}`,
         sourceHandle: `${action.payload.parentId}-right-source`,
         source: action.payload.parentId || "",
         targetHandle: `${newId}-left-target`,
         target: newId,
+        type: "question-fact",
+        data: {},
       };
-      state.edges = addEdge(factEdge, state.edges);
+      state.edges = addEdge(factEdge, state.edges) as DesignerEdge[];
     },
-    updateFactTitle: (state, action) => {
+    updateFactTitle: (
+      state,
+      action: PayloadAction<{ id: string; title: string }>
+    ) => {
       state.facts = state.facts.map((fact) => {
         if (fact.id === action.payload.id) {
           fact.data = { ...fact.data, title: action.payload.title };
@@ -177,7 +187,10 @@ export const designer = createSlice({
         return fact;
       });
     },
-    updateFactGuidelines: (state, action) => {
+    updateFactGuidelines: (
+      state,
+      action: PayloadAction<{ id: string; guidelines: string }>
+    ) => {
       state.facts = state.facts.map((fact) => {
         if (fact.id === action.payload.id) {
           fact.data = { ...fact.data, guidelines: action.payload.guidelines };
@@ -185,7 +198,10 @@ export const designer = createSlice({
         return fact;
       });
     },
-    updateFactMandatory: (state, action) => {
+    updateFactMandatory: (
+      state,
+      action: PayloadAction<{ id: string; mandatory: boolean }>
+    ) => {
       state.facts = state.facts.map((fact) => {
         if (fact.id === action.payload.id) {
           fact.data = { ...fact.data, mandatory: action.payload.mandatory };
@@ -193,7 +209,10 @@ export const designer = createSlice({
         return fact;
       });
     },
-    updateFactDefault: (state, action) => {
+    updateFactDefault: (
+      state,
+      action: PayloadAction<{ id: string; default: boolean }>
+    ) => {
       state.facts = state.facts.map((fact) => {
         if (fact.id === action.payload.id) {
           fact.data = { ...fact.data, default: action.payload.default };
@@ -201,7 +220,7 @@ export const designer = createSlice({
         return fact;
       });
     },
-    removeFact: (state, action) => {
+    removeFact: (state, action: PayloadAction<string>) => {
       state.facts = state.facts.filter((fact) => fact.id !== action.payload);
     },
 
@@ -211,10 +230,15 @@ export const designer = createSlice({
       if (nodes.length === 0) return;
 
       const bounds = getNodesBounds(nodes);
+      const viewportDimensions = {
+        width: 800,
+        height: 600,
+      };
+
       const viewport = getViewportForBounds(
         bounds,
-        state.viewport.width ?? 800,
-        state.viewport.height ?? 600,
+        viewportDimensions.width,
+        viewportDimensions.height,
         0,
         2,
         0.4
@@ -226,7 +250,7 @@ export const designer = createSlice({
         zoom: viewport.zoom,
       };
     },
-    onViewportChange: (state, action) => {
+    onViewportChange: (state, action: PayloadAction<XYFlowViewport>) => {
       state.viewport = action.payload;
     },
     onNodesChange: (state, action) => {
@@ -234,63 +258,91 @@ export const designer = createSlice({
       state.facts = applyNodeChanges(action.payload, state.facts);
     },
     onEdgesChange: (state, action) => {
-      state.edges = applyEdgeChanges(action.payload, state.edges);
+      state.edges = applyEdgeChanges(
+        action.payload,
+        state.edges
+      ) as DesignerEdge[];
     },
     onConnect: (state, action: PayloadAction<Connection>) => {
-      const nodes = selectNodes({ designer: state });
+      const nodes = [...state.questions, ...state.facts];
       const sourceNode = nodes.find(
         (node) => action.payload.source === node.id
       );
       const targetNode = nodes.find(
         (node) => action.payload.target === node.id
       );
+
+      // Ensure nodes are defined before proceeding
+      if (!sourceNode || !targetNode) return;
+
       // Connections rules
       if (
         sourceNode.id === targetNode.id ||
-        (sourceNode.type === "question" &&
-          action.payload.sourceHandle?.endsWith("right-source")) ||
-        (sourceNode.type === "question" &&
-          action.payload.targetHandle?.endsWith("right-target")) ||
-        (sourceNode.type === "fact" &&
-          action.payload.targetHandle?.endsWith("left-target"))
-      ) {
+        (sourceNode.type === "question" && targetNode.type === "question")
+      )
         return;
-      }
 
-      if (
-        (sourceNode.type === "question" && targetNode.type === "question") ||
-        (sourceNode.type === "fact" && targetNode.type === "fact")
-      ) {
-        const newEdge: DependencyEdge = {
-          id: `${action.payload.source}-${action.payload.target}`,
-          ...action.payload,
-          type: "dependency",
-          selected: true,
-          data: { type: "full" },
+      // Add edge according to type
+      if (sourceNode.type === "question" && targetNode.type === "fact") {
+        // Question to fact connection
+        const edge: DesignerEdge = {
+          id: `${sourceNode.id}-${targetNode.id}`,
+          source: sourceNode.id,
+          target: targetNode.id,
+          type: "question-fact",
+          data: {},
+          sourceHandle: action.payload.sourceHandle,
+          targetHandle: action.payload.targetHandle,
         };
-        state.edges = addEdge(newEdge, state.edges);
+        state.edges = addEdge(edge, state.edges) as DesignerEdge[];
+      } else {
+        // Dependency connection
+        const dependencyEdge: DesignerEdge = {
+          id: `${sourceNode.id}-${targetNode.id}`,
+          source: sourceNode.id,
+          target: targetNode.id,
+          type: "dependency",
+          data: { type: "full" },
+          sourceHandle: action.payload.sourceHandle,
+          targetHandle: action.payload.targetHandle,
+        };
+        state.edges = addEdge(dependencyEdge, state.edges) as DesignerEdge[];
       }
     },
 
-    // QUESTIONAIRE REDUCERS
-    addConstraint: (state, action) => {
-      const index = action.payload;
-      state.constraints = [
-        ...state.constraints.slice(0, index),
-        "",
-        ...state.constraints.slice(index),
-      ];
+    // CONSTRAINT REDUCERS
+    setConstraints: (state, action: PayloadAction<string[]>) => {
+      state.constraints = action.payload;
     },
-    updateConstraints: (state, action) => {
+    updateConstraint: (
+      state,
+      action: PayloadAction<{ index: number; value: string }>
+    ) => {
       state.constraints[action.payload.index] = action.payload.value;
     },
-    removeConstraint: (state, action) => {
+    addConstraint: (state) => {
+      state.constraints.push("");
+    },
+    removeConstraint: (state, action: PayloadAction<number>) => {
       state.constraints = state.constraints.filter(
         (_, index) => index !== action.payload
       );
     },
-    updateFileDetails: (state, action) => {
-      state.fileDetails = action.payload;
+    // FILE DETAILS REDUCERS
+    setFileDetails: (
+      state,
+      action: PayloadAction<
+        Partial<{
+          name: string;
+          author: string;
+          reference: string;
+        }>
+      >
+    ) => {
+      state.fileDetails = {
+        ...state.fileDetails,
+        ...action.payload,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -299,67 +351,64 @@ export const designer = createSlice({
 });
 
 export const {
-  setState,
   resetState,
-  // Flow
-  onViewportChange,
-  onNodesChange,
-  onEdgesChange,
-  onConnect,
-  setNodes,
+  setState,
   setEdges,
   updateDependencyEdgeType,
-  centerView,
-  // Questions,
+  setNodes,
   addQuestion,
   updateQuestionTitle,
   updateQuestionGuidelines,
   removeQuestion,
-  // Facts
   addFact,
   updateFactTitle,
   updateFactGuidelines,
   updateFactMandatory,
   updateFactDefault,
   removeFact,
-  // Questionaire
+  centerView,
+  onViewportChange,
+  onNodesChange,
+  onEdgesChange,
+  onConnect,
+  setConstraints,
+  updateConstraint,
   addConstraint,
-  updateConstraints,
   removeConstraint,
-  updateFileDetails,
+  setFileDetails,
 } = designer.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state) => state.counter.value)`
-export const selectCount = (state) => state.designer.value;
-
-export const selectQuestions = (state) => state.designer.questions;
-export const selectFacts = (state) => state.designer.facts;
+// in the slice file.
+export const selectQuestions = (state: RootState) => state.designer.questions;
+export const selectFacts = (state: RootState) => state.designer.facts;
 
 export const selectNodes = createSelector(
   [selectQuestions, selectFacts],
   (questions, facts) => [...questions, ...facts]
 );
-export const selectEdges = (state) => state.designer.edges;
 
-export const selectQuestion = (questionId) =>
+export const selectEdges = (state: RootState) => state.designer.edges;
+
+export const selectQuestion = (questionId: string) =>
   createSelector([selectQuestions], (questions) => {
     return questions.find((question) => question.id === questionId);
   });
 
-export const selectFact = (factId) =>
+export const selectFact = (factId: string) =>
   createSelector([selectFacts], (facts) => {
     return facts.find((fact) => fact.id === factId);
   });
 
-export const selectQuestionFacts = (questionId) =>
+export const selectQuestionFacts = (questionId: string) =>
   createSelector([selectFacts], (facts) => {
     return facts.filter((fact) => fact.parentId === questionId);
   });
 
-export const selectConstraints = (state) => state.designer.constraints;
+export const selectConstraints = (state: RootState) =>
+  state.designer.constraints;
 
-export const selectViewport = (state) => state.designer.viewport;
+export const selectViewport = (state: RootState) => state.designer.viewport;
 
 export default designer.reducer;

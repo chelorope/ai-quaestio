@@ -21,7 +21,7 @@ interface BaseNodeProps {
 function BaseNode(props: BaseNodeProps) {
   const inputRef = useRef<HTMLInputElement>();
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     props.onChange(event.target.value);
   };
 

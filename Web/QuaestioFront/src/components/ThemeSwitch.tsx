@@ -1,4 +1,14 @@
-import { Switch, styled } from "@mui/material";
+import { Switch, styled, SwitchProps } from "@mui/material";
+import { ChangeEvent, ReactNode } from "react";
+
+// Define type for color mode
+type ColorMode = "light" | "dark";
+
+// Props specific to ThemeSwitch component
+interface ThemeSwitchProps extends Omit<SwitchProps, "onChange"> {
+  onChange: (mode: ColorMode) => void;
+  children?: ReactNode;
+}
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -47,8 +57,11 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-export default function ThemeSwitch({ onChange, ...props }) {
-  const handleChange = (event) => {
+export default function ThemeSwitch({
+  onChange,
+  ...props
+}: ThemeSwitchProps): JSX.Element {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     onChange(event.target.checked ? "dark" : "light");
   };
 

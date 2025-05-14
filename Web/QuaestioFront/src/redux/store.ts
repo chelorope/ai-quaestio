@@ -4,8 +4,6 @@ import questionnaireReducer from "./slices/questionnaireSlice";
 import modalReducer from "./slices/modalSlice";
 import designerReducer from "./slices/designerSlice";
 import drawerReducer from "./slices/drawerSlice";
-import qmlGeneratorReducer from "./slices/qmlGeneratorSlice";
-import qmlGeneratorPersistanceMiddleware from "./middlewares/qmlGeneratorPersistanceMiddleware";
 import designerPersistanceMiddleware from "./middlewares/designerPersistanceMiddleware";
 
 export const makeStore = () => {
@@ -13,14 +11,11 @@ export const makeStore = () => {
     reducer: {
       questionnaire: questionnaireReducer,
       modal: modalReducer,
-      qmlGenerator: qmlGeneratorReducer,
       designer: designerReducer,
       drawer: drawerReducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware()
-        .prepend(qmlGeneratorPersistanceMiddleware.middleware)
-        .prepend(designerPersistanceMiddleware.middleware),
+      getDefaultMiddleware().prepend(designerPersistanceMiddleware.middleware),
   });
 };
 

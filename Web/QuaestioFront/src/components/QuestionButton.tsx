@@ -7,8 +7,20 @@ import {
   rollbackQuestion,
 } from "@/redux/thunks/questionnaireThunks";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { ComponentWithSxProps, AnsweredFacts } from "@/types/common";
 
-export default function QuestionButton({ sx }) {
+// The interface should match what the answerQuestion thunk expects
+interface AnswerQuestionRequest {
+  questionId: string;
+  answeredFacts: Array<{
+    id: string;
+    value: boolean;
+  }>;
+}
+
+export default function QuestionButton({
+  sx,
+}: ComponentWithSxProps): JSX.Element {
   const dispatch = useAppDispatch();
   const questions = useAppSelector((state) => state.questionnaire.questions);
   const facts = useAppSelector((state) => state.questionnaire.facts);
@@ -21,30 +33,35 @@ export default function QuestionButton({ sx }) {
 
   const areFactsAnswered = useMemo(
     () =>
-      Object.values(answeredFacts).reduce(
+      Object.values(answeredFacts as AnsweredFacts).reduce(
         (accum, factValue) => accum || factValue,
         false
       ),
     [answeredFacts]
   );
+
   const isQuestionAnswered = useMemo(
     () => !!questions[selectedQuestion]?.answered,
     [questions, selectedQuestion]
   );
 
-  const handleAnswer = () => {
-    dispatch(
-      answerQuestion({
-        questionId: selectedQuestion,
-        answeredFacts: Object.keys(answeredFacts).map((key) => ({
-          id: key,
-          value:
-            answeredFacts[key] || (!areFactsAnswered && facts[key].default),
-        })),
-      })
-    );
+  const handleAnswer = (): void => {
+    const factIds = Object.keys(answeredFacts);
+
+    const data: AnswerQuestionRequest = {
+      questionId: selectedQuestion,
+      answeredFacts: factIds.map((key) => ({
+        id: key,
+        // Ensure value is always boolean, defaults to false if undefined
+        value:
+          !!answeredFacts[key] || (!areFactsAnswered && !!facts[key].default),
+      })),
+    };
+
+    dispatch(answerQuestion(data));
   };
-  const handleRollback = () => {
+
+  const handleRollback = (): void => {
     dispatch(rollbackQuestion(selectedQuestion));
   };
 
@@ -56,6 +73,7 @@ export default function QuestionButton({ sx }) {
     } else if (isQuestionAnswered) {
       return "Rollback";
     }
+    return "";
   }, [areFactsAnswered, isQuestionAnswered]);
 
   return (

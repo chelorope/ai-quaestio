@@ -1,14 +1,20 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import { SxProps, Theme } from "@mui/material/styles";
+import { useAppSelector } from "@/redux/hooks";
 
-import { useSelector } from "react-redux";
+interface QuestionnaireDetailsProps {
+  sx?: SxProps<Theme>;
+}
 
-export default function QuestionnaireDetails({ sx }) {
-  const questionnaireName = useSelector((state) => state.questionnaire.name);
-  const questionnaireAuthor = useSelector(
+export default function QuestionnaireDetails({
+  sx,
+}: QuestionnaireDetailsProps): JSX.Element {
+  const questionnaireName = useAppSelector((state) => state.questionnaire.name);
+  const questionnaireAuthor = useAppSelector(
     (state) => state.questionnaire.author
   );
-  const questionnaireReference = useSelector(
+  const questionnaireReference = useAppSelector(
     (state) => state.questionnaire.reference
   );
 

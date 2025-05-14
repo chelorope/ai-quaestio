@@ -9,7 +9,17 @@ import ThemeSwitch from "./ThemeSwitch";
 import NavMenu from "./NavMenu";
 import Link from "next/link";
 
-export default function NavBar({ colorMode, setColorMode }) {
+type ColorMode = "light" | "dark";
+
+interface NavBarProps {
+  colorMode: ColorMode;
+  setColorMode: (mode: ColorMode) => void;
+}
+
+export default function NavBar({
+  colorMode,
+  setColorMode,
+}: NavBarProps): JSX.Element {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -18,15 +28,11 @@ export default function NavBar({ colorMode, setColorMode }) {
             <Link href="/">
               <SVGLogo sx={{ width: 30, height: 30 }} />
             </Link>
-            <Button
-              LinkComponent={Link}
-              href="/"
-              sx={{ color: "grey.100", ml: 2 }}
-            >
+            <Button component={Link} href="/" sx={{ color: "grey.100", ml: 2 }}>
               Quaestio
             </Button>
             <Button
-              LinkComponent={Link}
+              component={Link}
               href="/designer"
               sx={{ color: "grey.100" }}
             >

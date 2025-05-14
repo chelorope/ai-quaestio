@@ -34,11 +34,10 @@ export default function FileModal() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("File selected", file);
     // Load the file into QML Editor
     const fileExtension = file?.name.split(".")[1];
     const fileText = await readFile(inputRef.current.files[0]);
-    console.log("fileExtension", fileExtension);
+
     let loader;
     switch (fileExtension) {
       case "qml":
@@ -51,7 +50,6 @@ export default function FileModal() {
         loader = loadQMLFile;
         break;
     }
-    console.log("File text", fileText);
     dispatch(loader(fileText));
     // Close the modal
     dispatch(flowLayout());
