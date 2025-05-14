@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import SelectableCardList from "@/components/QmlGenerator/SelectableCardList";
+import SelectableCardList from "@/components/SelectableCardList";
 import { useMemo, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Close as CloseIcon } from "@mui/icons-material";

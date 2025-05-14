@@ -1,4 +1,9 @@
-import { DependencyEdge, FactNode, Handle, QuestionNode } from "@/types/Flow";
+import {
+  DependencyEdge,
+  FactNode,
+  Handle,
+  QuestionNode,
+} from "@/types/designer/Designer";
 import { Position } from "@xyflow/react";
 import ELK, { ElkNode } from "elkjs/lib/elk.bundled.js";
 

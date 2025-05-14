@@ -8,24 +8,15 @@ import {
   getNodesBounds,
   getViewportForBounds,
   Connection,
-  Viewport,
 } from "@xyflow/react";
 import { isBrowser } from "@/utils";
 import { flowLayout } from "../thunks/designerThunks";
-import { DependencyEdge, FactNode, QuestionNode } from "@/types/Flow";
-
-interface DesignerState {
-  viewport: Viewport;
-  questions: QuestionNode[];
-  facts: FactNode[];
-  edges: Edge[];
-  constraints: string[];
-  fileDetails: {
-    author: string;
-    name: string;
-    reference: string;
-  };
-}
+import {
+  DependencyEdge,
+  FactNode,
+  QuestionNode,
+  DesignerState,
+} from "@/types/designer/Designer";
 
 const initialState: DesignerState = {
   viewport: { x: 0, y: 0, zoom: 1 },

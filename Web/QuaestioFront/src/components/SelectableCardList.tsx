@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 
 interface SelectableCardListProps {
-  // TODO: Define the type of the items array
   items: {
     id: string;
     description: string;
