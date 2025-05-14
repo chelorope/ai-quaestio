@@ -20,6 +20,7 @@ import {
   QuestionFactEdge,
 } from "@/types/designer/Designer";
 import { RootState } from "../store";
+import { getNextId, updateNodeList } from "@/utils/sliceUtils";
 
 const initialState: DesignerState = {
   viewport: { x: 0, y: 0, zoom: 1 },
@@ -83,8 +84,7 @@ export const designer = createSlice({
 
     // QUESTION REDUCERS
     addQuestion: (state, action: PayloadAction<Partial<QuestionNode>>) => {
-      const lastId = state.questions[state.questions.length - 1]?.id || "Q0";
-      const newId = `Q${Number(lastId.replace("Q", "")) + 1}`;
+      const newId = getNextId("Q", state.questions);
       const newNode: QuestionNode = {
         ...action.payload,
         position: action.payload.position || { x: 0, y: 0 },
@@ -112,26 +112,21 @@ export const designer = createSlice({
       state,
       action: PayloadAction<{ id: string; title: string }>
     ) => {
-      state.questions = state.questions.map((question) => {
-        if (question.id === action.payload.id) {
-          question.data = { ...question.data, title: action.payload.title };
-        }
-        return question;
-      });
+      state.questions = updateNodeList(
+        state.questions,
+        action.payload.id,
+        (data) => ({ ...data, title: action.payload.title })
+      );
     },
     updateQuestionGuidelines: (
       state,
       action: PayloadAction<{ id: string; guidelines: string }>
     ) => {
-      state.questions = state.questions.map((question) => {
-        if (question.id === action.payload.id) {
-          question.data = {
-            ...question.data,
-            guidelines: action.payload.guidelines,
-          };
-        }
-        return question;
-      });
+      state.questions = updateNodeList(
+        state.questions,
+        action.payload.id,
+        (data) => ({ ...data, guidelines: action.payload.guidelines })
+      );
     },
     removeQuestion: (state, action: PayloadAction<string>) => {
       state.questions = applyNodeChanges(
@@ -142,8 +137,7 @@ export const designer = createSlice({
 
     // FACTS REDUCERS
     addFact: (state, action: PayloadAction<Partial<FactNode>>) => {
-      const lastId = state.facts[state.facts.length - 1]?.id || "F0";
-      const newId = `F${Number(lastId.replace("F", "")) + 1}`;
+      const newId = getNextId("F", state.facts);
 
       const newNode: FactNode = {
         ...action.payload,
@@ -181,45 +175,37 @@ export const designer = createSlice({
       state,
       action: PayloadAction<{ id: string; title: string }>
     ) => {
-      state.facts = state.facts.map((fact) => {
-        if (fact.id === action.payload.id) {
-          fact.data = { ...fact.data, title: action.payload.title };
-        }
-        return fact;
-      });
+      state.facts = updateNodeList(state.facts, action.payload.id, (data) => ({
+        ...data,
+        title: action.payload.title,
+      }));
     },
     updateFactGuidelines: (
       state,
       action: PayloadAction<{ id: string; guidelines: string }>
     ) => {
-      state.facts = state.facts.map((fact) => {
-        if (fact.id === action.payload.id) {
-          fact.data = { ...fact.data, guidelines: action.payload.guidelines };
-        }
-        return fact;
-      });
+      state.facts = updateNodeList(state.facts, action.payload.id, (data) => ({
+        ...data,
+        guidelines: action.payload.guidelines,
+      }));
     },
     updateFactMandatory: (
       state,
       action: PayloadAction<{ id: string; mandatory: boolean }>
     ) => {
-      state.facts = state.facts.map((fact) => {
-        if (fact.id === action.payload.id) {
-          fact.data = { ...fact.data, mandatory: action.payload.mandatory };
-        }
-        return fact;
-      });
+      state.facts = updateNodeList(state.facts, action.payload.id, (data) => ({
+        ...data,
+        mandatory: action.payload.mandatory,
+      }));
     },
     updateFactDefault: (
       state,
       action: PayloadAction<{ id: string; default: boolean }>
     ) => {
-      state.facts = state.facts.map((fact) => {
-        if (fact.id === action.payload.id) {
-          fact.data = { ...fact.data, default: action.payload.default };
-        }
-        return fact;
-      });
+      state.facts = updateNodeList(state.facts, action.payload.id, (data) => ({
+        ...data,
+        default: action.payload.default,
+      }));
     },
     removeFact: (state, action: PayloadAction<string>) => {
       state.facts = state.facts.filter((fact) => fact.id !== action.payload);

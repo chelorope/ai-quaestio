@@ -20,6 +20,8 @@ import { Close as CloseIcon } from "@mui/icons-material";
 
 const operators = [
   { id: "x", description: "ADD CONSTRAINT" },
+  { id: "(", description: "(" },
+  { id: ")", description: ")" },
   { id: ".", description: "AND" },
   { id: "+", description: "OR" },
   { id: "-", description: "NOT" },

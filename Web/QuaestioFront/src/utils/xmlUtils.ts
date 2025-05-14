@@ -1,4 +1,10 @@
 import { create } from "xmlbuilder2";
+import {
+  BINARY_OPERATORS,
+  OPERATOR_MAP,
+  FUNCTION_OPERATORS,
+  LITERAL_REGEX,
+} from "./xmlConstants";
 
 export const replaceScapedCharacters = (str: string) =>
   str
@@ -89,23 +95,15 @@ export function parseConstraintExpression(
     }
   }
 
-  // Check for top-level binary operators: '=>' and '=' (order matters)
-  const binaryOps = ["=>", "=", "+", "."];
-  const opFound = findTopLevelOperator(expr, binaryOps);
+  // Check for top-level binary operators
+  const opFound = findTopLevelOperator(expr, BINARY_OPERATORS);
   if (opFound) {
     const { index, op } = opFound;
     const left = expr.substring(0, index).trim();
     const right = expr.substring(index + op.length).trim();
-    // Map to XMI operator attributes ("=" becomes IFF -> IFONLY, "=>" becomes THEN)
-    const operatorMap: Record<string, string> = {
-      "=": "IFONLY",
-      "=>": "THEN",
-      "+": "OR",
-      ".": "AND",
-    };
     return {
       "@xsi:type": "qml:Op",
-      "@operator": operatorMap[op],
+      "@operator": OPERATOR_MAP[op],
       expression: [
         parseConstraintExpression(left, factIndexMap),
         parseConstraintExpression(right, factIndexMap),
@@ -122,25 +120,23 @@ export function parseConstraintExpression(
     };
   }
 
-  // Check for function-like operators (xor( and nor()
-  if (expr.startsWith("xor(") || expr.startsWith("nor(")) {
-    const isXor = expr.startsWith("xor(");
-    const operator = isXor ? "XOR" : "NOR";
-    // Extract the inner argument string (assumes a trailing ")" exists)
-    const inner = expr.substring(4, expr.length - 1).trim();
-    // Split arguments by top-level comma or dot (both can separate arguments)
-    const args = splitTopLevel(inner, [",", "."]);
-    return {
-      "@xsi:type": "qml:Op",
-      "@operator": operator,
-      expression: args.map((arg) =>
-        parseConstraintExpression(arg, factIndexMap)
-      ),
-    };
+  // Handle function-like operators (xor, nor)
+  for (const [fnName, fnOperator] of Object.entries(FUNCTION_OPERATORS)) {
+    if (expr.startsWith(`${fnName}(`)) {
+      const inner = expr.substring(fnName.length + 1, expr.length - 1).trim();
+      const args = splitTopLevel(inner, [",", "."]);
+      return {
+        "@xsi:type": "qml:Op",
+        "@operator": fnOperator,
+        expression: args.map((arg) =>
+          parseConstraintExpression(arg, factIndexMap)
+        ),
+      };
+    }
   }
 
   // If no operator is found, assume it's a literal (e.g. "f1").
-  if (/^f\d+/.test(expr)) {
+  if (LITERAL_REGEX.test(expr)) {
     const index =
       factIndexMap[expr] !== undefined ? factIndexMap[expr] : expr.substring(1);
     return { "@xsi:type": "qml:Literal", "@references": `//@fact.${index}` };
