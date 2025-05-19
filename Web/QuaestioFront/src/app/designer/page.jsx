@@ -23,6 +23,7 @@ import {
   Panel,
   useReactFlow,
   ReactFlowProvider,
+  MiniMap,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
@@ -116,6 +117,12 @@ const EditorLayout = () => {
           gap={16}
           size={1}
           variant={BackgroundVariant.Dots}
+        />
+        <MiniMap
+          nodeStrokeWidth={100}
+          nodeStrokeColor="grey"
+          offsetScale={0}
+          pannable
         />
         <Controls orientation="horizontal" style={{ marginBottom: "160px" }} />
       </ReactFlow>

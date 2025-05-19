@@ -35,6 +35,7 @@ import {
   XMIFact,
 } from "@/types/designer/Designer";
 import { RootState } from "../store";
+import { DEPENDENCY_TYPES } from "@/constants/designerConstants";
 
 export const exportQMLFile =
   () => async (_: unknown, getState: () => { designer: DesignerState }) => {
@@ -325,14 +326,14 @@ export const loadQMLFile =
 
       getDependenciesFromStr(fact["@fullyDepends"]).forEach((dependencyId) => {
         designerState.edges.push(
-          createDependencyEdge(dependencyId, factId, "full")
+          createDependencyEdge(dependencyId, factId, DEPENDENCY_TYPES.FULL)
         );
       });
 
       getDependenciesFromStr(fact["@partiallyDepends"]).forEach(
         (dependencyId) => {
           designerState.edges.push(
-            createDependencyEdge(dependencyId, factId, "partial")
+            createDependencyEdge(dependencyId, factId, DEPENDENCY_TYPES.PARTIAL)
           );
         }
       );
@@ -351,7 +352,11 @@ export const loadQMLFile =
       getDependenciesFromStr(question["@fullyDepends"]).forEach(
         (dependencyId) => {
           designerState.edges.push(
-            createDependencyEdge(dependencyId, questionId, "full")
+            createDependencyEdge(
+              dependencyId,
+              questionId,
+              DEPENDENCY_TYPES.FULL
+            )
           );
         }
       );
@@ -359,7 +364,11 @@ export const loadQMLFile =
       getDependenciesFromStr(question["@partiallyDepends"]).forEach(
         (dependencyId) => {
           designerState.edges.push(
-            createDependencyEdge(dependencyId, questionId, "partial")
+            createDependencyEdge(
+              dependencyId,
+              questionId,
+              DEPENDENCY_TYPES.PARTIAL
+            )
           );
         }
       );
@@ -426,7 +435,7 @@ export const loadXMIFile =
         getIndicesFromXmiStr(fact["@fDepends"]).forEach((dependencyIndex) => {
           const dependencyId = factIdMapping[dependencyIndex];
           designerState.edges.push(
-            createDependencyEdge(dependencyId, factId, "full")
+            createDependencyEdge(dependencyId, factId, DEPENDENCY_TYPES.FULL)
           );
         });
       }
@@ -435,7 +444,7 @@ export const loadXMIFile =
         getIndicesFromXmiStr(fact["@pDepends"]).forEach((dependencyIndex) => {
           const dependencyId = factIdMapping[dependencyIndex];
           designerState.edges.push(
-            createDependencyEdge(dependencyId, factId, "partial")
+            createDependencyEdge(dependencyId, factId, DEPENDENCY_TYPES.PARTIAL)
           );
         });
       }
@@ -467,7 +476,11 @@ export const loadXMIFile =
           (dependencyIndex) => {
             const dependencyId = questionIdMapping[dependencyIndex];
             designerState.edges.push(
-              createDependencyEdge(dependencyId, questionId, "partial")
+              createDependencyEdge(
+                dependencyId,
+                questionId,
+                DEPENDENCY_TYPES.PARTIAL
+              )
             );
           }
         );
@@ -477,7 +490,11 @@ export const loadXMIFile =
           (dependencyIndex) => {
             const dependencyId = questionIdMapping[dependencyIndex];
             designerState.edges.push(
-              createDependencyEdge(dependencyId, questionId, "full")
+              createDependencyEdge(
+                dependencyId,
+                questionId,
+                DEPENDENCY_TYPES.FULL
+              )
             );
           }
         );

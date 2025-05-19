@@ -3,10 +3,9 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
-  Position,
+  Connection,
   getNodesBounds,
   getViewportForBounds,
-  Connection,
   Viewport as XYFlowViewport,
 } from "@xyflow/react";
 import { isBrowser } from "@/utils";
@@ -17,10 +16,16 @@ import {
   DesignerState,
   DesignerEdge,
   DependencyEdgeData,
-  QuestionFactEdge,
 } from "@/types/designer/Designer";
 import { RootState } from "../store";
-import { getNextId, updateNodeList } from "@/utils/sliceUtils";
+import { updateNodeList } from "@/utils/sliceUtils";
+import {
+  createNewFactNode,
+  createNewQuestionNode,
+  createQuestionFactEdge,
+  createDependencyEdge,
+} from "@/utils/designerUtils";
+import { NODE_TYPES, DEPENDENCY_TYPES } from "@/constants/designerConstants";
 
 const initialState: DesignerState = {
   viewport: { x: 0, y: 0, zoom: 1 },
@@ -84,24 +89,12 @@ export const designer = createSlice({
 
     // QUESTION REDUCERS
     addQuestion: (state, action: PayloadAction<Partial<QuestionNode>>) => {
-      const newId = getNextId("Q", state.questions);
-      const newNode: QuestionNode = {
-        ...action.payload,
-        position: action.payload.position || { x: 0, y: 0 },
-        id: newId,
-        type: "question",
-        data: {
-          title: "",
-          guidelines: "",
-          sourceHandles: [
-            { id: `${newId}-bottom-source`, position: Position.Bottom },
-            { id: `${newId}-right-source`, position: Position.Right },
-          ],
-          targetHandles: [
-            { id: `${newId}-top-target`, position: Position.Top },
-          ],
-        },
-      };
+      const newNode = createNewQuestionNode(
+        state.questions,
+        "",
+        "",
+        action.payload.position || { x: 0, y: 0 }
+      );
 
       state.questions = applyNodeChanges(
         [{ type: "add", item: newNode }],
@@ -137,39 +130,25 @@ export const designer = createSlice({
 
     // FACTS REDUCERS
     addFact: (state, action: PayloadAction<Partial<FactNode>>) => {
-      const newId = getNextId("F", state.facts);
+      const newNode = createNewFactNode(
+        state.facts,
+        "",
+        "",
+        false,
+        false,
+        action.payload.parentId,
+        action.payload.position || { x: 0, y: 0 }
+      );
 
-      const newNode: FactNode = {
-        ...action.payload,
-        position: action.payload.position || { x: 0, y: 0 },
-        id: newId,
-        type: "fact",
-        data: {
-          title: "",
-          guidelines: "",
-          mandatory: false,
-          default: false,
-          sourceHandles: [
-            { id: `${newId}-bottom-source`, position: Position.Bottom },
-          ],
-          targetHandles: [
-            { id: `${newId}-top-target`, position: Position.Top },
-            { id: `${newId}-left-target`, position: Position.Left },
-          ],
-        },
-      };
       state.facts = [...state.facts, newNode];
 
-      const factEdge: QuestionFactEdge = {
-        id: `${newId}-fact-${action.payload.parentId}`,
-        sourceHandle: `${action.payload.parentId}-right-source`,
-        source: action.payload.parentId || "",
-        targetHandle: `${newId}-left-target`,
-        target: newId,
-        type: "question-fact",
-        data: {},
-      };
-      state.edges = addEdge(factEdge, state.edges) as DesignerEdge[];
+      if (action.payload.parentId) {
+        const factEdge = createQuestionFactEdge(
+          action.payload.parentId,
+          newNode.id
+        );
+        state.edges = addEdge(factEdge, state.edges) as DesignerEdge[];
+      }
     },
     updateFactTitle: (
       state,
@@ -265,34 +244,33 @@ export const designer = createSlice({
       // Connections rules
       if (
         sourceNode.id === targetNode.id ||
-        (sourceNode.type === "question" && targetNode.type === "question")
+        (sourceNode.type === NODE_TYPES.QUESTION &&
+          targetNode.type === NODE_TYPES.QUESTION)
       )
         return;
 
       // Add edge according to type
-      if (sourceNode.type === "question" && targetNode.type === "fact") {
+      if (
+        sourceNode.type === NODE_TYPES.QUESTION &&
+        targetNode.type === NODE_TYPES.FACT
+      ) {
         // Question to fact connection
-        const edge: DesignerEdge = {
-          id: `${sourceNode.id}-${targetNode.id}`,
-          source: sourceNode.id,
-          target: targetNode.id,
-          type: "question-fact",
-          data: {},
-          sourceHandle: action.payload.sourceHandle,
-          targetHandle: action.payload.targetHandle,
-        };
+        const edge = createQuestionFactEdge(
+          sourceNode.id,
+          targetNode.id,
+          action.payload.sourceHandle || undefined,
+          action.payload.targetHandle || undefined
+        );
         state.edges = addEdge(edge, state.edges) as DesignerEdge[];
       } else {
         // Dependency connection
-        const dependencyEdge: DesignerEdge = {
-          id: `${sourceNode.id}-${targetNode.id}`,
-          source: sourceNode.id,
-          target: targetNode.id,
-          type: "dependency",
-          data: { type: "full" },
-          sourceHandle: action.payload.sourceHandle,
-          targetHandle: action.payload.targetHandle,
-        };
+        const dependencyEdge = createDependencyEdge(
+          sourceNode.id,
+          targetNode.id,
+          DEPENDENCY_TYPES.FULL,
+          action.payload.sourceHandle || undefined,
+          action.payload.targetHandle || undefined
+        );
         state.edges = addEdge(dependencyEdge, state.edges) as DesignerEdge[];
       }
     },
