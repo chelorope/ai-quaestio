@@ -8,7 +8,7 @@ import {
   getBezierPath,
 } from "@xyflow/react";
 import { Button, ButtonGroup } from "@mui/material";
-import { DependencyEdgeData } from "@/types/designer/Designer";
+import { DependencyEdgeData } from "@/types/designer/DesignerTypes";
 
 // Define the component props with proper types
 type DependencyEdgeProps = EdgeProps & {

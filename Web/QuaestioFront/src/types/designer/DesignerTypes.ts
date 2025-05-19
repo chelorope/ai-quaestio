@@ -7,15 +7,15 @@ import {
   XMIFact,
   XMIConstraint,
   XMIObject,
-} from "./xmlTypes";
+} from "./XmlTypes";
 import {
   UpdateNodeTitlePayload,
   UpdateNodeGuidelinesPayload,
   UpdateFactPropertiesPayload,
   UpdateConstraintPayload,
   UpdateFileDetailsPayload,
-} from "./actionTypes";
-import { DesignerSelector } from "./selectorTypes";
+} from "./ActionTypes";
+import { DesignerSelector } from "./SelectorTypes";
 
 // Base types
 export interface Handle {

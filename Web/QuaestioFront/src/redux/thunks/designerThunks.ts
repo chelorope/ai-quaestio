@@ -33,7 +33,7 @@ import {
   XMIObject,
   XMIQuestion,
   XMIFact,
-} from "@/types/designer/Designer";
+} from "@/types/designer/DesignerTypes";
 import { RootState } from "../store";
 import { DEPENDENCY_TYPES } from "@/constants/designerConstants";
 

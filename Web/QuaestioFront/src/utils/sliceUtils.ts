@@ -1,5 +1,8 @@
 // Utility functions for Redux slices
 
+import { DesignerEdge, DesignerNode } from "@/types/designer/DesignerTypes";
+import { getOutgoers } from "@xyflow/react";
+
 /**
  * Generate next sequential ID with given prefix based on existing items' IDs.
  * e.g., getNextId('Q', [{ id: 'Q0' }, { id: 'Q1' }]) -> 'Q2'
@@ -23,4 +26,21 @@ export function updateNodeList<T extends { id: string; data: unknown }>(
   return nodes.map((node) =>
     node.id === id ? { ...node, data: updateFn(node.data) } : node
   );
+}
+
+export function hasCycle(
+  node: DesignerNode,
+  sourceId: string,
+  nodes: DesignerNode[],
+  edges: DesignerEdge[],
+  visited = new Set()
+) {
+  if (visited.has(node.id)) return false;
+
+  visited.add(node.id);
+
+  for (const outgoer of getOutgoers(node, nodes, edges)) {
+    if (outgoer.id === sourceId) return true;
+    if (hasCycle(outgoer, sourceId, nodes, edges, visited)) return true;
+  }
 }

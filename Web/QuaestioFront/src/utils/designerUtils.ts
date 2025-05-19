@@ -13,7 +13,7 @@ import {
   DesignerEdge,
   DependencyEdgeData,
   QuestionFactEdge,
-} from "@/types/designer/Designer";
+} from "@/types/designer/DesignerTypes";
 
 /**
  * Creates a handle ID from a node ID and handle suffix

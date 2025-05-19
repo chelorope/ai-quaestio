@@ -3,7 +3,7 @@ import {
   FactNode,
   Handle,
   QuestionNode,
-} from "@/types/designer/Designer";
+} from "@/types/designer/DesignerTypes";
 import { Position } from "@xyflow/react";
 import ELK, { ElkNode } from "elkjs/lib/elk.bundled.js";
 

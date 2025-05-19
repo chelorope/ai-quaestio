@@ -16,9 +16,9 @@ import {
   DesignerState,
   DesignerEdge,
   DependencyEdgeData,
-} from "@/types/designer/Designer";
+} from "@/types/designer/DesignerTypes";
 import { RootState } from "../store";
-import { updateNodeList } from "@/utils/sliceUtils";
+import { hasCycle, updateNodeList } from "@/utils/sliceUtils";
 import {
   createNewFactNode,
   createNewQuestionNode,
@@ -243,10 +243,14 @@ export const designer = createSlice({
 
       // Connections rules
       if (
-        sourceNode.id === targetNode.id ||
-        (sourceNode.type === NODE_TYPES.QUESTION &&
-          targetNode.type === NODE_TYPES.QUESTION)
-      )
+        sourceNode.type === NODE_TYPES.QUESTION &&
+        targetNode.type === NODE_TYPES.FACT
+      ) {
+        return;
+      }
+
+      if (targetNode.id === action.payload.source) return;
+      if (hasCycle(targetNode, action.payload.source, nodes, [...state.edges]))
         return;
 
       // Add edge according to type
