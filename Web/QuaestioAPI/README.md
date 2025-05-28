@@ -1,4 +1,4 @@
-# Quaestio Web API
+# Quaestio API
 
 The QuaestioAPI project is a web application that serves as the backend for the Quaestio platform. It provides a RESTful API for managing and retrieving data related to questions and answers.
 
