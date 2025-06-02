@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { openModal } from "../slices/modalSlice";
 import * as Service from "@/service";
 import { RootState } from "../store";
+import { dclToXmi } from "@/utils/xmlUtils";
 
 interface AnswerQuestionRequest {
   questionId: string;
@@ -64,13 +65,23 @@ export const exportQuestionnaire = createAsyncThunk(
       const response = await Service.exportQuestionnaire();
       const state = getState() as RootState;
 
-      const aElement = document.createElement("a");
-      aElement.setAttribute("download", `${state.questionnaire.name}.dcl`);
-      const href = URL.createObjectURL(response.data);
-      aElement.href = href;
-      aElement.setAttribute("target", "_blank");
-      aElement.click();
-      URL.revokeObjectURL(href);
+      const buffer = await response.data.arrayBuffer();
+      const decoder = new TextDecoder("utf-8");
+      const xmiString = dclToXmi(decoder.decode(buffer));
+      const xmiBlob = new Blob([xmiString], { type: "application/xml" });
+
+      for (const blob of [xmiBlob, response.data]) {
+        const aElement = document.createElement("a");
+        aElement.setAttribute(
+          "download",
+          `${state.questionnaire.name}.${blob === xmiBlob ? "xmi" : "dcl"}`
+        );
+        const href = URL.createObjectURL(blob);
+        aElement.href = href;
+        aElement.setAttribute("target", "_blank");
+        aElement.click();
+        URL.revokeObjectURL(href);
+      }
     } catch (error) {
       console.error("ERROR", error);
     }

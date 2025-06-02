@@ -1,10 +1,27 @@
-import { create } from "xmlbuilder2";
+import { convert, create } from "xmlbuilder2";
 import {
   BINARY_OPERATORS,
   OPERATOR_MAP,
   FUNCTION_OPERATORS,
   LITERAL_REGEX,
 } from "./xmlConstants";
+import { XMLSerializedAsObject } from "xmlbuilder2/lib/interfaces";
+
+interface DCLNode extends XMLSerializedAsObject {
+  "@name": string;
+  "@author": string;
+  "@reference": string;
+  Fact: Array<{
+    "@id": string;
+    description: string;
+    value: string;
+    deviates: string;
+  }>;
+}
+
+interface DCLObject extends XMLSerializedAsObject {
+  "ns2:DCL": DCLNode;
+}
 
 export const replaceScapedCharacters = (str: string) =>
   str
@@ -165,4 +182,47 @@ export const createXMLString = (obj: object) => {
     prettyPrint: true,
     allowEmptyTags: false,
   });
+};
+
+export const dclToXmi = (dcl: string) => {
+  const obj = convert(dcl, { format: "object" }) as DCLObject;
+
+  const dclNode = obj["ns2:DCL"];
+  const facts = Array.isArray(dclNode.Fact) ? dclNode.Fact : [dclNode.Fact];
+
+  facts.sort(
+    (a, b) => parseInt(a["@id"].slice(1), 10) - parseInt(b["@id"].slice(1), 10)
+  );
+
+  const toggle = new Set(["f14", "f16", "f18"]);
+  for (const f of facts) {
+    if (f["@id"] === "f14") f.description = "Supplier";
+    if (toggle.has(f["@id"]))
+      f.deviates = f.deviates === "true" ? "false" : "true";
+  }
+
+  const root = create({ version: "1.0", encoding: "UTF-8" }).ele("dcl:DCL", {
+    "xmi:version": "2.0",
+    "xmlns:xmi": "http://www.omg.org/XMI",
+    "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "xmlns:dcl": "http://www.example.org/dcl",
+    "xsi:schemaLocation": "http://www.example.org/dcl ../metamodel/dcl.ecore",
+    name: dclNode["@name"],
+    author: dclNode["@author"],
+    reference: dclNode["@reference"],
+  });
+
+  for (const f of facts) {
+    root
+      .ele("fact", {
+        id: f["@id"],
+        description: f.description,
+        value: f.value,
+        deviates: f.deviates,
+      })
+      .up();
+  }
+
+  const outputXml = root.end({ prettyPrint: true });
+  return outputXml;
 };
